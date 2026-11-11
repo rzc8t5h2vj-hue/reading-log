@@ -92,28 +92,13 @@ button { cursor: pointer; }
 /* 상단 티보 에렘 전시회 스타일 헤더 */
 .exhibition-header {
   text-align: center;
-  padding: 8px 0 16px;
-}
-.ex-brand {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.28em;
-  color: #384232;
-  text-transform: uppercase;
-  margin-bottom: 4px;
+  padding: 10px 0 18px;
 }
 .ex-title {
   font-size: 26px;
   font-weight: 800;
   color: #171C14;
   letter-spacing: -0.02em;
-  margin-bottom: 2px;
-}
-.ex-subtitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #384232;
-  letter-spacing: 0.04em;
 }
 
 /* 검색 */
@@ -290,48 +275,22 @@ button { cursor: pointer; }
   z-index: 10;
 }
 
-/* 세로 책 제목 타이포그래피 */
+/* 세로 책 제목 타이포그래피 (책등 패턴 위에 바로 올라가는 또렷한 폰트) */
 .spine .t {
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif !important;
   font-weight: 700;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
   line-height: 1.15;
-  max-height: 112px;
+  max-height: 125px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
   margin: 0 auto;
   color: var(--fg-c, #FAF8F2);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.55);
   z-index: 2;
-}
-
-/* 시안 B: 책등 라벨 프레임 */
-.spine-label-frame {
-  background: rgba(255, 255, 255, 0.94);
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
-  padding: 8px 2px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: calc(100% - 6px);
-  z-index: 2;
-}
-.spine-label-frame .t {
-  color: #1C201A !important;
-  text-shadow: none !important;
-}
-.spine-label-heart {
-  font-size: 7px;
-  line-height: 1;
-  margin-top: 4px;
-  color: #D96B43;
 }
 
 /* 상단 장식 미니 아이콘 */
@@ -1260,9 +1219,7 @@ button { cursor: pointer; }
 
 <div class="app">
   <div class="exhibition-header">
-    <div class="ex-brand">GROUNDSEESAW · EUNJOO'S LIBRARY</div>
     <div class="ex-title">어느 마법 같은 하루</div>
-    <div class="ex-subtitle">나의 독서 기록 · 2026</div>
   </div>
 
   <div class="search">
@@ -1503,25 +1460,16 @@ button { cursor: pointer; }
     var patClass = 'pat-' + (conf.pattern || 'bands');
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
-    var fontSize = (w < 40) ? 12 : 13.5;
+    var fontSize = (w < 40) ? 12.5 : 14;
     var lineCol = conf.dark ? 'rgba(255,255,255,0.65)' : 'rgba(28,32,26,0.35)';
 
     var topIcon = conf.icon ? '<span class="spine-top-icon" style="color:' + lineCol + '">' + conf.icon + '</span>' : '';
-
-    var titleContent = '';
-    if (w >= 42) {
-      titleContent = '<div class="spine-label-frame">' +
-        '<span class="t" style="font-size:' + (fontSize - 0.5) + 'px;">' + esc(b.title) + '</span>' +
-        (w >= 50 ? '<span class="spine-label-heart">♥</span>' : '') +
-      '</div>';
-    } else {
-      titleContent = '<span class="t" style="font-size:' + fontSize + 'px;color:' + conf.fg + ';text-shadow:' + (conf.dark ? '0 1px 2px rgba(0,0,0,0.6)' : 'none') + '">' + esc(b.title) + '</span>';
-    }
+    var tShadow = conf.dark ? '0 1px 2px rgba(0,0,0,0.55)' : '0 1px 1px rgba(255,255,255,0.4)';
 
     return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + conf.color + ';--fg-c:' + conf.fg + ';--line-c:' + lineCol + ';color:' + conf.fg + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       ribbon +
       topIcon +
-      titleContent +
+      '<span class="t" style="font-size:' + fontSize + 'px;color:' + conf.fg + ';text-shadow:' + tShadow + '">' + esc(b.title) + '</span>' +
     '</button>';
   }
   function renderShelf(list) {
