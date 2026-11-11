@@ -13,7 +13,10 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Noto+Serif+KR:wght@300;400;500;600;700&family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Nanum+Pen+Script&display=swap">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
 <style>
 /* 
   지정 디자인 시스템 (IMG_2906 명세):
@@ -42,10 +45,10 @@
   --case: #1F241E; /* 건축 드로잉 먹색 서가 */
   --plank: #EAE6DB; /* 석회암 선반 */
   --plank-shade: #C4BFB2;
-  --font-title: 'Cormorant Garamond', 'Noto Serif KR', serif;
-  --font-hangul: 'Noto Serif KR', 'Gowun Batang', serif;
-  --font-body: 'Noto Serif KR', 'Gowun Dodum', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-label: 'DM Mono', monospace;
+  --font-title: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-hangul: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-label: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   --font-hand: 'Nanum Pen Script', cursive;
   color-scheme: light;
 }
@@ -134,8 +137,8 @@ button { cursor: pointer; }
 
 /* 연도 */
 .yearbar { position: relative; display: flex; align-items: baseline; gap: 10px; margin: 26px 0 16px; width: fit-content; }
-.yearbar h1 { font-family: var(--font-title); font-size: 34px; line-height: 1.1; margin: 0; font-weight: 600; letter-spacing: -0.01em; color: var(--fg); }
-.yearbar .count { font-size: 22px; font-family: var(--font-title); color: var(--accent); font-weight: 500; font-style: italic; }
+.yearbar h1 { font-family: var(--font-title); font-size: 28px; line-height: 1.1; margin: 0; font-weight: 800; letter-spacing: -0.02em; color: var(--fg); }
+.yearbar .count { font-size: 22px; font-family: var(--font-title); color: var(--accent); font-weight: 500;  }
 .yearbar .caret { color: var(--muted); align-self: center; }
 .yearbar select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
@@ -305,9 +308,9 @@ button { cursor: pointer; }
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-family: var(--font-hangul);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
   max-height: 115px;
   overflow: hidden;
   text-overflow: ellipsis;
