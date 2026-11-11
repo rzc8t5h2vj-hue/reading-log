@@ -101,100 +101,152 @@ button { cursor: pointer; }
 .notice { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; color: var(--muted); }
 .notice b { color: var(--fg); font-weight: 700; }
 
-/* 책장 */
+/* 일러스트 스타일 책장 (IMG_2905 스타일) */
 .case {
-  background: #fbf9f4;
-  border: 1px solid #e8e2d5;
-  border-radius: 16px;
-  padding: 24px 14px 14px;
+  background: #23211f;
+  border: 4px solid #36322d;
+  border-radius: 12px;
+  padding: 22px 10px 10px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: inset 0 2px 6px rgba(0,0,0,0.02), 0 2px 8px rgba(0,0,0,0.03);
+  gap: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
 }
 .row .books {
   display: flex;
   align-items: flex-end;
-  gap: 4px;
-  padding: 0 10px;
+  gap: 3px;
+  padding: 0 6px;
   min-height: 52px;
 }
 .plank {
-  height: 14px;
+  height: 12px;
   margin-top: 0;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #d8c3a5 0%, #c4ab89 40%, #aa8f69 100%);
-  box-shadow: 0 7px 14px -3px rgba(90, 70, 50, 0.22), inset 0 1px 0 rgba(255,255,255,0.45);
+  background: #ebe5db;
+  border-bottom: 3px solid #c5bba9;
+  border-radius: 1px;
 }
 
-/* 고급 양장본 하드커버 책등 */
+/* 일러스트 책등 공통 */
 .spine {
   flex: none;
   position: relative;
   border: 0;
-  padding: 16px 3px 18px;
+  border-radius: 2px 2px 0 0;
+  background-color: var(--c);
+  color: #fff;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 3px 3px 1px 1px;
-  overflow: hidden;
-  background-color: var(--spine-bg, #314438);
-  color: var(--spine-fg, #f5edd6);
-  box-shadow: 
-    inset 2px 0 3px rgba(255,255,255,0.2),
-    inset -2px 0 4px rgba(0,0,0,0.25),
-    -1.5px 2px 5px rgba(0,0,0,0.18),
-    1px 2px 4px rgba(0,0,0,0.1);
-  transition: transform .18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow .18s ease;
+  padding: 16px 2px 18px;
+  box-sizing: border-box;
+  box-shadow: -1px 0 0 rgba(0,0,0,0.35), 1px 0 0 rgba(255,255,255,0.15);
+  transition: transform .15s ease;
   cursor: pointer;
+  overflow: hidden;
 }
 .spine:hover, .spine:focus-visible {
-  transform: translateY(-9px);
-  box-shadow: 
-    inset 2px 0 3px rgba(255,255,255,0.3),
-    inset -2px 0 4px rgba(0,0,0,0.3),
-    0 12px 22px rgba(0,0,0,0.22);
+  transform: translateY(-8px);
   z-index: 10;
-}
-
-/* 책등 상하단 금박/은박/음각 라인 */
-.spine::before {
-  content: '';
-  position: absolute;
-  top: 7px;
-  left: 4px;
-  right: 4px;
-  height: 1px;
-  background: var(--spine-line, rgba(255,255,255,0.4));
-  pointer-events: none;
-}
-.spine::after {
-  content: '';
-  position: absolute;
-  bottom: 9px;
-  left: 4px;
-  right: 4px;
-  height: 1px;
-  background: var(--spine-line, rgba(255,255,255,0.4));
-  pointer-events: none;
 }
 
 /* 세로 책 제목 타이포그래피 */
 .spine .t {
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
-  font-weight: 600;
+  font-family: 'Apple SD Gothic Neo', 'Pretendard', 'Noto Sans KR', sans-serif;
+  font-weight: 700;
   letter-spacing: 0.05em;
   line-height: 1.15;
-  max-height: 110px;
+  max-height: 115px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
   margin: 0 auto;
-  text-shadow: var(--spine-ts, 0 1px 2px rgba(0,0,0,0.5));
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  z-index: 2;
+}
+
+/* 패턴 0: 상하단 이중 라인 */
+.spine.pat-0::before {
+  content: '';
+  position: absolute;
+  top: 7px; left: 3px; right: 3px;
+  height: 4px;
+  border-top: 1.5px solid rgba(255,255,255,0.65);
+  border-bottom: 1.5px solid rgba(255,255,255,0.65);
+}
+.spine.pat-0::after {
+  content: '';
+  position: absolute;
+  bottom: 8px; left: 3px; right: 3px;
+  height: 4px;
+  border-top: 1.5px solid rgba(255,255,255,0.65);
+  border-bottom: 1.5px solid rgba(255,255,255,0.65);
+}
+
+/* 패턴 1: 상단 사각 라벨 프레임 */
+.spine.pat-1::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 4px; right: 4px; height: 16px;
+  border: 1px solid rgba(255,255,255,0.6);
+  background: rgba(0,0,0,0.18);
+  border-radius: 1px;
+}
+.spine.pat-1::after {
+  content: '';
+  position: absolute;
+  bottom: 8px; left: 4px; right: 4px; height: 2px;
+  background: rgba(255,255,255,0.55);
+}
+
+/* 패턴 2: 상하단 다이아몬드 장식 */
+.spine.pat-2::before {
+  content: '◆';
+  position: absolute;
+  top: 5px;
+  font-size: 7.5px;
+  color: rgba(255,255,255,0.75);
+}
+.spine.pat-2::after {
+  content: '◆';
+  position: absolute;
+  bottom: 6px;
+  font-size: 7.5px;
+  color: rgba(255,255,255,0.75);
+}
+
+/* 패턴 3: 가로 리브 밴드 */
+.spine.pat-3::before {
+  content: '';
+  position: absolute;
+  top: 6px; bottom: 8px; left: 2px; right: 2px;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 26px,
+    rgba(255,255,255,0.4) 26px,
+    rgba(255,255,255,0.4) 28px
+  );
+  pointer-events: none;
+}
+
+/* 패턴 4: 상하단 톤온톤 배색 팁 */
+.spine.pat-4::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 6px;
+  background: rgba(255,255,255,0.3);
+}
+.spine.pat-4::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0; height: 6px;
+  background: rgba(255,255,255,0.3);
 }
 /* 달력 표지 밑 별점 뱃지 */
 .cell .cell-rating {
@@ -645,16 +697,15 @@ button { cursor: pointer; }
   }
 
   var GENRE_COLORS = {
-    '소설': '#e25b45',
-    '시/에세이': '#e69138',
-    '인문/사회': '#38761d',
-    '자기계발': '#2a6171',
-    '경제/경영': '#1b365d',
-    '과학/IT': '#8a5a00',
-    '예술/문화': '#7b4b94',
-    '기타': '#6b7280'
+    '소설': '#c74332',      // 일러스트 테라코타 레드
+    '시/에세이': '#d97d25',  // 일러스트 웜 오렌지
+    '인문/사회': '#2d6b47',  // 일러스트 보태니컬 딥그린
+    '자기계발': '#266978',  // 일러스트 앤틱 틸
+    '경제/경영': '#223c68',  // 일러스트 클래식 네이비
+    '과학/IT': '#8c6227',    // 일러스트 골든 브라운
+    '예술/문화': '#6f4277',  // 일러스트 더스티 바이올렛
+    '기타': '#4c575f'       // 일러스트 슬레이트 그레이
   };
-
   var MASCOT_SVG = '<svg class="lib-mascot" viewBox="0 0 100 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="65" width="60" height="9" rx="2"/><rect x="25" y="53" width="50" height="9" rx="2"/><rect x="30" y="41" width="40" height="9" rx="2"/><path d="M42 38 C 42 28, 52 30, 52 20 C 52 14, 46 12, 48 8 C 50 4, 56 4, 58 8 C 60 12, 54 14, 54 20 C 54 30, 44 28, 44 38 Z" fill="currentColor"/><circle cx="51" cy="9" r="2.2" fill="var(--surface)"/><circle cx="55" cy="9" r="2.2" fill="var(--surface)"/><circle cx="51" cy="9" r="1.1" fill="currentColor"/><circle cx="55" cy="9" r="1.1" fill="currentColor"/><path d="M48 3 L47 0 M53 2 L53 -1 M58 3 L59 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
 
   var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
@@ -755,12 +806,14 @@ button { cursor: pointer; }
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
     var w = spineW(b), h = spineH(b);
-    var theme = getSpineTheme(b, idx);
+    var genre = b.genre || '소설';
+    var color = GENRE_COLORS[genre] || '#c74332';
+    var patClass = 'pat-' + ((idx || 0) % 5);
     var isR = (b.status === 'reading');
-    var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중 (병렬 독서)"></span>' : '';
+    var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
     var fontSize = (w < 38) ? 12 : 13.5;
 
-    return '<button class="spine' + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--spine-bg:' + theme.bg + ';--spine-fg:' + theme.fg + ';--spine-line:' + theme.line + ';--spine-ts:' + theme.ts + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
+    return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + color + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       ribbon +
       '<span class="t" style="font-size:' + fontSize + 'px">' + esc(b.title) + '</span>' +
     '</button>';
