@@ -853,6 +853,130 @@ button { cursor: pointer; }
   text-align: center;
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
+/* 0.5단위 별점 렌더링 스타일 */
+.stars-view {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5px;
+  line-height: 1;
+  font-size: 14px;
+}
+.stars-view .st-full { color: #E3A92F; }
+.stars-view .st-empty { color: var(--line); }
+.stars-view .st-half {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  color: var(--line);
+  line-height: 1;
+}
+.stars-view .st-half::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #E3A92F;
+}
+.stars-view .st-num {
+  font-size: 12px;
+  margin-left: 4px;
+  color: var(--fg);
+  font-family: var(--font-title);
+  font-weight: 700;
+}
+
+/* 폼 0.5단위 별점 피커 인터랙션 */
+.star-picker-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.starpick-5 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.star-unit {
+  position: relative;
+  width: 32px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+.star-unit .star-bg {
+  font-size: 32px;
+  line-height: 1;
+  color: var(--line);
+  pointer-events: none;
+}
+.star-unit.full .star-bg { color: #E3A92F; }
+.star-unit.half .star-bg {
+  position: relative;
+  color: var(--line);
+}
+.star-unit.half .star-bg::before {
+  content: '★';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  overflow: hidden;
+  color: #E3A92F;
+}
+.star-unit .hit-left, .star-unit .hit-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 2;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+.star-unit .hit-left { left: 0; }
+.star-unit .hit-right { right: 0; }
+
+.star-control-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 2px;
+}
+.star-score-badge {
+  font-family: var(--font-title);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg);
+  min-width: 65px;
+}
+.btn-score-step {
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--fg);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-score-step:hover { background: var(--surface); border-color: var(--accent); }
+.btn-score-clear {
+  height: 30px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -908,7 +1032,19 @@ button { cursor: pointer; }
   var okColor = function (c) { return /^#[0-9a-f]{6}$/i.test(c || '') ? c : PALETTE[0]; };
   var okCover = function (c) { return typeof c === 'string' && c.indexOf('data:image/') === 0 ? c : null; };
   var hash = function (s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0; return h; };
-  var stars = function (n) { n = n || 0; return n ? '★'.repeat(n) + '☆'.repeat(5 - n) : ''; };
+    var stars = function (n) {
+    n = parseFloat(n) || 0;
+    if (!n) return '';
+    var full = Math.floor(n);
+    var half = (n % 1 >= 0.5) ? 1 : 0;
+    var empty = Math.max(0, 5 - full - half);
+    var h = '<span class="stars-view" title="' + n.toFixed(1) + '점">';
+    for (var i = 0; i < full; i++) h += '<span class="st-full">★</span>';
+    if (half) h += '<span class="st-half">★</span>';
+    for (var j = 0; j < empty; j++) h += '<span class="st-empty">☆</span>';
+    h += ' <b class="st-num">' + n.toFixed(1) + '</b></span>';
+    return h;
+  };
   var fmtDate = function (s) { return s.replace(/-/g, '.'); };
 
   /* ---------- 상태 ---------- */
@@ -1101,7 +1237,7 @@ button { cursor: pointer; }
       if (list.length) {
         cnt += list.length;
         var b = list[0], cv = okCover(b.cover);
-        var starBadge = (b.rating > 0) ? '<span class="cell-rating">' + '★'.repeat(b.rating) + '</span>' : '';
+        var starBadge = (b.rating > 0) ? '<span class="cell-rating">★ ' + (b.rating % 1 === 0 ? b.rating : b.rating.toFixed(1)) + '</span>' : '';
         h += '<button class="' + cls + '" data-day="' + key + '" aria-label="' + m + '월 ' + d + '일, ' + esc(b.title) + (list.length > 1 ? ' 외 ' + (list.length - 1) + '권' : '') + '"><span class="d">' + d + '</span>' +
           (cv ? '<img src="' + cv + '" alt="">' : '<div class="tile" style="--c:' + okColor(b.color) + '">' + esc(b.title) + '</div>') +
           starBadge +
@@ -1388,7 +1524,7 @@ button { cursor: pointer; }
       id: editing ? b.id : null,
       cover: editing ? okCover(b.cover) : null,
       color: editing ? okColor(b.color) : PALETTE[n % PALETTE.length],
-      rating: editing ? (b.rating || 0) : 0,
+      rating: editing ? (parseFloat(b.rating) || 0) : 0,
       coverColor: null
     };
     var v = editing ? b : { title: '', author: '', genre: '소설', status: 'finished', readPages: '', pages: '', date: TODAY };
@@ -1412,7 +1548,7 @@ button { cursor: pointer; }
       '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
       '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"></div>' +
       '<div class="field" id="f-date-box"><label for="f-date">' + (form.status === 'reading' ? '시작일' : '완독일') + '</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
-      '<div class="field" id="f-star-box"' + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>' +
+      '<div class="field" id="f-star-box"' + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점 (5점 만점, 0.5 단위)</span><div class="star-picker-wrap" id="f-stars"></div></div>' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
       
       '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : (form.status === 'reading' ? '읽는 중으로 저장' : '책장에 꽂기')) + '</button></div></form>');
@@ -1433,7 +1569,28 @@ button { cursor: pointer; }
     $('#f-pick').onclick = function () { $('#f-cover').click(); };
     $('#f-clear').onclick = function () { form.cover = null; form.coverColor = null; paintForm(); };
     $('#f-cover').onchange = function (e) { var f = e.target.files && e.target.files[0]; if (f) readCover(f); };
-    $('#f-stars').onclick = function (e) { var s = e.target.closest('button'); if (!s) return; var v = +s.dataset.v; form.rating = form.rating === v ? 0 : v; paintForm(); };
+    $('#f-stars').onclick = function (e) {
+      if (e.target.classList.contains('hit-left') || e.target.classList.contains('hit-right')) {
+        var v = parseFloat(e.target.dataset.val);
+        form.rating = (form.rating === v) ? 0 : v;
+        paintStarsPicker();
+        return;
+      }
+      var stepBtn = e.target.closest('.btn-score-step');
+      if (stepBtn) {
+        var step = parseFloat(stepBtn.dataset.step);
+        var cur = parseFloat(form.rating) || 0;
+        var next = Math.max(0.5, Math.min(5, Math.round((cur + step) * 2) / 2));
+        form.rating = next;
+        paintStarsPicker();
+        return;
+      }
+      if (e.target.classList.contains('btn-score-clear')) {
+        form.rating = 0;
+        paintStarsPicker();
+        return;
+      }
+    };
     if ($('#f-genre')) {
       $('#f-genre').onchange = function () {
         var g = $('#f-genre').value;
@@ -1555,10 +1712,33 @@ button { cursor: pointer; }
       Promise.all(jobs).then(function () { if ($('#f-sug')) $('#f-sug').innerHTML = ''; });
     };
   }
+    function paintStarsPicker() {
+    var box = $('#f-stars');
+    if (!box) return;
+    var r = parseFloat(form.rating) || 0;
+    var h = '<div class="starpick-5">';
+    for (var i = 1; i <= 5; i++) {
+      var cls = 'star-unit';
+      if (r >= i) cls += ' full';
+      else if (r >= i - 0.5) cls += ' half';
+      h += '<div class="' + cls + '">' +
+        '<button type="button" class="hit-left" data-val="' + (i - 0.5) + '" aria-label="' + (i - 0.5) + '점"></button>' +
+        '<button type="button" class="hit-right" data-val="' + i + '" aria-label="' + i + '점"></button>' +
+        '<span class="star-bg">★</span>' +
+      '</div>';
+    }
+    h += '</div>';
+    h += '<div class="star-control-row">' +
+      '<span class="star-score-badge">' + (r > 0 ? '★ ' + r.toFixed(1) + '점' : '별점 없음') + '</span>' +
+      '<button type="button" class="btn-score-step" data-step="-0.5">- 0.5</button>' +
+      '<button type="button" class="btn-score-step" data-step="+0.5">+ 0.5</button>' +
+      (r > 0 ? '<button type="button" class="btn-score-clear">비우기</button>' : '') +
+    '</div>';
+    box.innerHTML = h;
+  }
   function paintForm() {
     if ($('#f-stars')) {
-      var h = ''; for (var i = 1; i <= 5; i++) h += '<button type="button" data-v="' + i + '" class="' + (i <= form.rating ? 'on' : '') + '" aria-label="별 ' + i + '개">★</button>';
-      $('#f-stars').innerHTML = h;
+      paintStarsPicker();
     }
     if ($('#f-prev')) {
       $('#f-prev').innerHTML = form.cover ? '<img src="' + form.cover + '" alt="">' : '없음';
@@ -1705,7 +1885,7 @@ button { cursor: pointer; }
     return {
       id: typeof b.id === 'string' && b.id ? b.id.slice(0, 40) : 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       title: String(b.title).slice(0, 200), author: String(b.author || '').slice(0, 100),
-      pages: Math.max(0, Math.min(3000, p)), date: b.date, rating: Math.max(0, Math.min(5, r)),
+      pages: Math.max(0, Math.min(3000, p)), date: b.date, rating: Math.max(0, Math.min(5, Math.round((parseFloat(b.rating) || 0) * 2) / 2)),
       color: okColor(b.color), cover: okCover(b.cover)
     };
   }
