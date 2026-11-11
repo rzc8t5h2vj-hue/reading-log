@@ -808,9 +808,10 @@ button { cursor: pointer; }
     '</button>';
   }
   function renderShelf(list) {
+    var finishedOnly = list.filter(function (b) { return (b.status || 'finished') === 'finished'; });
     var avail = Math.max(220, ($('#view').clientWidth || 360) - 16 - 20);
     var rows = [], cur = [], used = 0;
-    list.forEach(function (b) {
+    finishedOnly.forEach(function (b) {
       var w = spineW(b);
       var need = cur.length ? w + 4 : w;
       if (used + need > avail && cur.length) { rows.push(cur); cur = []; used = 0; need = w; }
@@ -819,8 +820,8 @@ button { cursor: pointer; }
     if (cur.length) rows.push(cur);
     while (rows.length < 3) rows.push([]);
     var html = '<div class="case">' + rows.map(function (r) { return '<div class="row"><div class="books">' + r.map(spineHTML).join('') + '</div><div class="plank"></div></div>'; }).join('') + '</div>';
-    var total = list.reduce(function (s, b) { return s + (+b.pages || 0); }, 0);
-    html += '<p class="shelf-note">' + (list.length ? list.length + '권' + (total ? ' · 모두 ' + total.toLocaleString('ko-KR') + '쪽' : '') + '. 두꺼운 책은 책등도 두꺼워요.' : '이 해에 읽은 책이 없어요.') + '</p>';
+    var total = finishedOnly.reduce(function (s, b) { return s + (+b.pages || 0); }, 0);
+    html += '<p class="shelf-note">' + (finishedOnly.length ? finishedOnly.length + '권' + (total ? ' · 모두 ' + total.toLocaleString('ko-KR') + '쪽' : '') + '. 두꺼운 책은 책등도 두꺼워요.' : '이 해에 완독한 책이 없어요.') + '</p>';
     $('#view').innerHTML = html;
   }
 
@@ -1156,7 +1157,7 @@ button { cursor: pointer; }
       '<div class="field" id="f-star-box"' + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
       '<div class="field"><span class="lab">책등 색</span><div class="swatches" id="f-sw"></div></div>' +
-      '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : '책장에 꽂기') + '</button></div></form>');
+      '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : (form.status === 'reading' ? '읽는 중으로 저장' : '책장에 꽂기')) + '</button></div></form>');
     paintForm();
     $('#f-st-toggle').onclick = function (e) {
       var btn = e.target.closest('button'); if (!btn) return;
@@ -1166,6 +1167,9 @@ button { cursor: pointer; }
       if ($('#f-rp-box')) $('#f-rp-box').style.display = isR ? '' : 'none';
       if ($('#f-date-box label')) $('#f-date-box label').textContent = isR ? '시작일' : '완독일';
       if ($('#f-star-box')) $('#f-star-box').style.display = isR ? 'none' : '';
+      if ($('#f-save')) {
+        $('#f-save').textContent = editing ? '저장' : (isR ? '읽는 중으로 저장' : '책장에 꽂기');
+      }
     };
     $('#f-cancel').onclick = closeSheet;
     $('#f-pick').onclick = function () { $('#f-cover').click(); };
@@ -1340,7 +1344,18 @@ button { cursor: pointer; }
     saveBook(book).then(function (ok) {
       if (!ok) { $('#f-save').disabled = false; return; }
       state.year = +date.slice(0, 4); state.cal = { y: +date.slice(0, 4), m: +date.slice(5, 7) }; state.q = ''; $('#q').value = '';
-      closeSheet(); render(); toast('책장에 꽂았어요.');
+      closeSheet();
+      var isR = (book.status === 'reading');
+      if (isR) {
+        state.tab = 'list';
+        state.listFilter = 'reading';
+        try { localStorage.setItem(LS_TAB, 'list'); } catch (x) {}
+        render();
+        toast('《' + book.title + '》 읽는 중 목록에 저장했어요.');
+      } else {
+        render();
+        toast('《' + book.title + '》 완독하여 책장에 꽂았어요.');
+      }
     });
   }
 
