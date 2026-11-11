@@ -1406,15 +1406,15 @@ button { cursor: pointer; }
       stHtml +
       '<div class="field"><label for="f-title">제목</label><div class="titlerow"><input id="f-title" type="text" value="' + esc(v.title) + '" autocomplete="off" placeholder="제목을 입력하면 책을 찾아 드려요"><button type="button" class="btn" id="f-find">검색</button></div><div class="err" id="f-err"></div><div class="sug" id="f-sug"></div></div>' +
       '<div class="field"><label for="f-author">저자</label><input id="f-author" type="text" value="' + esc(v.author) + '" autocomplete="off"></div>' +
-      '<div class="field"><label for="f-genre">장르 (자동 분류)</label><select id="f-genre" style="width:100%;height:42px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 12px;color:var(--fg);font-size:14px;">' +
+      '<div class="field"><label for="f-genre">장르 (선택 시 책등 색 자동 적용)</label><div style="display:flex;align-items:center;gap:10px;"><span id="f-genre-dot" style="width:24px;height:24px;border-radius:6px;background:' + (GENRE_CONFIG[v.genre || '소설'] ? GENRE_CONFIG[v.genre || '소설'].color : '#D4652A') + ';flex:none;box-shadow:0 1px 3px rgba(0,0,0,0.25);border:1px solid rgba(0,0,0,0.15);"></span><select id="f-genre" style="flex:1;height:48px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;color:var(--fg);font:inherit;">' +
         GENRES.map(function (g) { return '<option value="' + g + '"' + (g === v.genre ? ' selected' : '') + '>' + g + '</option>'; }).join('') +
-      '</select></div>' +
+      '</select></div></div>' +
       '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
       '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"></div>' +
       '<div class="field" id="f-date-box"><label for="f-date">' + (form.status === 'reading' ? '시작일' : '완독일') + '</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
       '<div class="field" id="f-star-box"' + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
-      '<div class="field"><span class="lab">책등 색</span><div class="swatches" id="f-sw"></div></div>' +
+      
       '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : (form.status === 'reading' ? '읽는 중으로 저장' : '책장에 꽂기')) + '</button></div></form>');
     paintForm();
     $('#f-st-toggle').onclick = function (e) {
@@ -1434,7 +1434,14 @@ button { cursor: pointer; }
     $('#f-clear').onclick = function () { form.cover = null; form.coverColor = null; paintForm(); };
     $('#f-cover').onchange = function (e) { var f = e.target.files && e.target.files[0]; if (f) readCover(f); };
     $('#f-stars').onclick = function (e) { var s = e.target.closest('button'); if (!s) return; var v = +s.dataset.v; form.rating = form.rating === v ? 0 : v; paintForm(); };
-    $('#f-sw').onclick = function (e) { var s = e.target.closest('button'); if (!s) return; form.color = s.dataset.c; paintForm(); };
+    if ($('#f-genre')) {
+      $('#f-genre').onchange = function () {
+        var g = $('#f-genre').value;
+        var conf = GENRE_CONFIG[g] || GENRE_CONFIG['소설'];
+        form.color = conf.color;
+        if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color;
+      };
+    }
     $('#bf').onsubmit = function (e) { e.preventDefault(); submitForm(); };
     setupSearch();
   }
@@ -1535,7 +1542,7 @@ button { cursor: pointer; }
       searchSeq++; clearTimeout(sTimer);
       inp.value = x.title; $('#f-author').value = x.author;
       var autoG = guessGenre(x.title, x.author, x.publisher);
-      if ($('#f-genre')) $('#f-genre').value = autoG;
+      if ($('#f-genre')) { $('#f-genre').value = autoG; var conf = GENRE_CONFIG[autoG] || GENRE_CONFIG['소설']; form.color = conf.color; if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color; }
       msg('표지와 쪽수를 가져오는 중…');
       var jobs = [];
       var covers = [x.coverHd, x.cover].filter(Boolean);
@@ -1549,13 +1556,16 @@ button { cursor: pointer; }
     };
   }
   function paintForm() {
-    if (!$('#f-sw')) return;
-    var h = ''; for (var i = 1; i <= 5; i++) h += '<button type="button" data-v="' + i + '" class="' + (i <= form.rating ? 'on' : '') + '" aria-label="별 ' + i + '개">★</button>';
-    $('#f-stars').innerHTML = h;
-    var cols = PALETTE.slice(); if (form.coverColor) cols.unshift(form.coverColor);
-    if (cols.indexOf(form.color) < 0) cols.unshift(form.color);
-    $('#f-sw').innerHTML = cols.map(function (c) { return '<button type="button" class="sw" data-c="' + c + '" style="--c:' + c + '" aria-pressed="' + (c === form.color) + '" aria-label="색 ' + c + '"></button>'; }).join('');
-    $('#f-prev').innerHTML = form.cover ? '<img src="' + form.cover + '" alt="">' : '없음';
+    if ($('#f-stars')) {
+      var h = ''; for (var i = 1; i <= 5; i++) h += '<button type="button" data-v="' + i + '" class="' + (i <= form.rating ? 'on' : '') + '" aria-label="별 ' + i + '개">★</button>';
+      $('#f-stars').innerHTML = h;
+    }
+    if ($('#f-prev')) {
+      $('#f-prev').innerHTML = form.cover ? '<img src="' + form.cover + '" alt="">' : '없음';
+    }
+    var g = $('#f-genre') ? $('#f-genre').value : '소설';
+    var conf = GENRE_CONFIG[g] || GENRE_CONFIG['소설'];
+    if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color;
   }
   function readCover(file) {
     return new Promise(function (resolve) {
@@ -1589,14 +1599,18 @@ button { cursor: pointer; }
     var date = $('#f-date').value || TODAY;
     var pages = parseInt($('#f-pages').value, 10);
     var rPages = parseInt($('#f-readpages') ? $('#f-readpages').value : 0, 10);
+    var genre = ($('#f-genre') ? $('#f-genre').value : '소설');
+    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
+    var autoSpineColor = conf.color;
+
     var book = {
       id: form.id || 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       title: title, author: $('#f-author').value.trim(),
-      genre: ($('#f-genre') ? $('#f-genre').value : '소설'),
+      genre: genre,
       status: form.status || 'finished',
       readPages: (form.status === 'reading' && rPages > 0) ? rPages : (pages > 0 ? pages : 0),
       pages: pages > 0 ? Math.min(pages, 3000) : 0,
-      date: date, rating: form.status === 'reading' ? 0 : form.rating, color: form.color, cover: form.cover
+      date: date, rating: form.status === 'reading' ? 0 : form.rating, color: autoSpineColor, cover: form.cover
     };
     $('#f-save').disabled = true;
     saveBook(book).then(function (ok) {
