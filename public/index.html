@@ -45,12 +45,16 @@
   --case: #1F241E; /* 건축 드로잉 먹색 서가 */
   --plank: #EAE6DB; /* 석회암 선반 */
   --plank-shade: #C4BFB2;
-  --font-title: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  --font-hangul: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-  --font-label: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-title: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+  --font-hangul: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+  --font-body: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+  --font-label: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
   --font-hand: 'Nanum Pen Script', cursive;
   color-scheme: light;
+}
+
+*, *::before, *::after {
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif !important;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
