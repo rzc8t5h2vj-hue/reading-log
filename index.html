@@ -308,6 +308,279 @@ button { cursor: pointer; }
 /* 장르 태그 뱃지 */
 .tag-genre { display: inline-block; font-size: 11px; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--accent); font-weight: 600; margin-left: 6px; }
 
+
+/* 서재 통계 (Library Stats) 스타일 */
+.lib-stats {
+  background: var(--surface);
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  padding: 24px 18px;
+  margin-bottom: 24px;
+}
+.lib-header {
+  text-align: center;
+  margin-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.lib-mascot {
+  width: 64px;
+  height: 52px;
+  margin-bottom: 8px;
+  color: var(--fg);
+}
+.lib-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+  color: var(--fg);
+}
+.lib-sub {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* 4열 요약 그리드 */
+.lib-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--surface-2);
+  border-radius: 12px;
+  padding: 12px 6px;
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+}
+.lib-sum-col {
+  text-align: center;
+  padding: 0 4px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+.lib-sum-col:last-child { border-right: none; }
+.lib-sum-lbl {
+  font-size: 10.5px;
+  color: var(--muted);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lib-sum-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fg);
+  line-height: 1.15;
+}
+.lib-sum-val .star { color: #f59e0b; margin-right: 1px; }
+.lib-sum-sub {
+  font-size: 9.5px;
+  color: var(--muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 2컬럼 레이아웃 (올해의 기록 + 월 결산) */
+.lib-split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+}
+@media (min-width: 600px) {
+  .lib-split { grid-template-columns: 1.1fr 0.9fr; gap: 20px; }
+}
+
+/* 도트 매트릭스 그리드 */
+.lib-card {
+  background: var(--surface-2);
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  padding: 16px;
+}
+.lib-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+.lib-card-tag { font-size: 10px; color: #b25948; letter-spacing: 0.08em; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+.lib-card-title { font-size: 17px; font-weight: 700; margin: 0; color: var(--fg); }
+.lib-card-yr { font-family: var(--font-display); font-size: 17px; font-weight: 700; color: var(--fg); }
+.lib-card-pct { font-size: 14px; color: var(--muted); font-weight: 600; margin-left: 8px; }
+
+/* 12열 도트 차트 */
+.dot-matrix {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+  padding: 10px 0;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--line);
+}
+.dot-col {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  padding: 4px 1px;
+  border-radius: 6px;
+  transition: background .15s;
+}
+.dot-col:hover, .dot-col.selected {
+  background: rgba(214, 80, 108, 0.08);
+}
+.dot-col.selected .dot-lbl {
+  color: var(--accent);
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent);
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+.dot.empty {
+  background: rgba(120, 120, 120, 0.18);
+}
+.dot-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+.dot-ft {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 10px;
+  text-align: left;
+}
+
+/* 월 결산 */
+.monthly-card {
+  padding: 16px;
+}
+.monthly-guide { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.monthly-top { font-size: 10px; color: #4a7c59; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+.monthly-head {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fg);
+  margin: 0 0 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.monthly-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 14px;
+  font-size: 13px;
+  margin: 0;
+}
+.monthly-dl dt { color: var(--muted); font-weight: 500; }
+.monthly-dl dd { margin: 0; color: var(--fg); font-weight: 600; }
+.monthly-genres { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 2px; }
+.genre-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--fg);
+  font-weight: 600;
+}
+.genre-badge .gb-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+/* 읽는 중 (Reading In-Progress) 카드 */
+.reading-section { margin-top: 22px; }
+.reading-section h3 { font-size: 15px; font-weight: 700; margin: 0 0 12px; color: var(--fg); display: flex; justify-content: space-between; align-items: center; }
+.reading-list { display: flex; flex-direction: column; gap: 10px; }
+.reading-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.reading-thumb { width: 40px; height: 58px; border-radius: 4px; overflow: hidden; background: var(--c); flex: none; }
+.reading-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.reading-info { flex: 1; min-width: 0; }
+.reading-title { font-weight: 700; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: 2px; }
+.reading-author { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.reading-prog-track { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.reading-prog-bar { height: 100%; background: var(--accent); border-radius: 999px; transition: width .3s ease; }
+.reading-pages { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* 상태 선택 버튼 (완독 vs 읽는 중) */
+.status-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  background: var(--surface-2);
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
+.status-toggle button {
+  height: 36px;
+  border: 0;
+  background: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.status-toggle button.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+
+.tag-reading {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(214, 80, 108, 0.12);
+  border: 1px solid rgba(214, 80, 108, 0.3);
+  padding: 1px 6px;
+  border-radius: 999px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+.spine.reading .spine-ribbon {
+  position: absolute;
+  top: -8px;
+  right: 5px;
+  width: 9px;
+  height: 18px;
+  background: var(--accent);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 75%, 0 100%);
+  z-index: 5;
+}
+
 </style>
 </head>
 <body>
@@ -367,6 +640,19 @@ button { cursor: pointer; }
   var fmtDate = function (s) { return s.replace(/-/g, '.'); };
 
   /* ---------- 상태 ---------- */
+  var GENRE_COLORS = {
+    '소설': '#e25b45',
+    '시/에세이': '#e69138',
+    '인문/사회': '#38761d',
+    '자기계발': '#2a6171',
+    '경제/경영': '#1b365d',
+    '과학/IT': '#8a5a00',
+    '예술/문화': '#7b4b94',
+    '기타': '#6b7280'
+  };
+
+  var MASCOT_SVG = '<svg class="lib-mascot" viewBox="0 0 100 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="65" width="60" height="9" rx="2"/><rect x="25" y="53" width="50" height="9" rx="2"/><rect x="30" y="41" width="40" height="9" rx="2"/><path d="M42 38 C 42 28, 52 30, 52 20 C 52 14, 46 12, 48 8 C 50 4, 56 4, 58 8 C 60 12, 54 14, 54 20 C 54 30, 44 28, 44 38 Z" fill="currentColor"/><circle cx="51" cy="9" r="2.2" fill="var(--surface)"/><circle cx="55" cy="9" r="2.2" fill="var(--surface)"/><circle cx="51" cy="9" r="1.1" fill="currentColor"/><circle cx="55" cy="9" r="1.1" fill="currentColor"/><path d="M48 3 L47 0 M53 2 L53 -1 M58 3 L59 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
+
   var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
 
   function guessGenre(title, author, publisher) {
@@ -382,7 +668,7 @@ button { cursor: pointer; }
   }
 
   var books = [];
-  var state = { tab: 'shelf', year: now.getFullYear(), q: '', cal: { y: now.getFullYear(), m: now.getMonth() + 1 } };
+  var state = { tab: 'shelf', year: now.getFullYear(), q: '', selectedMonth: now.getMonth() + 1, cal: { y: now.getFullYear(), m: now.getMonth() + 1 } };
 
   try { var t = localStorage.getItem(LS_TAB); if (t === 'shelf' || t === 'cal' || t === 'list' || t === 'stats') state.tab = t; } catch (e) {}
   try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = JSON.parse(raw) || []; } catch (e) { books = []; }
@@ -395,23 +681,37 @@ button { cursor: pointer; }
   /* ---------- 예시 책 ---------- */
   function makeSamples() {
     var src = [
-      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324', '소설'],
-      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525', '소설'],
-      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921', '소설'],
-      ['데미안', 240, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1252874', '인문/사회'],
-      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086', '소설'],
-      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329', '과학/IT'],
-      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518', '소설'],
-      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208', '자기계발'],
-      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244', '소설'],
-      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128', '소설'],
-      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128', '시/에세이'],
-      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018', '인문/사회']
+      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324', '소설', 'finished', 180],
+      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525', '소설', 'finished', 264],
+      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921', '소설', 'finished', 268],
+      ['데미안', 240, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1252874', '인문/사회', 'finished', 240],
+      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086', '소설', 'finished', 120],
+      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518', '소설', 'finished', 520],
+      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244', '소설', 'finished', 216],
+      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128', '소설', 'finished', 300],
+      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128', '시/에세이', 'finished', 200],
+      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018', '인문/사회', 'finished', 180],
+      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329', '과학/IT', 'reading', 210],
+      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208', '자기계발', 'reading', 160]
     ];
     var offs = [1, 3, 6, 9, 12, 15, 19, 22, 27, 31, 36, 41];
     return src.map(function (s, i) {
       var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offs[i]);
-      return { id: 's' + i, sample: true, title: s[0], author: '', pages: s[1], date: ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()), rating: (i % 3 === 0 ? 5 : (i % 3 === 1 ? 4 : 3)), color: PALETTE[i % PALETTE.length], cover: s[2], genre: s[3] || '소설' };
+      var isReading = (s[4] === 'reading');
+      return {
+        id: 's' + i,
+        sample: true,
+        title: s[0],
+        author: '',
+        pages: s[1],
+        readPages: isReading ? s[5] : s[1],
+        status: s[4] || 'finished',
+        date: ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()),
+        rating: isReading ? 0 : (i % 3 === 0 ? 5 : (i % 3 === 1 ? 4 : 3)),
+        color: PALETTE[i % PALETTE.length],
+        cover: s[2],
+        genre: s[3] || '소설'
+      };
     });
   }
   var SAMPLES = makeSamples();
@@ -481,7 +781,7 @@ button { cursor: pointer; }
     var first = new Date(y, m - 1, 1).getDay();
     var days = new Date(y, m, 0).getDate();
     var map = {};
-    source().filter(matches).forEach(function (b) { (map[b.date] = map[b.date] || []).push(b); });
+    source().filter(matches).forEach(function (b) { if ((b.status || 'finished') === 'finished') (map[b.date] = map[b.date] || []).push(b); });
     var h = '<div class="calhead"><h2>' + y + '년 ' + m + '월</h2><div class="nav">' +
       '<button class="iconbtn" data-nav="-1" aria-label="이전 달"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>' +
       '<button class="iconbtn" data-nav="1" aria-label="다음 달"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg></button></div></div>';
@@ -508,87 +808,172 @@ button { cursor: pointer; }
 
   /* ---------- 렌더: 목록 ---------- */
   function renderList(list) {
-    if (!list.length) { $('#view').innerHTML = '<div class="empty-state">읽은 책이 없어요.</div>'; return; }
+    if (!list.length) { $('#view').innerHTML = '<div class="empty-state">책이 없어요.</div>'; return; }
     $('#view').innerHTML = '<div class="list">' + list.slice().reverse().map(function (b) {
       var cv = okCover(b.cover);
-      return '<button class="item" data-id="' + esc(b.id) + '"><span class="thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</span><span class="meta"><div class="ti">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + '</div><div class="sub">' + esc(b.author || '저자 미입력') + ' · ' + fmtDate(b.date) + '</div></span><span class="stars">' + stars(b.rating) + '</span></button>';
+      var isR = (b.status === 'reading');
+      var stTag = isR ? '<span class="tag-reading">📖 ' + (b.readPages || 0) + '/' + (b.pages || 0) + '쪽</span>' : '';
+      return '<button class="item" data-id="' + esc(b.id) + '"><span class="thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</span><span class="meta"><div class="ti">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + stTag + '</div><div class="sub">' + esc(b.author || '저자 미입력') + ' · ' + (isR ? '읽는 중' : fmtDate(b.date)) + '</div></span><span class="stars">' + (isR ? '' : stars(b.rating)) + '</span></button>';
     }).join('') + '</div>';
   }
 
 
-  /* ---------- 렌더: 통계 ---------- */
+  /* ---------- 렌더: 통계 (Eunju's Library 디자인) ---------- */
   function renderStats(list) {
-    var totalBooks = list.length;
-    var totalPages = list.reduce(function (s, b) { return s + (+b.pages || 0); }, 0);
-    var ratedBooks = list.filter(function (b) { return b.rating > 0; });
-    var avgRating = ratedBooks.length ? (ratedBooks.reduce(function (s, b) { return s + b.rating; }, 0) / ratedBooks.length).toFixed(1) : '-';
-    var avgPages = totalBooks ? Math.round(totalPages / totalBooks) : 0;
+    var all = source().filter(matches);
+    var finishedAll = all.filter(function (b) { return (b.status || 'finished') === 'finished'; });
+    var readingAll = all.filter(function (b) { return b.status === 'reading'; });
 
-    // 월별 카운트 (1~12월)
-    var mCounts = new Array(12).fill(0);
-    list.forEach(function (b) {
+    var yrFinished = list.filter(function (b) { return (b.status || 'finished') === 'finished'; });
+    var ratedBooks = yrFinished.filter(function (b) { return b.rating > 0; });
+    var avgRating = ratedBooks.length ? (ratedBooks.reduce(function (s, b) { return s + b.rating; }, 0) / ratedBooks.length).toFixed(2) : '-';
+
+    // 최고점 책
+    var highest = null;
+    ratedBooks.forEach(function (b) {
+      if (!highest || b.rating > highest.rating) highest = b;
+    });
+
+    // 올해 진행률 (%)
+    var startOfYear = new Date(state.year, 0, 1);
+    var endOfYear = new Date(state.year, 11, 31);
+    var isThisYear = (state.year === now.getFullYear());
+    var dayOfYear = isThisYear ? Math.floor((now - startOfYear) / 86400000) : 365;
+    var yearPct = isThisYear ? Math.min(100, Math.max(1, Math.round((dayOfYear / 365) * 100))) : 100;
+
+    // 월별 책 목록 (1~12월)
+    var mBooks = {};
+    for (var m = 1; m <= 12; m++) mBooks[m] = [];
+    yrFinished.forEach(function (b) {
       if (b.date) {
         var m = parseInt(b.date.split('-')[1], 10);
-        if (m >= 1 && m <= 12) mCounts[m - 1]++;
+        if (m >= 1 && m <= 12) mBooks[m].push(b);
       }
     });
-    var maxMonthCount = Math.max.apply(null, mCounts.concat([1]));
 
-    // 장르별 카운트
-    var gMap = {};
-    list.forEach(function (b) {
-      var g = b.genre || '기타';
-      gMap[g] = (gMap[g] || 0) + 1;
+    // 도트 매트릭스 높이 (최대 권수, 기본 10개)
+    var maxM = 0;
+    for (var m = 1; m <= 12; m++) if (mBooks[m].length > maxM) maxM = mBooks[m].length;
+    var dotRows = Math.max(10, maxM);
+
+    var selM = state.selectedMonth || (now.getMonth() + 1);
+    var selBooks = mBooks[selM] || [];
+    var selRated = selBooks.filter(function (b) { return b.rating > 0; });
+    var selAvg = selRated.length ? (selRated.reduce(function (s, b) { return s + b.rating; }, 0) / selRated.length).toFixed(2) : '-';
+
+    var selHighest = null, selLowest = null;
+    selRated.forEach(function (b) {
+      if (!selHighest || b.rating > selHighest.rating) selHighest = b;
+      if (!selLowest || b.rating < selLowest.rating) selLowest = b;
     });
-    var gSorted = Object.keys(gMap).map(function (g) {
-      return { genre: g, count: gMap[g], pct: Math.round((gMap[g] / (totalBooks || 1)) * 100) };
-    }).sort(function (a, b) { return b.count - a.count; });
 
-    var h = '<div class="stats-view">';
-    h += '<div class="stats-grid">';
-    h += '<div class="stat-card"><div class="lbl">올해 완독</div><div class="val">' + totalBooks + '<span class="unit">권</span></div></div>';
-    h += '<div class="stat-card"><div class="lbl">총 독서량</div><div class="val">' + totalPages.toLocaleString('ko-KR') + '<span class="unit">쪽</span></div></div>';
-    h += '<div class="stat-card"><div class="lbl">평균 별점</div><div class="val">' + avgRating + '<span class="unit">' + (avgRating !== '-' ? '★' : '') + '</span></div></div>';
-    h += '<div class="stat-card"><div class="lbl">권당 평균</div><div class="val">' + avgPages + '<span class="unit">쪽</span></div></div>';
+    // 선택된 달 장르 집계
+    var selGMap = {};
+    selBooks.forEach(function (b) {
+      var g = b.genre || '기타';
+      selGMap[g] = (selGMap[g] || 0) + 1;
+    });
+
+    var h = '<div class="lib-stats">';
+
+    // 헤더 (북웜 마스코트 + 이름)
+    h += '<div class="lib-header">';
+    h += MASCOT_SVG;
+    h += '<h2 class="lib-title">eunju_76\'s Library</h2>';
+    h += '<div class="lib-sub">BOOKWORM · READING LOG ' + state.year + '</div>';
     h += '</div>';
 
-    // 월별 독서 그래프
-    h += '<div class="stats-sec">';
-    h += '<h3>월별 독서량 <span>' + state.year + '년</span></h3>';
-    h += '<div class="bar-chart">';
+    // 4열 요약 그리드
+    h += '<div class="lib-summary">';
+    h += '<div class="lib-sum-col"><div class="lib-sum-lbl">FINISHED 다 읽음</div><div class="lib-sum-val">' + yrFinished.length + '</div></div>';
+    h += '<div class="lib-sum-col"><div class="lib-sum-lbl">READING 읽는 중</div><div class="lib-sum-val">' + readingAll.length + '</div></div>';
+    h += '<div class="lib-sum-col"><div class="lib-sum-lbl">AVERAGE 평균</div><div class="lib-sum-val"><span class="star">★</span>' + avgRating + '</div><div class="lib-sum-sub">별점 매긴 ' + ratedBooks.length + '권 기준</div></div>';
+    h += '<div class="lib-sum-col"><div class="lib-sum-lbl">HIGHEST 최고점</div><div class="lib-sum-val">' + (highest ? '<span class="star">★</span>' + highest.rating : '-') + '</div><div class="lib-sum-sub" title="' + (highest ? esc(highest.title) : '') + '">' + (highest ? esc(highest.title) : '-') + '</div></div>';
+    h += '</div>';
+
+    // 2열 분할 레이아웃 (올해의 기록 도트 차트 + 월 결산)
+    h += '<div class="lib-split">';
+
+    // 좌측: 올해의 기록 (도트 매트릭스)
+    h += '<div class="lib-card">';
+    h += '<div class="lib-card-head">';
+    h += '<div><div class="lib-card-tag">THE YEAR</div><h3 class="lib-card-title">올해의 기록</h3></div>';
+    h += '<div><span class="lib-card-yr">' + state.year + '</span><span class="lib-card-pct">' + yearPct + '%</span></div>';
+    h += '</div>';
+
+    h += '<div class="dot-matrix">';
     for (var m = 1; m <= 12; m++) {
-      var cnt = mCounts[m - 1];
-      var pct = maxMonthCount > 0 ? Math.round((cnt / maxMonthCount) * 100) : 0;
-      var isHigh = (cnt > 0 && cnt === maxMonthCount);
-      h += '<div class="bar-col">';
-      h += '<span class="bar-val">' + (cnt > 0 ? cnt : '') + '</span>';
-      h += '<div class="bar-track"><div class="bar-fill' + (isHigh ? ' highlight' : '') + '" style="height:' + pct + '%"></div></div>';
-      h += '<span class="bar-lbl">' + m + '월</span>';
+      var colBooks = mBooks[m] || [];
+      var isSel = (m === selM);
+      h += '<div class="dot-col' + (isSel ? ' selected' : '') + '" data-dot-month="' + m + '" title="' + m + '월 ' + colBooks.length + '권">';
+      h += '<span class="dot-lbl">' + m + '</span>';
+      for (var r = 0; r < dotRows; r++) {
+        if (r < colBooks.length) {
+          var bk = colBooks[r];
+          var gc = GENRE_COLORS[bk.genre] || '#e25b45';
+          h += '<span class="dot" style="background:' + gc + '" title="' + esc(bk.title) + ' (' + esc(bk.genre || '소설') + ')"></span>';
+        } else {
+          h += '<span class="dot empty"></span>';
+        }
+      }
       h += '</div>';
     }
-    h += '</div></div>';
+    h += '</div>';
+    h += '<div class="dot-ft">' + yrFinished.length + '권 · 올해 ' + yearPct + '% 지남</div>';
+    h += '</div>';
 
-    // 장르별 독서 비율
-    h += '<div class="stats-sec">';
-    h += '<h3>장르별 분포 <span>' + (gSorted.length ? gSorted[0].genre + ' 중심' : '') + '</span></h3>';
-    if (!gSorted.length) {
-      h += '<p style="color:var(--muted);font-size:13px;margin:0;">기록된 책이 없어요.</p>';
+    // 우측: 월 결산
+    h += '<div class="lib-card monthly-card">';
+    h += '<div class="monthly-guide">점 하나 = 한 권 · 색 = 장르 · 달을 누르면 그 달 결산</div>';
+    h += '<div class="monthly-top">MONTHLY · 월 결산</div>';
+    h += '<h3 class="monthly-head">' + selM + '월 ' + selBooks.length + '권</h3>';
+
+    h += '<dl class="monthly-dl">';
+    h += '<dt>평균</dt><dd>' + (selAvg !== '-' ? '★ ' + selAvg : '-') + '</dd>';
+    h += '<dt>최고</dt><dd>' + (selHighest ? esc(selHighest.title) + ' ' + selHighest.rating : '-') + '</dd>';
+    h += '<dt>최저</dt><dd>' + (selLowest ? esc(selLowest.title) + ' ' + selLowest.rating : '-') + '</dd>';
+    h += '<dt>장르</dt><dd><div class="monthly-genres">';
+    var gKeys = Object.keys(selGMap);
+    if (!gKeys.length) {
+      h += '<span style="color:var(--muted);font-size:12px;">이 달에 완독한 책이 없어요.</span>';
     } else {
-      h += '<div class="genre-list">';
-      gSorted.forEach(function (item) {
-        h += '<div class="genre-row">';
-        h += '<div class="genre-info"><b>' + esc(item.genre) + '</b><span>' + item.count + '권 (' + item.pct + '%)</span></div>';
-        h += '<div class="genre-bar-track"><div class="genre-bar-fill" style="width:' + item.pct + '%"></div></div>';
+      gKeys.forEach(function (gk) {
+        var col = GENRE_COLORS[gk] || '#e25b45';
+        h += '<span class="genre-badge"><span class="gb-dot" style="background:' + col + '"></span>' + esc(gk) + ' ' + selGMap[gk] + '</span>';
+      });
+    }
+    h += '</div></dd>';
+    h += '</dl>';
+
+    h += '</div>'; // end monthly-card
+    h += '</div>'; // end lib-split
+
+    // 병렬 독서: 읽는 중인 책 목록 섹션
+    if (readingAll.length) {
+      h += '<div class="reading-section">';
+      h += '<h3>📖 지금 읽고 있는 책 <span>' + readingAll.length + '권</span></h3>';
+      h += '<div class="reading-list">';
+      readingAll.forEach(function (b) {
+        var cv = okCover(b.cover);
+        var curP = b.readPages || 0;
+        var totP = b.pages || 0;
+        var pct = totP > 0 ? Math.min(100, Math.round((curP / totP) * 100)) : 0;
+        h += '<div class="reading-card" data-id="' + esc(b.id) + '">';
+        h += '<div class="reading-thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</div>';
+        h += '<div class="reading-info">';
+        h += '<div class="reading-title">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + '</div>';
+        h += '<div class="reading-author">' + esc(b.author || '저자 미입력') + '</div>';
+        h += '<div class="reading-prog-track"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div>';
+        h += '<div class="reading-pages">' + (totP > 0 ? curP + ' / ' + totP + '쪽 (' + pct + '%)' : '쪽수 미입력') + '</div>';
+        h += '</div>';
         h += '</div>';
       });
-      h += '</div>';
+      h += '</div></div>';
     }
-    h += '</div>';
 
-    h += '</div>';
+    h += '</div>'; // end lib-stats
     $('#view').innerHTML = h;
   }
-
   function render() {
     renderHead();
     var list = yearList();
@@ -615,11 +1000,23 @@ button { cursor: pointer; }
     var b = byId(id); if (!b) return;
     if (b.sample) { toast('예시 책이에요. 첫 책을 추가하면 사라져요.'); return; }
     var cv = okCover(b.cover);
+    var isR = (b.status === 'reading');
+    var stInfo = isR ? '<dt>상태</dt><dd style="color:var(--accent);font-weight:700;">📖 읽는 중</dd><dt>진행</dt><dd>' + (b.readPages || 0) + ' / ' + (b.pages || 0) + '쪽</dd>' : '<dt>완독일</dt><dd>' + fmtDate(b.date) + '</dd>';
+    var finishBtn = isR ? '<button class="btn primary" id="btn-finish" style="background:#4a7c59;">완독하기</button>' : '';
+
     openSheet('<div class="detail"><div class="bigcover" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '<div class="tile">' + esc(b.title) + '</div>') + '</div><div style="min-width:0"><h2>' + esc(b.title) + '</h2>' +
-      '<div style="color:var(--muted)">' + esc(b.author || '저자 미입력') + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '소설') + '</dd><dt>완독일</dt><dd>' + fmtDate(b.date) + '</dd>' + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
-      '<div class="actions"><button class="btn danger" id="del">삭제</button><button class="btn" id="close">닫기</button><button class="btn primary" id="edit">수정</button></div>');
+      '<div style="color:var(--muted)">' + esc(b.author || '저자 미입력') + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '소설') + '</dd>' + stInfo + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
+      '<div class="actions"><button class="btn danger" id="del">삭제</button><button class="btn" id="close">닫기</button>' + finishBtn + '<button class="btn' + (isR ? '' : ' primary') + '" id="edit">수정</button></div>');
     $('#close').onclick = closeSheet;
     $('#edit').onclick = function () { openForm(b); };
+    if ($('#btn-finish')) {
+      $('#btn-finish').onclick = function () {
+        b.status = 'finished';
+        b.date = TODAY;
+        b.readPages = b.pages || 0;
+        openForm(b);
+      };
+    }
     var armed = false;
     $('#del').onclick = function () {
       if (!armed) { armed = true; this.textContent = '정말 삭제'; return; }
@@ -649,21 +1046,41 @@ button { cursor: pointer; }
       rating: editing ? (b.rating || 0) : 0,
       coverColor: null
     };
-    var v = editing ? b : { title: '', author: '', genre: '소설', pages: '', date: TODAY };
+    var v = editing ? b : { title: '', author: '', genre: '소설', status: 'finished', readPages: '', pages: '', date: TODAY };
     if (!v.genre) v.genre = '소설';
-    openSheet('<h2>' + (editing ? '책 수정' : '다 읽은 책 기록') + '</h2><form id="bf" novalidate>' +
+    if (!v.status) v.status = 'finished';
+    form.status = v.status;
+    form.readPages = v.readPages || '';
+
+    var stHtml = '<div class="status-toggle" id="f-st-toggle">' +
+      '<button type="button" class="' + (form.status === 'finished' ? 'on' : '') + '" data-st="finished">다 읽음 (완독)</button>' +
+      '<button type="button" class="' + (form.status === 'reading' ? 'on' : '') + '" data-st="reading">읽는 중 (병렬 독서)</button>' +
+    '</div>';
+
+    openSheet('<h2>' + (editing ? '책 수정' : '책 기록') + '</h2><form id="bf" novalidate>' +
+      stHtml +
       '<div class="field"><label for="f-title">제목</label><div class="titlerow"><input id="f-title" type="text" value="' + esc(v.title) + '" autocomplete="off" placeholder="제목을 입력하면 책을 찾아 드려요"><button type="button" class="btn" id="f-find">검색</button></div><div class="err" id="f-err"></div><div class="sug" id="f-sug"></div></div>' +
       '<div class="field"><label for="f-author">저자</label><input id="f-author" type="text" value="' + esc(v.author) + '" autocomplete="off"></div>' +
       '<div class="field"><label for="f-genre">장르 (자동 분류)</label><select id="f-genre" style="width:100%;height:42px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 12px;color:var(--fg);font-size:14px;">' +
         GENRES.map(function (g) { return '<option value="' + g + '"' + (g === v.genre ? ' selected' : '') + '>' + g + '</option>'; }).join('') +
       '</select></div>' +
-      '<div class="two"><div class="field"><label for="f-pages">쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
-      '<div class="field"><label for="f-date">완독일</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
-      '<div class="field"><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>' +
+      '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
+      '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"></div>' +
+      '<div class="field" id="f-date-box"><label for="f-date">' + (form.status === 'reading' ? '시작일' : '완독일') + '</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
+      '<div class="field" id="f-star-box" + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>'' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
       '<div class="field"><span class="lab">책등 색</span><div class="swatches" id="f-sw"></div></div>' +
       '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : '책장에 꽂기') + '</button></div></form>');
     paintForm();
+    $('#f-st-toggle').onclick = function (e) {
+      var btn = e.target.closest('button'); if (!btn) return;
+      form.status = btn.dataset.st;
+      document.querySelectorAll('#f-st-toggle button').forEach(function (b) { b.classList.toggle('on', b.dataset.st === form.status); });
+      var isR = form.status === 'reading';
+      if ($('#f-rp-box')) $('#f-rp-box').style.display = isR ? '' : 'none';
+      if ($('#f-date-box label')) $('#f-date-box label').textContent = isR ? '시작일' : '완독일';
+      if ($('#f-star-box')) $('#f-star-box').style.display = isR ? 'none' : '';
+    };
     $('#f-cancel').onclick = closeSheet;
     $('#f-pick').onclick = function () { $('#f-cover').click(); };
     $('#f-clear').onclick = function () { form.cover = null; form.coverColor = null; paintForm(); };
@@ -823,12 +1240,15 @@ button { cursor: pointer; }
     if (!title) { $('#f-err').textContent = '제목을 입력해 주세요.'; $('#f-title').focus(); return; }
     var date = $('#f-date').value || TODAY;
     var pages = parseInt($('#f-pages').value, 10);
+    var rPages = parseInt($('#f-readpages') ? $('#f-readpages').value : 0, 10);
     var book = {
       id: form.id || 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       title: title, author: $('#f-author').value.trim(),
       genre: ($('#f-genre') ? $('#f-genre').value : '소설'),
+      status: form.status || 'finished',
+      readPages: (form.status === 'reading' && rPages > 0) ? rPages : (pages > 0 ? pages : 0),
       pages: pages > 0 ? Math.min(pages, 3000) : 0,
-      date: date, rating: form.rating, color: form.color, cover: form.cover
+      date: date, rating: form.status === 'reading' ? 0 : form.rating, color: form.color, cover: form.cover
     };
     $('#f-save').disabled = true;
     saveBook(book).then(function (ok) {
@@ -858,6 +1278,14 @@ button { cursor: pointer; }
     state.tab = b.dataset.tab; try { localStorage.setItem(LS_TAB, state.tab); } catch (x) {} render();
   });
   $('#view').addEventListener('click', function (e) {
+    var dotCol = e.target.closest('[data-dot-month]');
+    if (dotCol) {
+      state.selectedMonth = parseInt(dotCol.dataset.dotMonth, 10);
+      renderStats(yearList());
+      return;
+    }
+    var rc = e.target.closest('.reading-card');
+    if (rc) { openDetail(rc.dataset.id); return; }
     var n = e.target.closest('[data-nav]');
     if (n) { var m = state.cal.m + (+n.dataset.nav), y = state.cal.y; if (m < 1) { m = 12; y--; } if (m > 12) { m = 1; y++; } state.cal = { y: y, m: m }; renderCal(); return; }
     var d = e.target.closest('[data-day]'); if (d) { openDay(d.dataset.day); return; }
