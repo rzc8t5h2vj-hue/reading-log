@@ -139,6 +139,42 @@ button { cursor: pointer; }
 .yearbar .caret { color: var(--accent); align-self: center; }
 .yearbar select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
+/* ---------- 상단 헤더 및 깃허브 실시간 동기화 ---------- */
+.top-row { display: flex; align-items: center; justify-content: space-between; margin: 24px 0 16px; gap: 8px; }
+.top-row .yearbar { margin: 0; }
+.sync-pill {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px;
+  font-size: 12px; font-family: var(--font-body); font-weight: 700;
+  background: var(--surface-2); border: 1.5px solid var(--line); border-radius: 999px;
+  color: var(--fg); cursor: pointer; transition: all 0.15s ease; flex-shrink: 0;
+}
+.sync-pill:active { transform: scale(0.96); }
+.sync-pill.synced { background: #EEF5E5; color: #2D5A1E; border-color: #A3C98F; }
+.sync-pill.syncing { background: #FFF8E6; color: #8C6200; border-color: #E3A92F; }
+.sync-pill.error { background: #FDF0ED; color: #C0392B; border-color: #E8A69E; }
+.sync-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+/* 동기화 모달 */
+.sync-box { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 12px; margin: 14px 0; }
+.sync-box.connected { background: #EEF5E5; border: 1.5px solid #385E1E; color: #1E1B18; }
+.sync-box.disconnected { background: var(--surface-2); border: 1.5px solid var(--line); color: var(--fg); }
+.sync-box .s-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.sync-box.connected .s-dot { background: #4CAF50; box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); }
+.sync-box.disconnected .s-dot { background: var(--muted); }
+.sync-box .s-text b { display: block; font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+.sync-box .s-text span { font-size: 11px; color: var(--muted); }
+.sync-lead { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 10px 0 16px; }
+.sync-step-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.sync-step-item { display: flex; gap: 10px; align-items: flex-start; background: #fff; border: 1.5px solid var(--line); border-radius: 10px; padding: 12px; box-shadow: 2px 2px 0 var(--shadow-hard); }
+.sync-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid var(--ink); }
+.sync-step-cnt { flex: 1; font-size: 12px; line-height: 1.45; }
+.sync-step-cnt b { display: block; font-size: 13px; margin-bottom: 4px; color: var(--fg); }
+.sync-step-cnt p { margin: 0 0 8px; color: var(--muted); font-size: 12px; }
+.btn-gh-link { display: inline-flex; align-items: center; gap: 4px; padding: 7px 14px; background: var(--accent); color: var(--accent-ink); border: 1.5px solid var(--ink); border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; box-shadow: 1.5px 1.5px 0 var(--shadow-hard); }
+.btn-gh-link:active { transform: translate(1px, 1px); box-shadow: 0 0 0; }
+.sync-token-inp { width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 13px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface-2); font-family: monospace; outline: none; }
+.sync-token-inp:focus { border-color: var(--accent); background: #fff; }
+
 /* 탭 */
 .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 14px; margin-bottom: 20px; }
 .tabs button { border: 0; background: none; height: 38px; border-radius: 10px; color: var(--muted); font-weight: 500; }
@@ -1160,11 +1196,14 @@ button { cursor: pointer; }
     <input id="q" type="search" placeholder="책 검색하기" aria-label="책 검색하기" autocomplete="off">
   </div>
 
-  <div class="yearbar">
-    <h1 id="yearTitle"></h1>
-    <span class="count" id="yearCount"></span>
-    <svg class="caret" id="caret" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7h18l-9 11z"/></svg>
-    <select id="year" aria-label="연도 선택"></select>
+  <div class="top-row">
+    <div class="yearbar">
+      <h1 id="yearTitle"></h1>
+      <span class="count" id="yearCount"></span>
+      <svg class="caret" id="caret" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 7h18l-9 11z"/></svg>
+      <select id="year" aria-label="연도 선택"></select>
+    </div>
+    <button type="button" class="sync-pill" id="syncStatusBtn" title="깃허브 실시간 동기화 설정"><span class="dot"></span><span id="syncStatusText">☁️ 동기화</span></button>
   </div>
 
   <div class="tabs" role="tablist">
@@ -1177,6 +1216,7 @@ button { cursor: pointer; }
   <div class="notice" id="notice" hidden><b>예시 책이에요.</b> 첫 책을 추가하면 사라지고 내 책장으로 바뀌어요.</div>
   <main id="view"></main>
   <footer class="foot">
+    <button type="button" id="syncFooterBtn">☁️ 깃허브 실시간 동기화</button>
     <button type="button" id="export">백업 내려받기</button>
     <button type="button" id="import">백업 불러오기</button>
     <input type="file" id="importFile" accept="application/json,.json" hidden>
@@ -1284,8 +1324,11 @@ button { cursor: pointer; }
   try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = JSON.parse(raw) || []; } catch (e) { books = []; }
   var quotaWarned = false;
   function saveLocal() {
-    try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); return true; }
-    catch (e) { if (!quotaWarned) { quotaWarned = true; toast('저장 공간이 가득 찼어요. 백업을 내려받고 표지가 큰 책을 정리해 주세요.'); } return false; }
+    var ok = true;
+    try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); }
+    catch (e) { if (!quotaWarned) { quotaWarned = true; toast('저장 공간이 가득 찼어요. 백업을 내려받고 표지가 큰 책을 정리해 주세요.'); } ok = false; }
+    if (typeof triggerGhSync === 'function') triggerGhSync();
+    return ok;
   }
 
   /* ---------- 예시 책 ---------- */
@@ -2069,6 +2112,286 @@ button { cursor: pointer; }
     };
     fr.readAsText(f); e.target.value = '';
   });
+
+  /* ---------- 깃허브 실시간 동기화 모듈 ---------- */
+  var LS_GH_TOKEN = 'dokseo_gh_token';
+  var LS_GH_REPO = 'dokseo_gh_repo';
+  var LS_LAST_SYNC = 'dokseo_last_sync';
+  var GH_SYNC_FILE = 'dokseo-data.json';
+  var ghSyncTimer = null;
+
+  function getGhToken() {
+    try { return localStorage.getItem(LS_GH_TOKEN) || ''; } catch (e) { return ''; }
+  }
+  function getGhRepo() {
+    try { return localStorage.getItem(LS_GH_REPO) || 'rzc8t5h2vj-hue/reading-log'; } catch (e) { return 'rzc8t5h2vj-hue/reading-log'; }
+  }
+  function setGhToken(tok, repo) {
+    try {
+      localStorage.setItem(LS_GH_TOKEN, tok.trim());
+      if (repo) localStorage.setItem(LS_GH_REPO, repo.trim());
+    } catch (e) {}
+  }
+  function clearGhSync() {
+    try {
+      localStorage.removeItem(LS_GH_TOKEN);
+      localStorage.removeItem(LS_LAST_SYNC);
+    } catch (e) {}
+  }
+
+  function updateSyncBadge(st, text) {
+    var btn = $('#syncStatusBtn');
+    var txt = $('#syncStatusText');
+    if (!btn || !txt) return;
+    btn.className = 'sync-pill ' + (st || '');
+    if (text) {
+      txt.textContent = text;
+    } else if (st === 'synced') {
+      txt.textContent = '☁️ 동기화됨';
+    } else if (st === 'syncing') {
+      txt.textContent = '🔄 동기화 중...';
+    } else if (st === 'error') {
+      txt.textContent = '⚠️ 동기화 실패';
+    } else {
+      txt.textContent = getGhToken() ? '☁️ 동기화됨' : '☁️ 동기화';
+    }
+  }
+
+  function utf8ToBase64(str) {
+    return btoa(unescape(encodeURIComponent(str)));
+  }
+  function base64ToUtf8(b64) {
+    return decodeURIComponent(escape(atob(b64.replace(/\s/g, ''))));
+  }
+
+  function pushToGitHub() {
+    var token = getGhToken();
+    if (!token) return Promise.resolve(false);
+    var repo = getGhRepo();
+    var url = 'https://api.github.com/repos/' + repo + '/contents/' + GH_SYNC_FILE;
+    updateSyncBadge('syncing', '🔄 저장 중...');
+
+    return fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github+json'
+      }
+    }).then(function (res) {
+      if (res.status === 200) return res.json().then(function (j) { return j.sha; });
+      return null;
+    }).catch(function () { return null; }).then(function (sha) {
+      var payload = {
+        app: 'dokseo',
+        version: 1,
+        updated: new Date().toISOString(),
+        books: books
+      };
+      var jsonStr = JSON.stringify(payload, null, 2);
+      var body = {
+        message: 'sync: update reading log (' + books.length + ' books)',
+        content: utf8ToBase64(jsonStr)
+      };
+      if (sha) body.sha = sha;
+
+      return fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }).then(function (res) {
+        if (res.ok) {
+          var timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+          try { localStorage.setItem(LS_LAST_SYNC, timeStr); } catch (x) {}
+          updateSyncBadge('synced', '☁️ 동기화됨');
+          return true;
+        }
+        if (res.status === 401) {
+          toast('깃허브 토큰이 만료되었거나 권한이 없어요.');
+        }
+        updateSyncBadge('error', '⚠️ 동기화 실패');
+        return false;
+      }).catch(function () {
+        updateSyncBadge('error', '⚠️ 동기화 실패');
+        return false;
+      });
+    });
+  }
+
+  function triggerGhSync() {
+    var token = getGhToken();
+    if (!token) return;
+    clearTimeout(ghSyncTimer);
+    ghSyncTimer = setTimeout(function () {
+      pushToGitHub();
+    }, 500);
+  }
+
+  function pullFromGitHub(silent) {
+    var token = getGhToken();
+    if (!token) return Promise.resolve(false);
+    var repo = getGhRepo();
+    var url = 'https://api.github.com/repos/' + repo + '/contents/' + GH_SYNC_FILE;
+    updateSyncBadge('syncing', '🔄 불러오는 중...');
+
+    return fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Accept': 'application/vnd.github+json'
+      }
+    }).then(function (res) {
+      if (res.status === 200) return res.json();
+      if (res.status === 404) return null;
+      throw new Error('status ' + res.status);
+    }).then(function (data) {
+      if (!data || !data.content) {
+        updateSyncBadge('synced', '☁️ 동기화됨');
+        return true;
+      }
+      var jsonText = base64ToUtf8(data.content);
+      var j = JSON.parse(jsonText);
+      var arr = Array.isArray(j) ? j : (j.books || []);
+      var remote = arr.filter(function (b) { return b && b.title; }).map(normalize);
+      if (remote.length > 0) {
+        var map = {};
+        books.forEach(function (b) { map[b.id] = b; });
+        remote.forEach(function (b) { map[b.id] = b; });
+        books = Object.keys(map).map(function (k) { return map[k]; });
+        try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch (x) {}
+        render();
+        if (!silent) toast('깃허브에서 ' + remote.length + '권의 독서기록을 동기화했어요.');
+      }
+      var timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      try { localStorage.setItem(LS_LAST_SYNC, timeStr); } catch (x) {}
+      updateSyncBadge('synced', '☁️ 동기화됨');
+      return true;
+    }).catch(function (err) {
+      console.warn('GitHub pull error:', err);
+      updateSyncBadge('error', '⚠️ 동기화 실패');
+      return false;
+    });
+  }
+
+  function openSyncModal() {
+    var token = getGhToken();
+    var repo = getGhRepo();
+    var lastSync = '';
+    try { lastSync = localStorage.getItem(LS_LAST_SYNC) || ''; } catch (x) {}
+
+    var h = '<h2>☁️ 깃허브 실시간 동기화</h2>';
+    if (token) {
+      h += '<div class="sync-box connected">' +
+        '<div class="s-dot"></div>' +
+        '<div class="s-text">' +
+          '<b>' + esc(repo) + ' 저장소와 실시간 연동 중</b>' +
+          '<span>' + (lastSync ? ('마지막 동기화: ' + esc(lastSync)) : '책을 추가하거나 변경하면 실시간으로 자동 저장됩니다.') + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<div class="actions" style="margin-top:20px;">' +
+        '<button type="button" class="btn primary" id="ghPullBtn">지금 동기화하기</button>' +
+        '<button type="button" class="btn danger" id="ghDisconnectBtn">연동 해제</button>' +
+        '<button type="button" class="btn" id="closeSyncSheet">닫기</button>' +
+      '</div>';
+    } else {
+      h += '<p class="sync-lead">책을 등록하거나 수정할 때마다 내 깃허브 저장소에 실시간으로 자동 보관되어, 기기를 바꿔도 안전하게 이어 읽을 수 있어요.</p>' +
+      '<div class="sync-step-list">' +
+        '<div class="sync-step-item">' +
+          '<span class="sync-step-num">1</span>' +
+          '<div class="sync-step-cnt">' +
+            '<b>깃허브에서 토큰 만들기</b>' +
+            '<p>아래 버튼을 누르면 깃허브 토큰 생성 창이 열립니다. 맨 아래 초록색 <b>[Generate token]</b> 버튼을 누르고 생성된 토큰을 복사해 오세요.</p>' +
+            '<a href="https://github.com/settings/tokens/new?scopes=repo&description=ReadingLogSync" target="_blank" rel="noopener" class="btn-gh-link">깃허브에서 토큰 만들기 ↗</a>' +
+          '</div>' +
+        '</div>' +
+        '<div class="sync-step-item">' +
+          '<span class="sync-step-num">2</span>' +
+          '<div class="sync-step-cnt">' +
+            '<b>복사한 토큰 붙여넣기</b>' +
+            '<p style="margin-bottom:6px;">복사한 토큰(ghp_로 시작)을 입력해 주세요.</p>' +
+            '<input type="password" id="ghTokenInput" class="sync-token-inp" placeholder="ghp_로 시작하는 토큰 붙여넣기" autocomplete="off">' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="actions">' +
+        '<button type="button" class="btn primary" id="ghConnectBtn">연동하고 동기화 시작</button>' +
+        '<button type="button" class="btn" id="closeSyncSheet">취소</button>' +
+      '</div>';
+    }
+
+    openSheet(h);
+
+    var closeBtn = $('#sheet #closeSyncSheet');
+    if (closeBtn) closeBtn.onclick = closeSheet;
+
+    var pullBtn = $('#sheet #ghPullBtn');
+    if (pullBtn) {
+      pullBtn.onclick = function () {
+        pullBtn.disabled = true;
+        pullBtn.textContent = '동기화 중...';
+        pullFromGitHub(false).then(function () {
+          pushToGitHub().then(function () {
+            closeSheet();
+          });
+        });
+      };
+    }
+
+    var discBtn = $('#sheet #ghDisconnectBtn');
+    if (discBtn) {
+      discBtn.onclick = function () {
+        if (confirm('깃허브 실시간 연동을 해제할까요? 기기에 저장된 책은 그대로 유지됩니다.')) {
+          clearGhSync();
+          updateSyncBadge('');
+          toast('깃허브 연동을 해제했어요.');
+          closeSheet();
+        }
+      };
+    }
+
+    var connBtn = $('#sheet #ghConnectBtn');
+    if (connBtn) {
+      connBtn.onclick = function () {
+        var inp = $('#sheet #ghTokenInput');
+        var val = (inp && inp.value || '').trim();
+        if (!val) { toast('토큰을 입력해 주세요.'); return; }
+        connBtn.disabled = true;
+        connBtn.textContent = '토큰 확인 중...';
+
+        fetch('https://api.github.com/user', {
+          headers: { 'Authorization': 'Bearer ' + val, 'Accept': 'application/vnd.github+json' }
+        }).then(function (res) {
+          if (!res.ok) throw new Error('invalid token');
+          return res.json();
+        }).then(function (u) {
+          var targetRepo = u.login + '/reading-log';
+          setGhToken(val, targetRepo);
+          toast(u.login + ' 님 깃허브와 연결되었어요!');
+          updateSyncBadge('synced');
+          pullFromGitHub(true).then(function () {
+            pushToGitHub().then(function () {
+              closeSheet();
+            });
+          });
+        }).catch(function (err) {
+          connBtn.disabled = false;
+          connBtn.textContent = '연동하고 동기화 시작';
+          toast('토큰을 확인하지 못했어요. 올바른 토큰인지 확인해 주세요.');
+        });
+      };
+    }
+  }
+
+  $('#syncStatusBtn').addEventListener('click', openSyncModal);
+  $('#syncFooterBtn').addEventListener('click', openSyncModal);
+
+  if (getGhToken()) {
+    updateSyncBadge('synced');
+    pullFromGitHub(true);
+  } else {
+    updateSyncBadge('');
+  }
 })();
 </script>
 </body>
