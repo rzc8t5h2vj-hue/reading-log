@@ -1096,6 +1096,51 @@ button { cursor: pointer; }
 .genre-info span { color: var(--muted); font-size: 12px; font-family: var(--font-mono); font-weight: 600; }
 .genre-bar-track { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; border: 1px solid rgba(44,42,41,0.08); }
 .genre-bar-fill { height: 100%; border-radius: 999px; transition: width .4s ease; }
+/* 월별 독서량 도트 매트릭스 스타일 */
+.dot-matrix {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+  padding: 14px 6px 10px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border: 1px solid var(--line);
+}
+.dot-col {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 1px;
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+.dot.empty {
+  background: rgba(44, 42, 41, 0.08);
+  box-shadow: none;
+}
+.dot-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+.dot-ft {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-body);
+}
 </style>
 </head>
 <body>
@@ -1417,7 +1462,7 @@ button { cursor: pointer; }
   }
 
 
-    /* ---------- 렌더: 통계 (오리지널 복원) ---------- */
+      /* ---------- 렌더: 통계 (월별 도트 차트 + 장르 분포, 읽는중 제외) ---------- */
   function renderStats(list) {
     var yrFinished = list.filter(function (b) { return (b.status || 'finished') === 'finished'; });
     var totalBooks = yrFinished.length;
@@ -1426,15 +1471,20 @@ button { cursor: pointer; }
     var avgRating = ratedBooks.length ? (ratedBooks.reduce(function (s, b) { return s + b.rating; }, 0) / ratedBooks.length).toFixed(1) : '-';
     var avgPages = totalBooks ? Math.round(totalPages / totalBooks) : 0;
 
-    // 월별 카운트 (1~12월)
-    var mCounts = new Array(12).fill(0);
+    // 월별 책 목록 (1~12월)
+    var mBooks = {};
+    for (var m = 1; m <= 12; m++) mBooks[m] = [];
     yrFinished.forEach(function (b) {
       if (b.date) {
         var m = parseInt(b.date.split('-')[1], 10);
-        if (m >= 1 && m <= 12) mCounts[m - 1]++;
+        if (m >= 1 && m <= 12) mBooks[m].push(b);
       }
     });
-    var maxMonthCount = Math.max.apply(null, mCounts.concat([1]));
+    var maxMonthCount = 0;
+    for (var m = 1; m <= 12; m++) {
+      if (mBooks[m].length > maxMonthCount) maxMonthCount = mBooks[m].length;
+    }
+    var dotRows = Math.max(8, maxMonthCount);
 
     // 장르별 카운트
     var gMap = {};
@@ -1462,21 +1512,29 @@ button { cursor: pointer; }
     h += '<div class="stat-card"><div class="lbl">권당 평균</div><div class="val">' + avgPages + '<span class="unit">쪽</span></div></div>';
     h += '</div>';
 
-    // 월별 독서 그래프
+    // 월별 독서량 (12열 도트 매트릭스 차트 - 완독 장르 색상 적용)
     h += '<div class="stats-sec">';
     h += '<h3>월별 독서량 <span>' + state.year + '년</span></h3>';
-    h += '<div class="bar-chart">';
+    h += '<div class="dot-matrix">';
     for (var m = 1; m <= 12; m++) {
-      var cnt = mCounts[m - 1];
-      var pct = maxMonthCount > 0 ? Math.round((cnt / maxMonthCount) * 100) : 0;
-      var isHigh = (cnt > 0 && cnt === maxMonthCount);
-      h += '<div class="bar-col">';
-      h += '<span class="bar-val">' + (cnt > 0 ? cnt : '') + '</span>';
-      h += '<div class="bar-track"><div class="bar-fill' + (isHigh ? ' highlight' : '') + '" style="height:' + pct + '%"></div></div>';
-      h += '<span class="bar-lbl">' + m + '월</span>';
+      var colBooks = mBooks[m] || [];
+      h += '<div class="dot-col" title="' + m + '월 ' + colBooks.length + '권">';
+      h += '<span class="dot-lbl">' + m + '월</span>';
+      for (var r = 0; r < dotRows; r++) {
+        if (r < colBooks.length) {
+          var bk = colBooks[r];
+          var conf = GENRE_CONFIG[bk.genre] || GENRE_CONFIG['소설'];
+          var gc = conf.color;
+          h += '<span class="dot" style="background:' + gc + '" title="' + esc(bk.title) + ' (' + esc(bk.genre || '소설') + ')"></span>';
+        } else {
+          h += '<span class="dot empty"></span>';
+        }
+      }
       h += '</div>';
     }
-    h += '</div></div>';
+    h += '</div>';
+    h += '<div class="dot-ft"><span>점 하나 = 완독 1권 · 색상 = 완독 도서 장르</span><span>총 ' + totalBooks + '권 완독</span></div>';
+    h += '</div>';
 
     // 장르별 독서 비율
     h += '<div class="stats-sec">';
@@ -1494,32 +1552,6 @@ button { cursor: pointer; }
       h += '</div>';
     }
     h += '</div>';
-
-    // 읽는 중인 책 (병렬 독서 목록)
-    var all = source().filter(matches);
-    var readingAll = all.filter(function (b) { return b.status === 'reading'; });
-    if (readingAll.length) {
-      h += '<div class="stats-sec" style="margin-top:20px;">';
-      h += '<h3>📖 지금 읽고 있는 책 <span>' + readingAll.length + '권</span></h3>';
-      h += '<div class="reading-list">';
-      readingAll.forEach(function (b) {
-        var cv = okCover(b.cover);
-        var curP = b.readPages || 0;
-        var totP = b.pages || 0;
-        var pct = totP > 0 ? Math.min(100, Math.round((curP / totP) * 100)) : 0;
-        h += '<div class="reading-card" data-id="' + esc(b.id) + '">';
-        h += '<div class="reading-thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</div>';
-        h += '<div class="reading-info">';
-        h += '<div class="reading-title">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + '</div>';
-        h += '<div class="reading-author">' + esc(b.author || '저자 미입력') + '</div>';
-        if (totP > 0) h += '<div class="reading-prog-track" style="margin-top:5px;"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div>';
-        h += '<div class="reading-pages" style="margin-top:4px;">' + (totP > 0 ? curP + ' / ' + totP + '쪽 (' + pct + '%)' : '쪽수 미입력') + '</div>';
-        h += '</div>';
-        h += '<button type="button" class="btn-quick-finish" data-finish-id="' + esc(b.id) + '">완독</button>';
-        h += '</div>';
-      });
-      h += '</div></div>';
-    }
 
     h += '</div>';
     $('#view').innerHTML = h;
