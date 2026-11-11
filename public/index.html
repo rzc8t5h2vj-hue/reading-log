@@ -107,16 +107,67 @@ button { cursor: pointer; }
 .plank { height: 12px; margin-top: 0; border-radius: 2px; background: linear-gradient(var(--plank), var(--plank-shade)); box-shadow: 0 7px 10px -7px rgba(0,0,0,.55); }
 .spine {
   --c: #fdb5cd;
-  flex: none; position: relative; border: 0; padding: 20px 0 24px; display: flex; justify-content: center; align-items: flex-start;
-  border-radius: 3px 3px 1px 1px; color: var(--spine-ink); overflow: hidden;
-  background: linear-gradient(90deg, rgba(0,0,0,.14) 0, rgba(255,255,255,.24) 16%, rgba(255,255,255,0) 55%, rgba(0,0,0,.12) 100%), var(--c);
-  transition: transform .18s ease;
+  flex: none; position: relative; border: 0; padding: 18px 0 22px; display: flex; justify-content: center; align-items: flex-start;
+  border-radius: 4px 4px 2px 2px; color: var(--spine-ink); overflow: hidden;
+  background-color: var(--c);
+  box-shadow: -2px 0 5px rgba(0,0,0,.22), 2px 0 4px rgba(0,0,0,.12);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
-.spine::before, .spine::after { content: ""; position: absolute; left: 0; right: 0; height: 3px; background: color-mix(in srgb, var(--c) 68%, #000); }
-.spine::before { top: 9px; }
-.spine::after { bottom: 11px; }
-.spine .t { writing-mode: vertical-rl; font-family: var(--font-display); font-weight: 700; letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-height: 100%; min-height: 0; }
-.spine:hover, .spine:focus-visible { transform: translateY(-7px); }
+.spine:hover, .spine:focus-visible {
+  transform: translateY(-8px);
+  box-shadow: -3px 4px 12px rgba(0,0,0,.4), 3px 4px 10px rgba(0,0,0,.2);
+}
+
+/* 실제 표지가 은은하게 깔리는 배경 레이어 */
+.spine-cover {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center 25%;
+  opacity: 0.35;
+  filter: saturate(1.1) contrast(1.05);
+  pointer-events: none;
+}
+
+/* 실제 책등의 둥근 입체감(하이라이트/그림자) 및 미세한 종이 질감 */
+.spine-shade {
+  position: absolute; inset: 0;
+  background:
+    linear-gradient(90deg,
+      rgba(0,0,0,.38) 0%,
+      rgba(0,0,0,.10) 10%,
+      rgba(255,255,255,.34) 22%,
+      rgba(255,255,255,.06) 48%,
+      rgba(0,0,0,.08) 82%,
+      rgba(0,0,0,.34) 100%),
+    repeating-linear-gradient(0deg, rgba(0,0,0,.03) 0px, rgba(0,0,0,.03) 1px, transparent 1px, transparent 4px);
+  pointer-events: none;
+}
+
+/* 위아래 금박/홈 파임 양각 효과 */
+.spine::before {
+  content: ""; position: absolute; left: 0; right: 0; height: 3px; top: 10px; z-index: 3;
+  background: rgba(0,0,0,.28);
+  box-shadow: 0 1px 1px rgba(255,255,255,.35);
+}
+.spine::after {
+  content: ""; position: absolute; left: 0; right: 0; height: 3px; bottom: 12px; z-index: 3;
+  background: rgba(0,0,0,.28);
+  box-shadow: 0 1px 1px rgba(255,255,255,.35);
+}
+
+.spine .t {
+  position: relative; z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 100%;
+  min-height: 0;
+  text-shadow: 0 1px 2px rgba(255,255,255,.5), 0 0 1px rgba(255,255,255,.8);
+}
 .shelf-note { margin: 14px 4px 0; font-size: 13px; color: var(--muted); }
 
 /* 달력 */
@@ -279,11 +330,24 @@ button { cursor: pointer; }
 
   /* ---------- 예시 책 ---------- */
   function makeSamples() {
-    var src = [['채식주의자', 180], ['아몬드', 264], ['불편한 편의점', 268], ['데미안', 240], ['어린 왕자', 120], ['지구 끝의 온실', 360], ['파친코', 520], ['도둑맞은 집중력', 420], ['소년이 온다', 216], ['달러구트 꿈 백화점', 300], ['여행의 이유', 200], ['이방인', 180]];
+    var src = [
+      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324'],
+      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525'],
+      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921'],
+      ['데미안', 240, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1252874'],
+      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086'],
+      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329'],
+      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518'],
+      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208'],
+      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244'],
+      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128'],
+      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128'],
+      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018']
+    ];
     var offs = [1, 3, 6, 9, 12, 15, 19, 22, 27, 31, 36, 41];
     return src.map(function (s, i) {
       var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offs[i]);
-      return { id: 's' + i, sample: true, title: s[0], author: '', pages: s[1], date: ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()), rating: 0, color: PALETTE[i % PALETTE.length], cover: null };
+      return { id: 's' + i, sample: true, title: s[0], author: '', pages: s[1], date: ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()), rating: 0, color: PALETTE[i % PALETTE.length], cover: s[2] };
     });
   }
   var SAMPLES = makeSamples();
@@ -323,7 +387,12 @@ button { cursor: pointer; }
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b) {
     var w = spineW(b), h = spineH(b);
-    return '<button class="spine" data-id="' + esc(b.id) + '" style="--c:' + okColor(b.color) + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '"><span class="t" style="font-size:' + (w < 40 ? 11 : 13) + 'px">' + esc(b.title) + '</span></button>';
+    var coverBg = b.cover ? '<span class="spine-cover" style="background-image:url('' + esc(b.cover) + '')"></span>' : '';
+    return '<button class="spine" data-id="' + esc(b.id) + '" style="--c:' + okColor(b.color) + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
+      coverBg +
+      '<span class="spine-shade"></span>' +
+      '<span class="t" style="font-size:' + (w < 40 ? 11 : 13) + 'px">' + esc(b.title) + '</span>' +
+    '</button>';
   }
   function renderShelf(list) {
     var avail = Math.max(220, ($('#view').clientWidth || 360) - 16 - 20);
