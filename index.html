@@ -581,6 +581,24 @@ button { cursor: pointer; }
   z-index: 5;
 }
 
+
+.btn-quick-finish {
+  flex: none;
+  background: #4a7c59;
+  color: #fff;
+  border: 0;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, transform .1s;
+  box-shadow: 0 2px 4px rgba(74, 124, 89, 0.25);
+  margin-left: 8px;
+}
+.btn-quick-finish:hover { background: #3b6447; }
+.btn-quick-finish:active { transform: scale(0.95); }
+
 </style>
 </head>
 <body>
@@ -879,7 +897,7 @@ button { cursor: pointer; }
     // 헤더 (북웜 마스코트 + 이름)
     h += '<div class="lib-header">';
     h += MASCOT_SVG;
-    h += '<h2 class="lib-title">eunju_76\'s Library</h2>';
+    h += '<h2 class="lib-title">Eunjoo\'s Library</h2>';
     h += '<div class="lib-sub">BOOKWORM · READING LOG ' + state.year + '</div>';
     h += '</div>';
 
@@ -966,6 +984,7 @@ button { cursor: pointer; }
         h += '<div class="reading-prog-track"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div>';
         h += '<div class="reading-pages">' + (totP > 0 ? curP + ' / ' + totP + '쪽 (' + pct + '%)' : '쪽수 미입력') + '</div>';
         h += '</div>';
+        h += '<button type="button" class="btn-quick-finish" data-finish-id="' + esc(b.id) + '">완독</button>';
         h += '</div>';
       });
       h += '</div></div>';
@@ -1278,6 +1297,22 @@ button { cursor: pointer; }
     state.tab = b.dataset.tab; try { localStorage.setItem(LS_TAB, state.tab); } catch (x) {} render();
   });
   $('#view').addEventListener('click', function (e) {
+    var finishBtn = e.target.closest('[data-finish-id]');
+    if (finishBtn) {
+      e.stopPropagation();
+      var fid = finishBtn.dataset.finishId;
+      var bk = byId(fid);
+      if (bk) {
+        bk.status = 'finished';
+        bk.date = TODAY;
+        if (bk.pages) bk.readPages = bk.pages;
+        if (!bk.rating) bk.rating = 5;
+        saveLocal();
+        toast('《' + bk.title + '》 완독 완료! 책장과 달력으로 이동했어요.');
+        render();
+      }
+      return;
+    }
     var dotCol = e.target.closest('[data-dot-month]');
     if (dotCol) {
       state.selectedMonth = parseInt(dotCol.dataset.dotMonth, 10);
