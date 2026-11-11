@@ -1096,41 +1096,50 @@ button { cursor: pointer; }
 .genre-info span { color: var(--muted); font-size: 12px; font-family: var(--font-mono); font-weight: 600; }
 .genre-bar-track { height: 10px; background: var(--surface-2); border-radius: 999px; overflow: hidden; border: 1px solid rgba(44,42,41,0.08); }
 .genre-bar-fill { height: 100%; border-radius: 999px; transition: width .4s ease; }
-/* 월별 독서량 도트 매트릭스 스타일 */
+/* 월별 독서량 도트 매트릭스 스타일 (완벽 정렬) */
 .dot-matrix {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 4px;
-  padding: 14px 6px 10px;
+  gap: 3px;
+  padding: 16px 6px 12px;
   background: var(--surface-2);
   border-radius: 12px;
   border: 1px solid var(--line);
 }
 .dot-col {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+.dot-stack {
+  display: flex;
   flex-direction: column-reverse;
   align-items: center;
   gap: 5px;
-  padding: 2px 1px;
 }
 .dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   flex: none;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12);
 }
 .dot.empty {
   background: rgba(44, 42, 41, 0.08);
   box-shadow: none;
 }
 .dot-lbl {
-  font-size: 10px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
   color: var(--muted);
-  margin-top: 6px;
+  margin-top: 8px;
   font-family: var(--font-mono);
   font-weight: 600;
-  letter-spacing: -0.5px;
+  white-space: nowrap;
 }
 .dot-ft {
   font-size: 11.5px;
@@ -1519,7 +1528,7 @@ button { cursor: pointer; }
     for (var m = 1; m <= 12; m++) {
       var colBooks = mBooks[m] || [];
       h += '<div class="dot-col" title="' + m + '월 ' + colBooks.length + '권">';
-      h += '<span class="dot-lbl">' + m + '월</span>';
+      h += '<div class="dot-stack">';
       for (var r = 0; r < dotRows; r++) {
         if (r < colBooks.length) {
           var bk = colBooks[r];
@@ -1530,6 +1539,8 @@ button { cursor: pointer; }
           h += '<span class="dot empty"></span>';
         }
       }
+      h += '</div>';
+      h += '<span class="dot-lbl">' + m + '</span>';
       h += '</div>';
     }
     h += '</div>';
