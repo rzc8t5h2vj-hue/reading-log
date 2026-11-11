@@ -1067,7 +1067,7 @@ button { cursor: pointer; }
       '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
       '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"></div>' +
       '<div class="field" id="f-date-box"><label for="f-date">' + (form.status === 'reading' ? '시작일' : '완독일') + '</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
-      '<div class="field" id="f-star-box" + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>'' +
+      '<div class="field" id="f-star-box"' + (form.status === 'reading' ? ' style="display:none"' : '') + '><span class="lab">별점</span><div class="starpick" id="f-stars"></div></div>' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
       '<div class="field"><span class="lab">책등 색</span><div class="swatches" id="f-sw"></div></div>' +
       '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : '책장에 꽂기') + '</button></div></form>');
