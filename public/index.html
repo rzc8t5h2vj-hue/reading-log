@@ -8,9 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="독서기록">
-<link rel="manifest" href="/manifest.webmanifest">
-<link rel="icon" href="/icon-192.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
 /* Layout: 한 칼럼 앱. 상단 검색·연도·탭, 본문은 책장(책등 선반) / 달력(표지) / 목록. 책 추가는 하단 고정 버튼과 바텀시트. */
@@ -468,6 +468,62 @@ button { cursor: pointer; }
       });
     });
   }
+  var KAKAO_KEY = '9a7e8b069a132a06e9360b1474538d43';
+
+  function searchBooks(q) {
+    var url = 'https://dapi.kakao.com/v3/search/book?' + new URLSearchParams({
+      query: q, target: 'title', size: '8', sort: 'accuracy'
+    });
+    return fetch(url, { headers: { Authorization: 'KakaoAK ' + KAKAO_KEY } })
+      .then(function (r) {
+        if (!r.ok) {
+          return fetch('https://dapi.kakao.com/v3/search/book?' + new URLSearchParams({
+            query: q, size: '8', sort: 'accuracy'
+          }), { headers: { Authorization: 'KakaoAK ' + KAKAO_KEY } }).then(function (r2) { return r2.json(); });
+        }
+        return r.json();
+      })
+      .then(function (data) {
+        var docs = data.documents || [];
+        return {
+          items: docs.map(function (d) {
+            var rawIsbn = String(d.isbn || '').split(/\s+/).map(function (s) { return s.replace(/[^0-9Xx]/g, ''); }).filter(Boolean);
+            var isbn = rawIsbn.find(function (p) { return p.length === 13; }) || rawIsbn.find(function (p) { return p.length === 10; }) || '';
+            var thumb = String(d.thumbnail || '').replace(/^http:\/\//, 'https://');
+            var coverHd = '';
+            try { var f = new URL(thumb).searchParams.get('fname'); if (f) coverHd = String(f).replace(/^http:\/\//, 'https://'); } catch (e) {}
+            return {
+              title: String(d.title || '').split(' - ')[0].trim(),
+              author: (d.authors || []).slice(0, 3).join(', '),
+              publisher: d.publisher || '',
+              pubYear: d.datetime ? Number(String(d.datetime).slice(0, 4)) || 0 : 0,
+              cover: thumb,
+              coverHd: coverHd,
+              isbn: isbn
+            };
+          }).filter(function (x) { return x.title; })
+        };
+      });
+  }
+
+  function fetchPages(isbn) {
+    var url = 'https://www.googleapis.com/books/v1/volumes?' + new URLSearchParams({
+      q: 'isbn:' + isbn, maxResults: '1', fields: 'items(volumeInfo/pageCount)'
+    });
+    return fetch(url).then(function (r) { return r.json(); }).then(function (j) {
+      var n = j.items && j.items[0] && j.items[0].volumeInfo && Number(j.items[0].volumeInfo.pageCount);
+      return { pages: n > 0 ? n : 0 };
+    }).catch(function () { return { pages: 0 }; });
+  }
+
+  function fetchCoverBlob(u) {
+    var proxyUrl = 'https://wsrv.nl/?url=' + encodeURIComponent(u);
+    return fetch(proxyUrl).then(function (r) {
+      if (!r.ok) throw new Error('cover failed');
+      return r.blob();
+    });
+  }
+
   function setupSearch() {
     var inp = $('#f-title'), box = $('#f-sug'), cur = [];
     function msg(t) { box.innerHTML = '<div class="sugmsg">' + t + '</div>'; }
@@ -476,7 +532,7 @@ button { cursor: pointer; }
       if (q.length < 2) { box.innerHTML = ''; return; }
       var my = ++searchSeq;
       msg('찾는 중…');
-      getJSON('/api/search?q=' + encodeURIComponent(q)).then(function (j) {
+      searchBooks(q).then(function (j) {
         if (my !== searchSeq) return;
         cur = j.items || [];
         if (!cur.length) { msg('검색 결과가 없어요. 제목을 직접 입력해도 돼요.'); return; }
@@ -504,10 +560,10 @@ button { cursor: pointer; }
       var covers = [x.coverHd, x.cover].filter(Boolean);
       if (covers.length) jobs.push(covers.reduce(function (p, u) {
         return p.catch(function () {
-          return fetch('/api/cover?u=' + encodeURIComponent(u)).then(function (r) { if (!r.ok) throw 0; return r.blob(); }).then(function (blob) { if (blob.size < 500) throw 0; return readCover(blob); });
+          return fetchCoverBlob(u).then(function (blob) { if (blob.size < 500) throw 0; return readCover(blob); });
         });
       }, Promise.reject()).catch(function () {}));
-      if (x.isbn) jobs.push(getJSON('/api/book?isbn=' + encodeURIComponent(x.isbn)).then(function (j) { if (j.pages && $('#f-pages')) $('#f-pages').value = j.pages; }).catch(function () {}));
+      if (x.isbn) jobs.push(fetchPages(x.isbn).then(function (j) { if (j.pages && $('#f-pages')) $('#f-pages').value = j.pages; }).catch(function () {}));
       Promise.all(jobs).then(function () { if ($('#f-sug')) $('#f-sug').innerHTML = ''; });
     };
   }
