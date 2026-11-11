@@ -667,6 +667,22 @@ button { cursor: pointer; }
   box-shadow: 0 2px 6px rgba(214, 80, 108, 0.25);
 }
 
+
+.spine.pat-0::before, .spine.pat-0::after { border-color: var(--line-c, rgba(255,255,255,0.65)) !important; }
+.spine.pat-1::before { border-color: var(--line-c, rgba(255,255,255,0.6)) !important; }
+.spine.pat-1::after { background: var(--line-c, rgba(255,255,255,0.55)) !important; }
+.spine.pat-2::before, .spine.pat-2::after { color: var(--line-c, rgba(255,255,255,0.75)) !important; }
+.spine.pat-3::before {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 26px,
+    var(--line-c, rgba(255,255,255,0.4)) 26px,
+    var(--line-c, rgba(255,255,255,0.4)) 28px
+  ) !important;
+}
+.spine.pat-4::before, .spine.pat-4::after { background: var(--line-c, rgba(255,255,255,0.3)) !important; }
+
 </style>
 </head>
 <body>
@@ -746,16 +762,26 @@ button { cursor: pointer; }
     return SPINE_PALETTES[h % SPINE_PALETTES.length];
   }
 
-  var GENRE_COLORS = {
-    '소설': '#c74332',      // 일러스트 테라코타 레드
-    '시/에세이': '#d97d25',  // 일러스트 웜 오렌지
-    '인문/사회': '#2d6b47',  // 일러스트 보태니컬 딥그린
-    '자기계발': '#266978',  // 일러스트 앤틱 틸
-    '경제/경영': '#223c68',  // 일러스트 클래식 네이비
-    '과학/IT': '#8c6227',    // 일러스트 골든 브라운
-    '예술/문화': '#6f4277',  // 일러스트 더스티 바이올렛
-    '기타': '#4c575f'       // 일러스트 슬레이트 그레이
+  /* 
+    8개 기본 장르 및 색상 (IMG_2907 & IMG_2908 명세):
+    - 어두운 책등(소설, 경제/경영, 예술/문화, 기타): 크림색 글씨 #FBF8F1
+    - 밝은 책등(시/에세이, 인문/사회, 자기계발, 과학/IT): 먹색 글씨 #1E1D24
+  */
+  var GENRE_CONFIG = {
+    '소설': { color: '#D4652A', fg: '#FBF8F1', dark: true },      // 번트 오렌지
+    '시/에세이': { color: '#A9C1D9', fg: '#1E1D24', dark: false }, // 하늘색
+    '인문/사회': { color: '#D4A08C', fg: '#1E1D24', dark: false }, // 연한 로즈
+    '자기계발': { color: '#E3B23C', fg: '#1E1D24', dark: false },  // 머스터드
+    '경제/경영': { color: '#2E3A5F', fg: '#FBF8F1', dark: true },   // 네이비
+    '과학/IT': { color: '#AFCFB4', fg: '#1E1D24', dark: false },   // 민트
+    '예술/문화': { color: '#7A7A31', fg: '#FBF8F1', dark: true },   // 모스 그린
+    '기타': { color: '#1F4A33', fg: '#FBF8F1', dark: true }        // 포레스트 그린
   };
+
+  var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
+
+  var GENRE_COLORS = {};
+  GENRES.forEach(function (gk) { GENRE_COLORS[gk] = GENRE_CONFIG[gk].color; });
   var MASCOT_SVG = '<svg class="lib-mascot" viewBox="0 0 100 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="65" width="60" height="9" rx="2"/><rect x="25" y="53" width="50" height="9" rx="2"/><rect x="30" y="41" width="40" height="9" rx="2"/><path d="M42 38 C 42 28, 52 30, 52 20 C 52 14, 46 12, 48 8 C 50 4, 56 4, 58 8 C 60 12, 54 14, 54 20 C 54 30, 44 28, 44 38 Z" fill="currentColor"/><circle cx="51" cy="9" r="2.2" fill="var(--surface)"/><circle cx="55" cy="9" r="2.2" fill="var(--surface)"/><circle cx="51" cy="9" r="1.1" fill="currentColor"/><circle cx="55" cy="9" r="1.1" fill="currentColor"/><path d="M48 3 L47 0 M53 2 L53 -1 M58 3 L59 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
 
   var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
@@ -857,15 +883,16 @@ button { cursor: pointer; }
   function spineHTML(b, idx) {
     var w = spineW(b), h = spineH(b);
     var genre = b.genre || '소설';
-    var color = GENRE_COLORS[genre] || '#c74332';
+    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
     var patClass = 'pat-' + ((idx || 0) % 5);
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
     var fontSize = (w < 38) ? 12 : 13.5;
+    var lineCol = conf.dark ? 'rgba(255,255,255,0.6)' : 'rgba(30,29,36,0.28)';
 
-    return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + color + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
+    return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + conf.color + ';--fg-c:' + conf.fg + ';--line-c:' + lineCol + ';color:' + conf.fg + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       ribbon +
-      '<span class="t" style="font-size:' + fontSize + 'px">' + esc(b.title) + '</span>' +
+      '<span class="t" style="font-size:' + fontSize + 'px;color:' + conf.fg + ';text-shadow:' + (conf.dark ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '">' + esc(b.title) + '</span>' +
     '</button>';
   }
   function renderShelf(list) {
@@ -1085,7 +1112,7 @@ button { cursor: pointer; }
       h += '<span style="color:var(--muted);font-size:12px;">이 달에 완독한 책이 없어요.</span>';
     } else {
       gKeys.forEach(function (gk) {
-        var col = GENRE_COLORS[gk] || '#e25b45';
+        var conf = GENRE_CONFIG[gk] || GENRE_CONFIG['소설']; var col = conf.color;
         h += '<span class="genre-badge"><span class="gb-dot" style="background:' + col + '"></span>' + esc(gk) + ' ' + selGMap[gk] + '</span>';
       });
     }
