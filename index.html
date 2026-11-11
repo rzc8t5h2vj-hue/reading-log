@@ -599,6 +599,37 @@ button { cursor: pointer; }
 .btn-quick-finish:hover { background: #3b6447; }
 .btn-quick-finish:active { transform: scale(0.95); }
 
+
+/* 목록 상단 완독 / 읽는 중 필터 버튼 */
+.list-filter {
+  display: grid;
+  grid-template-columns: 1fr 1fr 0.9fr;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.btn-lf {
+  height: 38px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.btn-lf.on {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(214, 80, 108, 0.25);
+}
+
 </style>
 </head>
 <body>
@@ -686,7 +717,7 @@ button { cursor: pointer; }
   }
 
   var books = [];
-  var state = { tab: 'shelf', year: now.getFullYear(), q: '', selectedMonth: now.getMonth() + 1, cal: { y: now.getFullYear(), m: now.getMonth() + 1 } };
+  var state = { tab: 'shelf', year: now.getFullYear(), q: '', selectedMonth: now.getMonth() + 1, listFilter: 'finished', cal: { y: now.getFullYear(), m: now.getMonth() + 1 } };
 
   try { var t = localStorage.getItem(LS_TAB); if (t === 'shelf' || t === 'cal' || t === 'list' || t === 'stats') state.tab = t; } catch (e) {}
   try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = JSON.parse(raw) || []; } catch (e) { books = []; }
@@ -824,15 +855,51 @@ button { cursor: pointer; }
     $('#view').innerHTML = h;
   }
 
-  /* ---------- 렌더: 목록 ---------- */
+  /* ---------- 렌더: 목록 (완독 / 읽는 중 필터) ---------- */
   function renderList(list) {
-    if (!list.length) { $('#view').innerHTML = '<div class="empty-state">책이 없어요.</div>'; return; }
-    $('#view').innerHTML = '<div class="list">' + list.slice().reverse().map(function (b) {
+    var all = source().filter(matches);
+    var finishedList = all.filter(function (b) { return (b.status || 'finished') === 'finished'; });
+    var readingList = all.filter(function (b) { return b.status === 'reading'; });
+
+    var curFilter = state.listFilter || 'finished';
+    var filtered = list;
+    if (curFilter === 'finished') filtered = finishedList;
+    else if (curFilter === 'reading') filtered = readingList;
+    else filtered = all;
+
+    var filterHtml = '<div class="list-filter">' +
+      '<button type="button" class="btn-lf' + (curFilter === 'finished' ? ' on' : '') + '" data-filter="finished">완독 (' + finishedList.length + ')</button>' +
+      '<button type="button" class="btn-lf' + (curFilter === 'reading' ? ' on' : '') + '" data-filter="reading">읽는 중 (' + readingList.length + ')</button>' +
+      '<button type="button" class="btn-lf' + (curFilter === 'all' ? ' on' : '') + '" data-filter="all">전체 (' + all.length + ')</button>' +
+    '</div>';
+
+    if (!filtered.length) {
+      var msg = curFilter === 'reading' ? '현재 읽고 있는 책이 없어요.<br><span style="font-size:12px;color:var(--muted)">하단의 [+ 책 추가]에서 '읽는 중'을 선택해 등록해 보세요.</span>' : (curFilter === 'finished' ? '완독한 책이 없어요.' : '등록된 책이 없어요.');
+      $('#view').innerHTML = filterHtml + '<div class="empty-state">' + msg + '</div>';
+      return;
+    }
+
+    var itemsHtml = '<div class="list">' + filtered.slice().reverse().map(function (b) {
       var cv = okCover(b.cover);
       var isR = (b.status === 'reading');
-      var stTag = isR ? '<span class="tag-reading">📖 ' + (b.readPages || 0) + '/' + (b.pages || 0) + '쪽</span>' : '';
-      return '<button class="item" data-id="' + esc(b.id) + '"><span class="thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</span><span class="meta"><div class="ti">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + stTag + '</div><div class="sub">' + esc(b.author || '저자 미입력') + ' · ' + (isR ? '읽는 중' : fmtDate(b.date)) + '</div></span><span class="stars">' + (isR ? '' : stars(b.rating)) + '</span></button>';
+      var curP = b.readPages || 0;
+      var totP = b.pages || 0;
+      var pct = totP > 0 ? Math.min(100, Math.round((curP / totP) * 100)) : 0;
+      var stTag = isR ? '<span class="tag-reading">📖 ' + curP + '/' + totP + '쪽 (' + pct + '%)</span>' : '';
+      var finishBtn = isR ? '<button type="button" class="btn-quick-finish" data-finish-id="' + esc(b.id) + '">완독</button>' : '';
+
+      return '<div class="item" data-id="' + esc(b.id) + '" style="cursor:pointer;">' +
+        '<span class="thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</span>' +
+        '<span class="meta" style="flex:1;min-width:0;">' +
+          '<div class="ti">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + stTag + '</div>' +
+          '<div class="sub">' + esc(b.author || '저자 미입력') + ' · ' + (isR ? '읽는 중' : fmtDate(b.date)) + '</div>' +
+          (isR && totP > 0 ? '<div class="reading-prog-track" style="margin-top:5px;height:4px;"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div>' : '') +
+        '</span>' +
+        (isR ? finishBtn : '<span class="stars">' + stars(b.rating) + '</span>') +
+      '</div>';
     }).join('') + '</div>';
+
+    $('#view').innerHTML = filterHtml + itemsHtml;
   }
 
 
@@ -1297,6 +1364,12 @@ button { cursor: pointer; }
     state.tab = b.dataset.tab; try { localStorage.setItem(LS_TAB, state.tab); } catch (x) {} render();
   });
   $('#view').addEventListener('click', function (e) {
+    var lfBtn = e.target.closest('[data-filter]');
+    if (lfBtn) {
+      state.listFilter = lfBtn.dataset.filter;
+      render();
+      return;
+    }
     var finishBtn = e.target.closest('[data-finish-id]');
     if (finishBtn) {
       e.stopPropagation();
