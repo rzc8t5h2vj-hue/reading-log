@@ -97,34 +97,33 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body {
-  background-color: var(--bg-color);
-  background-image: 
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-color: var(--sheet);
   color: var(--fg);
   font-family: var(--font-body);
   font-size: 15px;
   line-height: 1.5;
-  padding-block: calc(14px + env(safe-area-inset-top, 0px)) 24px;
-  padding-left: max(12px, env(safe-area-inset-left, 0px));
-  padding-right: max(12px, env(safe-area-inset-right, 0px));
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* 밝은 종이색 시트 한 장 (#F8F6F1) + 얇은 먹색 테두리 + 각진 회베이지 그림자 */
+/* 북적북적 앱 스타일: 화면 전체를 채우는 풀스크린 레이아웃 */
 .app {
-  max-width: 560px;
+  width: 100%;
+  max-width: 600px;
   margin: 0 auto;
   background: var(--sheet);
-  border: 1px solid rgba(28, 32, 26, 0.16);
-  border-radius: 18px;
-  padding: 24px 20px 110px;
-  box-shadow: 0 14px 40px rgba(28, 34, 24, 0.16), 0 2px 6px rgba(28, 34, 24, 0.08);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 16px calc(88px + env(safe-area-inset-bottom, 0px));
+  min-height: 100vh;
   position: relative;
+  box-sizing: border-box;
 }
 
 /* 검색 */
@@ -176,10 +175,77 @@ button { cursor: pointer; }
 .sync-token-inp { width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 13px; border: 1.5px solid var(--line); border-radius: 8px; background: var(--surface-2); font-family: monospace; outline: none; }
 .sync-token-inp:focus { border-color: var(--accent); background: #fff; }
 
-/* 탭 */
-.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--line); }
-.tabs button { border: 0; background: none; height: 38px; border-radius: 8px; color: var(--muted); font-family: var(--font-hangul); font-weight: 500; font-size: 14px; transition: all 0.15s ease; }
-.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; box-shadow: 0 2px 8px rgba(94, 124, 68, 0.28); }
+/* ---------- 하단 네비게이션 탭 바 (북적북적 앱 스타일) ---------- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  height: calc(58px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: rgba(250, 248, 242, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -2px 12px rgba(28, 34, 24, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .bottom-nav {
+    background: rgba(34, 38, 34, 0.94);
+  }
+}
+@media (min-width: 601px) {
+  .bottom-nav {
+    max-width: 600px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+}
+.bottom-nav button {
+  border: 0;
+  background: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.1s ease;
+  padding: 6px 0;
+}
+.bottom-nav button:active {
+  transform: scale(0.92);
+}
+.bottom-nav .tab-icon {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  transition: stroke 0.15s ease, transform 0.15s ease;
+}
+.bottom-nav .tab-lbl {
+  font-family: var(--font-hangul);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.bottom-nav button[aria-selected="true"] {
+  color: var(--accent);
+}
+.bottom-nav button[aria-selected="true"] .tab-icon {
+  stroke-width: 2.4;
+  transform: translateY(-1px);
+}
+.bottom-nav button[aria-selected="true"] .tab-lbl {
+  font-weight: 700;
+}
 
 .notice { background: var(--surface-2); border-radius: 12px; padding: 12px 14px; margin-bottom: 16px; font-size: 13px; color: var(--muted); }
 .notice b { color: var(--fg); font-weight: 700; }
@@ -752,14 +818,14 @@ button { cursor: pointer; }
 /* 플로팅 책 추가 버튼 (오른쪽 하단에 크고 눈에 띄게) */
 .fab {
   position: fixed;
-  right: max(20px, calc(50% - 260px));
-  bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  right: max(18px, calc(50% - 280px));
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   z-index: 40;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 52px;
-  padding: 0 24px 0 20px;
+  height: 50px;
+  padding: 0 22px 0 18px;
   border: 1px solid rgba(0,0,0,0.12);
   border-radius: 999px;
   background: var(--accent);
@@ -1209,12 +1275,7 @@ button { cursor: pointer; }
     <button type="button" class="sync-pill" id="syncStatusBtn" title="깃허브 실시간 동기화 설정"><span class="dot"></span><span id="syncStatusText">☁️ 동기화</span></button>
   </div>
 
-  <div class="tabs" role="tablist">
-    <button role="tab" data-tab="shelf" aria-selected="true">책장</button>
-    <button role="tab" data-tab="cal" aria-selected="false">달력</button>
-    <button role="tab" data-tab="list" aria-selected="false">목록</button>
-    <button role="tab" data-tab="stats" aria-selected="false">통계</button>
-  </div>
+
 
   <div class="notice" id="notice" hidden><b>예시 책이에요.</b> 첫 책을 추가하면 사라지고 내 책장으로 바뀌어요.</div>
   <main id="view"></main>
@@ -1231,6 +1292,25 @@ button { cursor: pointer; }
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
   책 추가
 </button>
+
+<nav class="bottom-nav tabs" role="tablist" aria-label="하단 네비게이션">
+  <button role="tab" data-tab="shelf" aria-selected="true">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+    <span class="tab-lbl">책장</span>
+  </button>
+  <button role="tab" data-tab="cal" aria-selected="false">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span class="tab-lbl">달력</span>
+  </button>
+  <button role="tab" data-tab="list" aria-selected="false">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span class="tab-lbl">목록</span>
+  </button>
+  <button role="tab" data-tab="stats" aria-selected="false">
+    <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    <span class="tab-lbl">통계</span>
+  </button>
+</nav>
 
 <div class="overlay" id="overlay" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
 <div class="toast" id="toast" role="status" hidden></div>
