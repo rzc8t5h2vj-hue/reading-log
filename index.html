@@ -387,7 +387,7 @@ button { cursor: pointer; }
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b) {
     var w = spineW(b), h = spineH(b);
-    var coverBg = b.cover ? '<span class="spine-cover" style="background-image:url('' + esc(b.cover) + '')"></span>' : '';
+    var coverBg = b.cover ? '<span class=\"spine-cover\" style=\"background-image:url(' + esc(b.cover) + ')\"></span>' : '';
     return '<button class="spine" data-id="' + esc(b.id) + '" style="--c:' + okColor(b.color) + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       coverBg +
       '<span class="spine-shade"></span>' +
