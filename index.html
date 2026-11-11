@@ -741,33 +741,42 @@ button { cursor: pointer; }
 
 
 /* 목록 상단 완독 / 읽는 중 필터 버튼 */
+/* 목록 상단 완독 / 읽는 중 필터 버튼 (북적북적 앱 스타일) */
 .list-filter {
-  display: grid;
-  grid-template-columns: 1fr 1fr 0.9fr;
-  gap: 6px;
-  margin-bottom: 16px;
+  display: flex;
+  gap: 20px;
+  border-bottom: 1.5px solid var(--line);
+  margin-bottom: 18px;
+  padding: 0 4px;
 }
 .btn-lf {
-  height: 38px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 8px 4px 10px !important;
+  height: auto !important;
+  font-size: 15px !important;
+  font-family: var(--font-hangul);
+  color: var(--muted) !important;
+  font-weight: 500 !important;
   cursor: pointer;
-  transition: all .15s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
+  position: relative;
+  transition: color 0.15s ease;
+  box-shadow: none !important;
 }
 .btn-lf.on {
+  color: var(--fg) !important;
+  font-weight: 700 !important;
+}
+.btn-lf.on::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
   background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
-  font-weight: 700;
-  box-shadow: 0 2px 6px rgba(214, 80, 108, 0.25);
+  border-radius: 2px;
 }
 
 
@@ -806,8 +815,9 @@ button { cursor: pointer; }
 
 /* 목록 */
 .list { display: flex; flex-direction: column; gap: 10px; }
-.item { display: flex; align-items: center; gap: 14px; background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 10px; text-align: left; width: 100%; cursor: pointer; }
-.thumb { flex: none; width: 44px; height: 64px; border-radius: 4px; overflow: hidden; background: var(--c); border: 1px solid var(--line); }
+.item { display: flex; align-items: center; gap: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; text-align: left; width: 100%; cursor: pointer; transition: transform .1s ease, box-shadow .1s ease; }
+.item:active { transform: scale(0.99); }
+.thumb { flex: none; width: 54px; height: 78px; border-radius: 6px; overflow: hidden; background: var(--surface-2); border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .item .meta { min-width: 0; flex: 1; }
 .item .ti { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg); font-family: var(--font-hangul); font-size: 15px; }
