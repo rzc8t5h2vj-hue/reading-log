@@ -1599,7 +1599,10 @@ button { cursor: pointer; }
     var finishBtn = isR ? '<button class="btn primary" id="btn-finish" style="background:#4a7c59;">완독하기</button>' : '';
 
     var metaSub = esc(b.author || '저자 미입력') + (b.translator ? ' (번역 ' + esc(b.translator) + ')' : '') + (b.publisher ? ' · ' + esc(b.publisher) : '');
-    var extraDl = (b.translator ? '<dt>번역</dt><dd>' + esc(b.translator) + '</dd>' : '') + (b.publisher ? '<dt>출판사</dt><dd>' + esc(b.publisher) + '</dd>' : '');
+    var extraDl = (b.translator ? '<dt>번역</dt><dd>' + esc(b.translator) + '</dd>' : '') +
+      (b.publisher ? '<dt>출판사</dt><dd>' + esc(b.publisher) + '</dd>' : '') +
+      (b.pubDate ? '<dt>출판일</dt><dd>' + fmtDate(b.pubDate) + '</dd>' : '') +
+      (b.link ? '<dt>상세 정보</dt><dd><a href="' + esc(b.link) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline;font-weight:600;display:inline-flex;align-items:center;gap:4px;">카카오 도서 상세 ↗</a></dd>' : '');
     openSheet('<div class="detail"><div class="bigcover" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '<div class="tile">' + esc(b.title) + '</div>') + '</div><div style="min-width:0"><h2>' + esc(b.title) + '</h2>' +
       '<div style="color:var(--muted)">' + metaSub + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '소설') + '</dd>' + extraDl + stInfo + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
       '<div class="actions"><button class="btn danger" id="del">삭제</button><button class="btn" id="close">닫기</button>' + finishBtn + '<button class="btn' + (isR ? '' : ' primary') + '" id="edit">수정</button></div>');
@@ -1642,7 +1645,7 @@ button { cursor: pointer; }
       rating: editing ? (parseFloat(b.rating) || 0) : 0,
       coverColor: null
     };
-    var v = editing ? b : { title: '', author: '', translator: '', publisher: '', genre: '소설', status: 'finished', readPages: '', pages: '', date: TODAY };
+    var v = editing ? b : { title: '', author: '', translator: '', publisher: '', pubDate: '', link: '', genre: '소설', status: 'finished', readPages: '', pages: '', date: TODAY };
     if (!v.genre) v.genre = '소설';
     if (!v.status) v.status = 'finished';
     form.status = v.status;
@@ -1660,6 +1663,10 @@ button { cursor: pointer; }
       '<div class="two">' +
         '<div class="field"><label for="f-translator">번역 (역자)</label><input id="f-translator" type="text" value="' + esc(v.translator || '') + '" autocomplete="off" placeholder="선택 (예: 전영애)"></div>' +
         '<div class="field"><label for="f-publisher">출판사</label><input id="f-publisher" type="text" value="' + esc(v.publisher || '') + '" autocomplete="off" placeholder="예: 민음사"></div>' +
+      '</div>' +
+      '<div class="two">' +
+        '<div class="field"><label for="f-pubdate">출판일</label><input id="f-pubdate" type="text" value="' + esc(v.pubDate || '') + '" autocomplete="off" placeholder="예: 2009-01-20"></div>' +
+        '<div class="field"><label for="f-link">도서 상세 링크</label><input id="f-link" type="url" value="' + esc(v.link || '') + '" autocomplete="off" placeholder="https://search.daum.net/..."></div>' +
       '</div>' +
       '<div class="field"><label for="f-genre">장르 (선택 시 책등 색 자동 적용)</label><div style="display:flex;align-items:center;gap:10px;"><span id="f-genre-dot" style="width:24px;height:24px;border-radius:6px;background:' + (GENRE_CONFIG[v.genre || '소설'] ? GENRE_CONFIG[v.genre || '소설'].color : '#D4652A') + ';flex:none;box-shadow:0 1px 3px rgba(0,0,0,0.25);border:1px solid rgba(0,0,0,0.15);"></span><select id="f-genre" style="flex:1;height:48px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;color:var(--fg);font:inherit;">' +
         GENRES.map(function (g) { return '<option value="' + g + '"' + (g === v.genre ? ' selected' : '') + '>' + g + '</option>'; }).join('') +
@@ -1754,12 +1761,15 @@ button { cursor: pointer; }
             var thumb = String(d.thumbnail || '').replace(/^http:\/\//, 'https://');
             var coverHd = '';
             try { var f = new URL(thumb).searchParams.get('fname'); if (f) coverHd = String(f).replace(/^http:\/\//, 'https://'); } catch (e) {}
+            var pubDate = d.datetime ? String(d.datetime).slice(0, 10) : '';
             return {
               title: String(d.title || '').split(' - ')[0].trim(),
               author: (d.authors || []).slice(0, 3).join(', '),
               translator: (d.translators || []).slice(0, 2).join(', '),
               publisher: d.publisher || '',
-              pubYear: d.datetime ? Number(String(d.datetime).slice(0, 4)) || 0 : 0,
+              pubDate: pubDate,
+              pubYear: pubDate ? Number(pubDate.slice(0, 4)) || 0 : 0,
+              link: String(d.url || ''),
               cover: thumb,
               coverHd: coverHd,
               isbn: isbn
@@ -1821,6 +1831,8 @@ button { cursor: pointer; }
       $('#f-author').value = x.author;
       if ($('#f-translator')) $('#f-translator').value = x.translator || '';
       if ($('#f-publisher')) $('#f-publisher').value = x.publisher || '';
+      if ($('#f-pubdate')) $('#f-pubdate').value = x.pubDate || '';
+      if ($('#f-link')) $('#f-link').value = x.link || '';
       var autoG = guessGenre(x.title, x.author, x.publisher);
       if ($('#f-genre')) { $('#f-genre').value = autoG; var conf = GENRE_CONFIG[autoG] || GENRE_CONFIG['소설']; form.color = conf.color; if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color; }
       msg('표지와 쪽수를 가져오는 중…');
@@ -1912,6 +1924,8 @@ button { cursor: pointer; }
       author: $('#f-author').value.trim(),
       translator: $('#f-translator') ? $('#f-translator').value.trim() : '',
       publisher: $('#f-publisher') ? $('#f-publisher').value.trim() : '',
+      pubDate: $('#f-pubdate') ? $('#f-pubdate').value.trim() : '',
+      link: $('#f-link') ? $('#f-link').value.trim() : '',
       genre: genre,
       status: form.status || 'finished',
       readPages: (form.status === 'reading' && rPages > 0) ? rPages : (pages > 0 ? pages : 0),
@@ -2010,7 +2024,7 @@ button { cursor: pointer; }
     var r = parseInt(b.rating, 10) || 0, p = parseInt(b.pages, 10) || 0;
     return {
       id: typeof b.id === 'string' && b.id ? b.id.slice(0, 40) : 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      title: String(b.title).slice(0, 200), author: String(b.author || '').slice(0, 100), translator: String(b.translator || '').slice(0, 100), publisher: String(b.publisher || '').slice(0, 100),
+      title: String(b.title).slice(0, 200), author: String(b.author || '').slice(0, 100), translator: String(b.translator || '').slice(0, 100), publisher: String(b.publisher || '').slice(0, 100), pubDate: String(b.pubDate || '').slice(0, 30), link: String(b.link || '').slice(0, 500),
       pages: Math.max(0, Math.min(3000, p)), date: b.date, rating: Math.max(0, Math.min(5, Math.round((parseFloat(b.rating) || 0) * 2) / 2)),
       color: okColor(b.color), cover: okCover(b.cover)
     };
