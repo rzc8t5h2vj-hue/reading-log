@@ -283,21 +283,21 @@ button { cursor: pointer; }
   border-radius: 1px;
 }
 
-/* 일러스트 책등 공통 */
+/* 일러스트 책등 공통 (시안 B 스타일) */
 .spine {
   flex: none;
   position: relative;
   border: 0;
-  border-radius: 2px 2px 0 0;
+  border-radius: 6px 6px 0 0;
   background-color: var(--c);
-  color: #fff;
+  color: var(--fg-c, #FAF8F2);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 16px 2px 18px;
   box-sizing: border-box;
-  box-shadow: -1px 0 0 rgba(0,0,0,0.35), 1px 0 0 rgba(255,255,255,0.15);
+  box-shadow: inset -2px 0 4px rgba(0,0,0,0.25), inset 2px 0 4px rgba(255,255,255,0.22), 0 2px 6px rgba(0,0,0,0.25);
   transition: transform .15s ease;
   cursor: pointer;
   overflow: hidden;
@@ -311,98 +311,97 @@ button { cursor: pointer; }
 .spine .t {
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: var(--font-hangul);
+  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif !important;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   line-height: 1.15;
-  max-height: 115px;
+  max-height: 112px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
   margin: 0 auto;
-  color: #FAF8F2;
+  color: var(--fg-c, #FAF8F2);
   text-shadow: 0 1px 2px rgba(0,0,0,0.55);
   z-index: 2;
 }
 
-/* 패턴 0: 상하단 이중 라인 */
-.spine.pat-0::before {
-  content: '';
-  position: absolute;
-  top: 7px; left: 3px; right: 3px;
-  height: 4px;
-  border-top: 1.5px solid rgba(255,255,255,0.65);
-  border-bottom: 1.5px solid rgba(255,255,255,0.65);
+/* 시안 B: 책등 라벨 프레임 */
+.spine-label-frame {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
+  padding: 8px 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: calc(100% - 6px);
+  z-index: 2;
 }
-.spine.pat-0::after {
-  content: '';
-  position: absolute;
-  bottom: 8px; left: 3px; right: 3px;
-  height: 4px;
-  border-top: 1.5px solid rgba(255,255,255,0.65);
-  border-bottom: 1.5px solid rgba(255,255,255,0.65);
+.spine-label-frame .t {
+  color: #1C201A !important;
+  text-shadow: none !important;
 }
-
-/* 패턴 1: 상단 사각 라벨 프레임 */
-.spine.pat-1::before {
-  content: '';
-  position: absolute;
-  top: 8px; left: 4px; right: 4px; height: 16px;
-  border: 1px solid rgba(255,255,255,0.6);
-  background: rgba(0,0,0,0.18);
-  border-radius: 1px;
-}
-.spine.pat-1::after {
-  content: '';
-  position: absolute;
-  bottom: 8px; left: 4px; right: 4px; height: 2px;
-  background: rgba(255,255,255,0.55);
+.spine-label-heart {
+  font-size: 7px;
+  line-height: 1;
+  margin-top: 4px;
+  color: #D96B43;
 }
 
-/* 패턴 2: 상하단 다이아몬드 장식 */
-.spine.pat-2::before {
-  content: '◆';
+/* 상단 장식 미니 아이콘 */
+.spine-top-icon {
   position: absolute;
-  top: 5px;
-  font-size: 7.5px;
-  color: rgba(255,255,255,0.75);
-}
-.spine.pat-2::after {
-  content: '◆';
-  position: absolute;
-  bottom: 6px;
-  font-size: 7.5px;
-  color: rgba(255,255,255,0.75);
+  top: 6px;
+  font-size: 9px;
+  line-height: 1;
+  z-index: 2;
+  opacity: 0.85;
 }
 
-/* 패턴 3: 가로 리브 밴드 */
-.spine.pat-3::before {
-  content: '';
-  position: absolute;
-  top: 6px; bottom: 8px; left: 2px; right: 2px;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 26px,
-    rgba(255,255,255,0.4) 26px,
-    rgba(255,255,255,0.4) 28px
-  );
-  pointer-events: none;
+/* 패턴: 잔잔한 화이트 마이크로 도트 */
+.spine.pat-dots {
+  background-image: radial-gradient(rgba(255,255,255,0.22) 1.2px, transparent 1.2px);
+  background-size: 7px 7px;
 }
 
-/* 패턴 4: 상하단 톤온톤 배색 팁 */
-.spine.pat-4::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 6px;
-  background: rgba(255,255,255,0.3);
+/* 패턴: 섬세한 세로 핀스트라이프 */
+.spine.pat-stripes {
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,0.12) 4px, rgba(255,255,255,0.12) 6px);
 }
-.spine.pat-4::after {
+
+/* 패턴: 상하단 더블 밴드 */
+.spine.pat-bands::before {
   content: '';
   position: absolute;
-  bottom: 0; left: 0; right: 0; height: 6px;
-  background: rgba(255,255,255,0.3);
+  top: 7px; left: 3px; right: 3px; height: 4px;
+  border-top: 1.5px solid var(--line-c, rgba(255,255,255,0.6));
+  border-bottom: 1.5px solid var(--line-c, rgba(255,255,255,0.6));
+}
+.spine.pat-bands::after {
+  content: '';
+  position: absolute;
+  bottom: 8px; left: 3px; right: 3px; height: 4px;
+  border-top: 1.5px solid var(--line-c, rgba(255,255,255,0.6));
+  border-bottom: 1.5px solid var(--line-c, rgba(255,255,255,0.6));
+}
+
+/* 선반 옆 작은 화분 오브제 */
+.shelf-plant {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 2px;
+  margin-right: 6px;
+  cursor: default;
+  user-select: none;
+}
+.shelf-plant .plant-emoji {
+  font-size: 30px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 }
 /* 달력 표지 밑 별점 뱃지 */
 .cell .cell-rating {
@@ -1382,19 +1381,25 @@ button { cursor: pointer; }
   }
 
   /* 
-    8개 기본 장르 및 색상 (IMG_2907 & IMG_2908 명세):
-    - 어두운 책등(소설, 경제/경영, 예술/문화, 기타): 크림색 글씨 #FBF8F1
-    - 밝은 책등(시/에세이, 인문/사회, 자기계발, 과학/IT): 먹색 글씨 #1E1D24
+    시안 B (Option B) 기반 8개 장르 색상 및 패턴:
+    - 소설: #D96B43 (테라코타 코랄 오렌지)
+    - 시/에세이: #D98F7D (소프트 로즈 더스티 핑크)
+    - 인문/사회: #6F8A6B (세이지 올리브 그린)
+    - 자기계발: #E5A93C (웜 머스터드 옐로우)
+    - 경제/경영: #1E324A (딥 클래식 네이비)
+    - 과학/IT: #2B4C6F (딥 슬레이트 블루)
+    - 예술/문화: #F3ECE1 (웜 크림 아이보리)
+    - 기타: #859E80 (소프트 페일 모스 그린)
   */
   var GENRE_CONFIG = {
-    '소설': { color: '#C25E40', fg: '#FAF8F2', dark: true },      // 앤틱 테라코타 (티보 에렘 건축 벽돌)
-    '시/에세이': { color: '#6D889C', fg: '#FAF8F2', dark: true }, // 슬레이트 프렌치 블루 (지붕 슬레이트)
-    '인문/사회': { color: '#B38575', fg: '#FAF8F2', dark: true }, // 앤틱 로즈우드 (석조 장식)
-    '자기계발': { color: '#B8924B', fg: '#FAF8F2', dark: true },  // 앤틱 오커 (골드 클레이)
-    '경제/경영': { color: '#314152', fg: '#FAF8F2', dark: true },   // 클래식 슬레이트 네이비
-    '과학/IT': { color: '#789172', fg: '#FAF8F2', dark: true },   // 세이지 라이켄 그린 (식물 잎새)
-    '예술/문화': { color: '#5E7B44', fg: '#FAF8F2', dark: true },   // 티보 에렘 올리브 모스 그린
-    '기타': { color: '#273F32', fg: '#FAF8F2', dark: true }        // 딥 파인 포레스트 (상록수 덩굴)
+    '소설': { color: '#D96B43', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '★' },
+    '시/에세이': { color: '#D98F7D', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: '☕' },
+    '인문/사회': { color: '#6F8A6B', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '🌿' },
+    '자기계발': { color: '#E5A93C', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '✦' },
+    '경제/경영': { color: '#1E324A', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '◆' },
+    '과학/IT': { color: '#2B4C6F', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: '❖' },
+    '예술/문화': { color: '#F3ECE1', fg: '#1C201A', dark: false, pattern: 'bands', icon: '🎨' },
+    '기타': { color: '#859E80', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '🌱' }
   };
 
   var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
@@ -1500,21 +1505,34 @@ button { cursor: pointer; }
   }
 
   /* ---------- 렌더: 책장 ---------- */
-  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(32, Math.min(64, 26 + p / 14))); };
+  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(34, Math.min(64, 28 + p / 14))); };
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
     var w = spineW(b), h = spineH(b);
     var genre = b.genre || '소설';
     var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
-    var patClass = 'pat-' + ((idx || 0) % 5);
+    var patClass = 'pat-' + (conf.pattern || 'bands');
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
-    var fontSize = (w < 38) ? 12 : 13.5;
-    var lineCol = conf.dark ? 'rgba(255,255,255,0.6)' : 'rgba(30,29,36,0.28)';
+    var fontSize = (w < 40) ? 12 : 13.5;
+    var lineCol = conf.dark ? 'rgba(255,255,255,0.65)' : 'rgba(28,32,26,0.35)';
+
+    var topIcon = conf.icon ? '<span class="spine-top-icon" style="color:' + lineCol + '">' + conf.icon + '</span>' : '';
+
+    var titleContent = '';
+    if (w >= 42) {
+      titleContent = '<div class="spine-label-frame">' +
+        '<span class="t" style="font-size:' + (fontSize - 0.5) + 'px;">' + esc(b.title) + '</span>' +
+        (w >= 50 ? '<span class="spine-label-heart">♥</span>' : '') +
+      '</div>';
+    } else {
+      titleContent = '<span class="t" style="font-size:' + fontSize + 'px;color:' + conf.fg + ';text-shadow:' + (conf.dark ? '0 1px 2px rgba(0,0,0,0.6)' : 'none') + '">' + esc(b.title) + '</span>';
+    }
 
     return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + conf.color + ';--fg-c:' + conf.fg + ';--line-c:' + lineCol + ';color:' + conf.fg + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       ribbon +
-      '<span class="t" style="font-size:' + fontSize + 'px;color:' + conf.fg + ';text-shadow:' + (conf.dark ? '0 1px 2px rgba(0,0,0,0.5)' : 'none') + '">' + esc(b.title) + '</span>' +
+      topIcon +
+      titleContent +
     '</button>';
   }
   function renderShelf(list) {
@@ -1529,7 +1547,10 @@ button { cursor: pointer; }
     });
     if (cur.length) rows.push(cur);
     while (rows.length < 3) rows.push([]);
-    var html = '<div class="case">' + rows.map(function (r) { return '<div class="row"><div class="books">' + r.map(function (b, i) { return spineHTML(b, i); }).join('') + '</div><div class="plank"></div></div>'; }).join('') + '</div>';
+    var html = '<div class="case">' + rows.map(function (r, rIdx) {
+      var plantHtml = (rIdx === 0) ? '<div class="shelf-plant" title="화분"><span class="plant-emoji">🪴</span></div>' : '';
+      return '<div class="row"><div class="books">' + plantHtml + r.map(function (b, i) { return spineHTML(b, i); }).join('') + '</div><div class="plank"></div></div>';
+    }).join('') + '</div>';
     var total = finishedOnly.reduce(function (s, b) { return s + (+b.pages || 0); }, 0);
     html += '<p class="shelf-note">' + (finishedOnly.length ? finishedOnly.length + '권' + (total ? ' · 모두 ' + total.toLocaleString('ko-KR') + '쪽' : '') + '. 두꺼운 책은 책등도 두꺼워요.' : '이 해에 완독한 책이 없어요.') + '</p>';
     $('#view').innerHTML = html;
