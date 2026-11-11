@@ -1,0 +1,12 @@
+{
+  "name": "reading-log",
+  "version": "1.0.0",
+  "private": true,
+  "description": "독서기록: 카카오 책 검색으로 책을 찾고, 책등 책장과 표지 달력으로 기록해요.",
+  "scripts": {
+    "dev": "node local.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
