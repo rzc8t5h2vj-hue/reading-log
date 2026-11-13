@@ -1906,8 +1906,8 @@ button { cursor: pointer; }
   var KAKAO_KEY = '9a7e8b069a132a06e9360b1474538d43';
   var YES24_API_KEY = 'yk_live_b0065a6a1a3b62b6f2482327f6bcaeff692b8945a62af37d';
 
-  function fetchYes24Spine(title, isbn) {
-    if (!title && !isbn) return Promise.resolve(null);
+  function fetchYes24Data(title, isbn) {
+    if (!title && !isbn) return Promise.resolve({ spineCover: null, pages: null });
     var q = isbn ? String(isbn).trim() : String(title).trim();
     var u = 'https://proxy.cors.dev/https://www.yes24.com/Product/searchapi/bulletsearch/goods?query=' + encodeURIComponent(q);
     return fetch(u)
@@ -1916,19 +1916,34 @@ button { cursor: pointer; }
         var list = j.lstSearchKeywordResult || [];
         if (list.length > 0 && list[0].GOODDS_INDEXES && list[0].GOODDS_INDEXES.GOODS_NO) {
           var gNo = list[0].GOODDS_INDEXES.GOODS_NO;
-          return 'https://image.yes24.com/goods/' + gNo + '/SIDE/XL';
+          var spineUrl = 'https://image.yes24.com/goods/' + gNo + '/SIDE/XL';
+          var detailUrl = 'https://proxy.cors.dev/https://www.yes24.com/Product/Goods/' + gNo;
+          return fetch(detailUrl)
+            .then(function (res) { return res.text(); })
+            .then(function (html) {
+              var m = html.match(/쪽수[^\d]*(\d+)쪽/);
+              var p = m ? parseInt(m[1], 10) : null;
+              return { spineCover: spineUrl, pages: p };
+            })
+            .catch(function () {
+              return { spineCover: spineUrl, pages: null };
+            });
         }
         if (isbn && title && q !== String(title).trim()) {
-          return fetchYes24Spine(title, null);
+          return fetchYes24Data(title, null);
         }
-        return null;
+        return { spineCover: null, pages: null };
       })
       .catch(function () {
         if (isbn && title && q !== String(title).trim()) {
-          return fetchYes24Spine(title, null);
+          return fetchYes24Data(title, null);
         }
-        return null;
+        return { spineCover: null, pages: null };
       });
+  }
+
+  function fetchYes24Spine(title, isbn) {
+    return fetchYes24Data(title, isbn).then(function (res) { return res.spineCover; });
   }
 
   function searchBooks(q) {
@@ -2035,9 +2050,10 @@ button { cursor: pointer; }
           return fetchCoverBlob(u).then(function (blob) { if (blob.size < 500) throw 0; return readCover(blob); });
         });
       }, Promise.reject()).catch(function () {}));
-      if (x.isbn) jobs.push(fetchPages(x.isbn).then(function (j) { if (j.pages && $('#f-pages')) $('#f-pages').value = j.pages; }).catch(function () {}));
-      jobs.push(fetchYes24Spine(x.title, x.isbn).then(function (sUrl) {
-        if (sUrl) form.spineCover = sUrl;
+      if (x.isbn) jobs.push(fetchPages(x.isbn).then(function (j) { if (j.pages && $('#f-pages') && !$('#f-pages').value) $('#f-pages').value = j.pages; }).catch(function () {}));
+      jobs.push(fetchYes24Data(x.title, x.isbn).then(function (res) {
+        if (res.spineCover) form.spineCover = res.spineCover;
+        if (res.pages && $('#f-pages')) $('#f-pages').value = res.pages;
       }).catch(function () {}));
       Promise.all(jobs).then(function () { if ($('#f-sug')) $('#f-sug').innerHTML = ''; });
     };
