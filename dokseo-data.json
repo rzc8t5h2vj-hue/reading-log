@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-13T13:33:48.619Z",
+  "updated": "2026-11-13T13:34:00.580Z",
   "books": [
     {
       "id": "bmwboh44y99ue",
@@ -49,7 +49,7 @@
       "link": "https://search.daum.net/search?w=bookpage&bookId=5652138&q=%EB%82%98%EB%A5%BC+%EB%B3%B4%EB%82%B4%EC%A7%80+%EB%A7%88",
       "genre": "소설",
       "status": "reading",
-      "readPages": 500,
+      "readPages": 2,
       "pages": 500,
       "date": "2026-11-11",
       "rating": 0,
