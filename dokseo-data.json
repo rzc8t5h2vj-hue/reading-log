@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:12.901Z",
+  "updated": "2026-11-14T07:54:23.054Z",
   "books": [
     {
       "id": "s9",
@@ -182,24 +182,6 @@
       "color": "#BFAAD4",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/108422348/SIDE/XL"
-    },
-    {
-      "id": "s11",
-      "title": "도둑맞은 집중력",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "인문/사회",
-      "status": "reading",
-      "readPages": 160,
-      "pages": 420,
-      "date": "2026-10-04",
-      "rating": 0,
-      "color": "#6F8A6B",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/118579613/SIDE/XL"
     },
     {
       "id": "s6",
