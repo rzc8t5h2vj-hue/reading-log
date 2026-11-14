@@ -19,8 +19,8 @@
     var d = await r.json();
     var books = (d.books || []).map(function (b) {
       b = JSON.parse(JSON.stringify(b));
-      if (b.status === 'reading') b.readDates = ['2026-11-11', '2026-11-13', '2026-11-14', '2026-11-15'];
-      if (b.id === 'bmwc6j7gl52sh') b.memo = '“두려움은 익숙함의 부산물이다” — 100쪽';
+      if (b.status === 'reading') b.readDates = ['2026-11-13', '2026-11-14'];
+      if (b.id === 'bmwc6j7gl52sh') b.memo = '두려움은 익숙함의 부산물이다 — 100쪽';
       if (b.status === 'finished') b.memo = '끝까지 읽고 나서야 제목의 뜻이 와닿았다.';
       return b;
     });

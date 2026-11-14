@@ -2775,7 +2775,7 @@ button { cursor: pointer; }
       e.stopPropagation();
       var delta = parseInt(bump.dataset.delta, 10) || 10;
       var nb = bumpPages(bump.dataset.bump, delta);
-      if (nb) { openDetail(nb.id); toast('+' + delta + '쪽 · ' + nb.readPages + '/' + (nb.pages || 0) + '쪽'); }
+      if (nb) { render(); openDetail(nb.id); toast('+' + delta + '쪽 · ' + nb.readPages + '/' + (nb.pages || 0) + '쪽'); }
       return;
     }
     var i = e.target.closest('.item[data-id]'); if (i) openDetail(i.dataset.id);
