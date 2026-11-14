@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>독서기록</title>
-<meta name="theme-color" content="#9CA88A">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="독서기록">
@@ -26,8 +26,8 @@
   - 폰트: Fraunces (영문 타이틀/큰숫자), 고운바탕 Bold (한글 제목/책등), 고운돋움 (본문), DM Mono (작은 영문 라벨), 나눔펜 (파란 잉크색 #1B4B8A)
 */
 :root {
-  --bg-color: #9CA88A; /* 티보 에렘 전시 포스터 배경 세이지 올리브 */
-  --sheet: #9CA88A; /* 풀스크린 배경 세이지 올리브 */
+  --bg-color: #FFFFFF; /* 시안 C 모던 화이트 갤러리 - 순백 배경 */
+  --sheet: #FFFFFF; /* 모달 시트도 흰 바탕 */
   --surface: #FAF8F2; /* 미술관 건물 석조 크림 페이퍼 */
   --surface-2: #EFECE2; /* 린넨 샌드 베이지 */
   --fg: #1C201A; /* 정밀 건축 드로잉 먹색 */
@@ -40,7 +40,7 @@
   --burnt-orange: #D96B43;
   --olive: #56763D;
   --blue-ink: #2B4C6F;
-  --case: #FAF8F2; /* 미술관 건물 석조 크림 서가 (티보 에렘 건축물 무드) */
+  --case: #F6F7F9; /* 시안 C 화이트 갤러리 책장 본체 (쿨 그레이) */
   --case-border: rgba(28, 32, 26, 0.12);
   --case-shadow: 0 10px 28px rgba(28, 34, 24, 0.14), inset 0 1px 2px #fff;
   --plank: #E6E0D2; /* 석회암 선반 */
@@ -106,16 +106,15 @@ button { cursor: pointer; }
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(250, 248, 242, 0.94);
+  background: #F3F4F6;
+  border: none;
   border-radius: 24px;
   padding: 0 16px;
   height: 46px;
-  box-shadow: 0 2px 10px rgba(28,32,26,0.06);
-  border: 1px solid rgba(255,255,255,0.6);
 }
-.search svg { flex: none; color: #535E4B; }
+.search svg { flex: none; color: #6B7280; }
 .search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; height: 100%; color: #1C201A; }
-.search input::placeholder { color: #7A8672; }
+.search input::placeholder { color: #9AA1A9; }
 
 /* 연도 */
 .yearbar { position: relative; display: flex; align-items: baseline; gap: 10px; margin: 20px 0 14px; width: fit-content; }
@@ -226,14 +225,14 @@ button { cursor: pointer; }
 
 /* 일러스트 스타일 책장 (티보 에렘 미술관 건축 서가) */
 .case {
-  background: var(--case);
-  border: 1.5px solid var(--case-border);
+  background: #F6F7F9;
+  border: 8px solid #FFFFFF;
   border-radius: 16px;
-  padding: 24px 12px 16px;
+  padding: 18px 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  box-shadow: var(--case-shadow);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.08), inset 0 4px 12px rgba(0,0,0,0.04);
 }
 .row .books {
   display: flex;
@@ -256,10 +255,9 @@ button { cursor: pointer; }
 .plank {
   height: 14px;
   margin-top: 0;
-  background: var(--plank);
-  border-bottom: 3.5px solid var(--plank-shade);
-  border-radius: 2px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+  background: linear-gradient(180deg, #2D2F34 0%, #18191C 100%);
+  border-radius: 3px;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.22);
 }
 
 /* 일러스트 책등 공통 (시안 B 스타일) */
@@ -1985,6 +1983,30 @@ button { cursor: pointer; }
   var KAKAO_KEY = '9a7e8b069a132a06e9360b1474538d43';
   var YES24_API_KEY = 'yk_live_b0065a6a1a3b62b6f2482327f6bcaeff692b8945a62af37d';
 
+  // 예스24 이미지가 실제 세로형 책등 비율인지 브라우저에서 확인 (가로/세로 < 0.35)
+  function yes24SpineRatio(url) {
+    return new Promise(function (resolve) {
+      var img = new Image(), done = false;
+      var t = setTimeout(function () { if (!done) { done = true; resolve(null); } }, 7000);
+      img.onload = function () {
+        if (done) return; done = true; clearTimeout(t);
+        var w = img.naturalWidth || 0, h = img.naturalHeight || 0;
+        resolve((w > 0 && h > 0) ? (w / h) : null);
+      };
+      img.onerror = function () { if (done) return; done = true; clearTimeout(t); resolve(null); };
+      img.src = url;
+    });
+  }
+  function fetchYes24Pages(gNo) {
+    var detailUrl = 'https://proxy.cors.dev/https://www.yes24.com/Product/Goods/' + gNo;
+    return fetch(detailUrl)
+      .then(function (res) { return res.text(); })
+      .then(function (html) {
+        var m = html.match(/쪽수[^\d]*(\d+)쪽/);
+        return m ? parseInt(m[1], 10) : null;
+      })
+      .catch(function () { return null; });
+  }
   function fetchYes24Data(title, isbn) {
     if (!title && !isbn) return Promise.resolve({ spineCover: null, pages: null });
     var q = isbn ? String(isbn).trim() : String(title).trim();
@@ -1992,26 +2014,34 @@ button { cursor: pointer; }
     return fetch(u)
       .then(function (r) { return r.json(); })
       .then(function (j) {
-        var list = j.lstSearchKeywordResult || [];
-        if (list.length > 0 && list[0].GOODDS_INDEXES && list[0].GOODDS_INDEXES.GOODS_NO) {
-          var gNo = list[0].GOODDS_INDEXES.GOODS_NO;
+        var raw = j.lstSearchKeywordResult || [];
+        var cands = [];
+        raw.forEach(function (it) {
+          var no = it && it.GOODDS_INDEXES && it.GOODDS_INDEXES.GOODS_NO;
+          if (no) { no = String(no); if (cands.indexOf(no) < 0) cands.push(no); }
+        });
+        cands = cands.slice(0, 5);
+        if (!cands.length) {
+          if (isbn && title && q !== String(title).trim()) return fetchYes24Data(title, null);
+          return { spineCover: null, pages: null };
+        }
+        var i = 0;
+        // 상위 후보를 순서대로 확인해 실물 책등 비율을 통과하는 첫 상품을 고른다
+        function step() {
+          if (i >= cands.length) {
+            // 실물 책등이 없으면 첫 상품에서 쪽수만 가져온다 (책등은 일러스트 폴백)
+            return fetchYes24Pages(cands[0]).then(function (p) { return { spineCover: null, pages: p }; });
+          }
+          var gNo = cands[i++];
           var spineUrl = 'https://image.yes24.com/goods/' + gNo + '/SIDE/XL';
-          var detailUrl = 'https://proxy.cors.dev/https://www.yes24.com/Product/Goods/' + gNo;
-          return fetch(detailUrl)
-            .then(function (res) { return res.text(); })
-            .then(function (html) {
-              var m = html.match(/쪽수[^\d]*(\d+)쪽/);
-              var p = m ? parseInt(m[1], 10) : null;
-              return { spineCover: spineUrl, pages: p };
-            })
-            .catch(function () {
-              return { spineCover: spineUrl, pages: null };
-            });
+          return yes24SpineRatio(spineUrl).then(function (ratio) {
+            if (ratio && ratio < 0.35) {
+              return fetchYes24Pages(gNo).then(function (p) { return { spineCover: spineUrl, pages: p }; });
+            }
+            return step();
+          });
         }
-        if (isbn && title && q !== String(title).trim()) {
-          return fetchYes24Data(title, null);
-        }
-        return { spineCover: null, pages: null };
+        return step();
       })
       .catch(function () {
         if (isbn && title && q !== String(title).trim()) {
