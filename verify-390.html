@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body>
+<script>
+(async function () {
+  try {
+    var r = await fetch('dokseo-data.json?t=' + Date.now());
+    var j = await r.json();
+    localStorage.setItem('dokseo.books.v1', JSON.stringify(j.books || []));
+    var p = new URLSearchParams(location.search);
+    var tab = p.get('tab') || 'shelf';
+    localStorage.setItem('dokseo.tab', tab);
+    location.replace('index.html?v=verify2');
+  } catch (e) {
+    document.body.textContent = 'ERR ' + e;
+  }
+})();
+</script>
+</body>
+</html>
