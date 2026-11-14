@@ -126,6 +126,14 @@ button { cursor: pointer; }
 /* ---------- 상단 헤더 및 깃허브 실시간 동기화 ---------- */
 .top-row { display: flex; align-items: center; justify-content: space-between; margin: 20px 0 14px; gap: 8px; }
 .top-row .yearbar { margin: 0; }
+
+/* 달력·통계 탭: 책 검색창과 연도 선택 줄은 감추고 동기화 배지만 남긴다 */
+.app[data-tab="cal"] .search,
+.app[data-tab="stats"] .search { display: none; }
+.app[data-tab="cal"] .yearbar,
+.app[data-tab="stats"] .yearbar { display: none; }
+.app[data-tab="cal"] .top-row,
+.app[data-tab="stats"] .top-row { justify-content: flex-end; margin: 0 0 6px; }
 .sync-pill {
   display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px;
   font-size: 12px; font-family: var(--font-body); font-weight: 700;
@@ -1510,15 +1518,17 @@ button { cursor: pointer; }
     sel.style.pointerEvents = searching ? 'none' : '';
     $('#notice').hidden = books.length > 0;
     document.querySelectorAll('.tabs button').forEach(function (b) { b.setAttribute('aria-selected', b.dataset.tab === state.tab ? 'true' : 'false'); });
+    var appEl = document.querySelector('.app');
+    if (appEl) appEl.setAttribute('data-tab', state.tab);
   }
 
   /* ---------- 렌더: 책장 ---------- */
   window.onSpinePhotoLoad = function (img) {
     if (!img) return;
     var nw = img.naturalWidth || 0, nh = img.naturalHeight || 0;
+    var p = img.closest ? img.closest('.spine') : null;
     if (nw > 0 && nh > 0 && (nw / nh < 0.28)) {
       img.style.display = 'block';
-      var p = img.closest('.spine');
       if (p) {
         p.classList.add('has-real-photo');
         var h = p.offsetHeight || parseFloat(p.style.height) || 160;
@@ -1527,29 +1537,41 @@ button { cursor: pointer; }
       }
     } else {
       img.remove();
+      // 책등 비율이 아니면 일러스트 책등 폭으로 되돌리고, 줄 간격 계산도 다시 맞춘다
+      if (p) {
+        if (p.dataset.fbw) p.style.width = p.dataset.fbw + 'px';
+        var badId = p.getAttribute('data-id');
+        var badBook = badId ? byId(badId) : null;
+        if (badBook && !badBook._badSpine) {
+          badBook._badSpine = true;
+          if (state.tab === 'shelf') setTimeout(function () { renderShelf(yearList()); }, 0);
+        }
+      }
     }
   };
-  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(34, Math.min(64, 28 + p / 14))); };
+  // 일러스트 폴백 책등 두께: 실물 책등(14~31px)과 나란히 꽂혀도 어울리는 18~36px, 360쪽이면 약 25px
+  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(18, Math.min(36, 16 + p / 40))); };
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
-    var w = spineW(b), h = spineH(b);
+    var photoBook = !!b.spineCover && !b._badSpine;
+    var w = photoBook ? 18 : spineW(b), h = spineH(b);
     var genre = b.genre || '문학';
     var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['문학'];
     var patClass = 'pat-' + (conf.pattern || 'bands');
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
-    var fontSize = (w < 40) ? 12.5 : 14;
+    var fontSize = (w < 21) ? 10.5 : (w < 24 ? 11.5 : (w < 30 ? 12 : 12.5));
     var lineCol = conf.dark ? 'rgba(255,255,255,0.65)' : 'rgba(28,32,26,0.35)';
 
     var topIcon = conf.icon ? '<span class="spine-top-icon" style="color:' + lineCol + '">' + conf.icon + '</span>' : '';
     var tShadow = conf.dark ? '0 1px 2px rgba(0,0,0,0.55)' : '0 1px 1px rgba(255,255,255,0.4)';
 
     var photoHtml = '';
-    if (b.spineCover) {
+    if (b.spineCover && !b._badSpine) {
       photoHtml = '<img class="spine-real-photo" src="' + esc(b.spineCover) + '" alt="' + esc(b.title) + '" onload="onSpinePhotoLoad(this)" onerror="this.remove()">';
     }
 
-    return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" style="--c:' + conf.color + ';--fg-c:' + conf.fg + ';--line-c:' + lineCol + ';color:' + conf.fg + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
+    return '<button class="spine ' + patClass + (isR ? ' reading' : '') + '" data-id="' + esc(b.id) + '" data-fbw="' + spineW(b) + '" style="--c:' + conf.color + ';--fg-c:' + conf.fg + ';--line-c:' + lineCol + ';color:' + conf.fg + ';width:' + w + 'px;height:' + h + 'px" aria-label="' + esc(b.title) + '">' +
       photoHtml +
       ribbon +
       topIcon +
@@ -1577,7 +1599,7 @@ button { cursor: pointer; }
       }
     });
 
-    var wOf = function (b) { return b.spineCover ? 18 : spineW(b); };
+    var wOf = function (b) { return (b.spineCover && !b._badSpine) ? 18 : spineW(b); };
 
     // 맨 윗칸: 왼쪽부터 '읽는 중', 오른쪽 끝에 '읽을 예정'
     function packTop() {
