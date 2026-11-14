@@ -1549,8 +1549,8 @@ button { cursor: pointer; }
       }
     }
   };
-  // 일러스트 폴백 책등 두께: 실물 책등(14~31px)과 나란히 꽂혀도 어울리는 18~36px, 360쪽이면 약 25px
-  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(18, Math.min(36, 16 + p / 40))); };
+  // 일러스트 폴백 책등 두께: 실물 책등(14~31px)과 나란히 꽂혀도 어울리는 18~32px, 360쪽이면 약 21px
+  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(18, Math.min(32, 15 + p / 60))); };
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
     var photoBook = !!b.spineCover && !b._badSpine;
@@ -2045,8 +2045,15 @@ button { cursor: pointer; }
     return fetch(detailUrl)
       .then(function (res) { return res.text(); })
       .then(function (html) {
-        var m = html.match(/쪽수[^\d]*(\d+)쪽/);
-        return m ? parseInt(m[1], 10) : null;
+        // '1,040쪽'처럼 천 단위 쉼표가 들어간 쪽수도 읽는다
+        var m = html.match(/쪽수[\s\S]{0,160}?([\d,]+)\s*쪽/);
+        if (m) {
+          var n = parseInt(String(m[1]).replace(/,/g, ''), 10);
+          if (n > 0) return n;
+        }
+        // 보조: 구조화 데이터(JSON-LD)의 numberOfPages
+        var j = html.match(/"numberOfPages"\s*:\s*(\d+)/);
+        return j ? parseInt(j[1], 10) : null;
       })
       .catch(function () { return null; });
   }
