@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:23.054Z",
+  "updated": "2026-11-14T07:54:27.528Z",
   "books": [
     {
       "id": "s9",
@@ -20,24 +20,6 @@
       "color": "#BFAAD4",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/4827613/SIDE/XL"
-    },
-    {
-      "id": "s10",
-      "title": "지구 끝의 온실",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "SF/판타지",
-      "status": "reading",
-      "readPages": 210,
-      "pages": 360,
-      "date": "2026-10-09",
-      "rating": 0,
-      "color": "#6B5A8E",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/103026125/SIDE/XL"
     },
     {
       "id": "s4",
