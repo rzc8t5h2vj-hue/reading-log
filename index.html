@@ -17,6 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&display=swap">
 <style>
 /* 
   지정 디자인 시스템 (IMG_2906 명세):
@@ -45,16 +46,17 @@
   --case-shadow: 0 10px 28px rgba(28, 34, 24, 0.14), inset 0 1px 2px #fff;
   --plank: #E6E0D2; /* 석회암 선반 */
   --plank-shade: #C2BAA8;
-  --font-title: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
-  --font-hangul: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
-  --font-body: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
-  --font-label: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif;
+  --font-title: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-hangul: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  --font-label: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
   --font-hand: 'Nanum Pen Script', cursive;
   color-scheme: light;
 }
 
-*, *::before, *::after {
-  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, 'Pretendard', 'Noto Sans KR', sans-serif !important;
+/* 전체 UI 폰트는 Pretendard로 통일하고, 상단 전시 타이틀 영역만 별도 폰트를 쓴다 */
+*:not(.ex-title):not(.ex-title *), *::before, *::after {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif !important;
 }
 
 * { box-sizing: border-box; }
@@ -92,13 +94,24 @@ button { cursor: pointer; }
 /* 상단 티보 에렘 전시회 스타일 헤더 */
 .exhibition-header {
   text-align: center;
-  padding: 10px 0 18px;
+  padding: 14px 0 8px;
 }
 .ex-title {
-  font-size: 26px;
-  font-weight: 800;
-  color: #171C14;
-  letter-spacing: -0.02em;
+  font-family: 'Song Myung', serif !important;
+  font-size: 28px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: #1C201A;
+  line-height: 1.2;
+}
+.ex-title .sub {
+  display: block;
+  font-family: 'Pretendard', sans-serif !important;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  color: #7D8775;
+  margin-top: 4px;
 }
 
 /* 검색 */
@@ -329,7 +342,7 @@ button { cursor: pointer; }
 .spine .t {
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard', sans-serif !important;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif !important;
   font-weight: 700;
   letter-spacing: 0.03em;
   line-height: 1.15;
@@ -1271,7 +1284,7 @@ button { cursor: pointer; }
 
 <div class="app">
   <div class="exhibition-header">
-    <div class="ex-title">어느 마법 같은 하루</div>
+    <div class="ex-title">어느 마법 같은 하루<span class="sub">ONE MAGICAL DAY</span></div>
   </div>
 
   <div class="search">
@@ -1629,12 +1642,11 @@ button { cursor: pointer; }
     while (shelfCount < 3) { html += '<div class="row"><div class="books"></div><div class="plank"></div></div>'; shelfCount++; }
     html += '</div>';
 
-    var total = finishedOnly.reduce(function (s, b) { return s + (+b.pages || 0); }, 0);
     var parts = [];
     if (readingList.length) parts.push('읽는 중 ' + readingList.length + '권');
     if (wishList.length) parts.push('읽을 예정 ' + wishList.length + '권');
-    if (finishedOnly.length) parts.push('완독 ' + finishedOnly.length + '권' + (total ? ' · 모두 ' + total.toLocaleString('ko-KR') + '쪽' : ''));
-    html += '<p class="shelf-note">' + (parts.length ? parts.join(' · ') + '. 두꺼운 책은 책등도 두꺼워요.' : '이 해에 꽂힌 책이 없어요.') + '</p>';
+    if (finishedOnly.length) parts.push('완독 ' + finishedOnly.length + '권');
+    html += '<p class="shelf-note">' + (parts.length ? parts.join(' · ') : '이 해에 꽂힌 책이 없어요.') + '</p>';
     $('#view').innerHTML = html;
   }
 
