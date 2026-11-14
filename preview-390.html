@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>390px preview</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #d9d9d9; }
+  .wrap { display: flex; justify-content: center; padding: 8px 0; }
+  #host { width: 390px; }
+  iframe { width: 390px; height: 884px; border: 0; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.25); display: block; }
+</style>
+</head>
+<body>
+<div class="wrap"><div id="host"></div></div>
+<script>
+(function () {
+  var qs = new URLSearchParams(location.search);
+  var tab = qs.get('tab') || 'shelf';
+  var f = document.createElement('iframe');
+  f.title = 'reading log 390px';
+  var host = document.getElementById('host');
+  function place() {
+    f.src = './index.html?v=' + Date.now();
+    host.appendChild(f);
+  }
+  fetch('./dokseo-data.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+    var books = Array.isArray(j) ? j : (j.books || []);
+    try {
+      localStorage.setItem('dokseo.books.v1', JSON.stringify(books));
+      localStorage.setItem('dokseo.tab', tab);
+    } catch (e) {}
+    place();
+  }).catch(place);
+})();
+</script>
+</body>
+</html>
