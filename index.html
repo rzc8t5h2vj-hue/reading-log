@@ -2106,20 +2106,32 @@ button { cursor: pointer; }
   }
 
   function searchBooks(q) {
-    var url = 'https://dapi.kakao.com/v3/search/book?' + new URLSearchParams({
-      query: q, target: 'title', size: '8', sort: 'accuracy'
-    });
+    var term = String(q || '').trim();
+    // 한 글자 제목(《살》 등)도 찾을 수 있게: 짧은 검색어는 넉넉히 받아 정확 일치를 앞세운다
+    var short = term.length < 2;
+    var params = { query: term, target: 'title', size: short ? '50' : '8', sort: 'accuracy' };
+    var url = 'https://dapi.kakao.com/v3/search/book?' + new URLSearchParams(params);
     return fetch(url, { headers: { Authorization: 'KakaoAK ' + KAKAO_KEY } })
       .then(function (r) {
         if (!r.ok) {
-          return fetch('https://dapi.kakao.com/v3/search/book?' + new URLSearchParams({
-            query: q, size: '8', sort: 'accuracy'
-          }), { headers: { Authorization: 'KakaoAK ' + KAKAO_KEY } }).then(function (r2) { return r2.json(); });
+          var fb = { query: term, size: short ? '50' : '8', sort: 'accuracy' };
+          return fetch('https://dapi.kakao.com/v3/search/book?' + new URLSearchParams(fb), { headers: { Authorization: 'KakaoAK ' + KAKAO_KEY } }).then(function (r2) { return r2.json(); });
         }
         return r.json();
       })
       .then(function (data) {
-        var docs = data.documents || [];
+        var docs = (data.documents || []).slice();
+        if (short && docs.length) {
+          var key = term.replace(/\s+/g, '').toLowerCase();
+          var rank = function (t) {
+            var a = String(t || '').split(' - ')[0].replace(/\s+/g, '').toLowerCase();
+            if (a === key) return 0;
+            if (a.indexOf(key) === 0) return 1;
+            return a.indexOf(key) >= 0 ? 2 : 3;
+          };
+          docs.sort(function (a, b) { return rank(a.title) - rank(b.title); });
+          docs = docs.slice(0, 8);
+        }
         return {
           items: docs.map(function (d) {
             var rawIsbn = String(d.isbn || '').split(/\s+/).map(function (s) { return s.replace(/[^0-9Xx]/g, ''); }).filter(Boolean);
@@ -2168,7 +2180,7 @@ button { cursor: pointer; }
     function msg(t) { box.innerHTML = '<div class="sugmsg">' + t + '</div>'; }
     function run() {
       var q = inp.value.trim();
-      if (q.length < 2) { box.innerHTML = ''; return; }
+      if (!q.length) { box.innerHTML = ''; return; }
       var my = ++searchSeq;
       msg('찾는 중…');
       searchBooks(q).then(function (j) {
