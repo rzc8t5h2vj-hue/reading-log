@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>390px 기능 검증 (임시)</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #fff; overflow: hidden; }
+  #wrap { width: 390px; height: 844px; }
+  iframe { width: 390px; height: 844px; border: 0; display: block; }
+</style>
+</head>
+<body>
+<div id="wrap"></div>
+<script>
+(async function () {
+  try {
+    var r = await fetch('./dokseo-data.json?v=t1');
+    var d = await r.json();
+    var books = (d.books || []).map(function (b) {
+      b = JSON.parse(JSON.stringify(b));
+      if (b.status === 'reading') b.readDates = ['2026-11-11', '2026-11-13', '2026-11-14', '2026-11-15'];
+      if (b.id === 'bmwc6j7gl52sh') b.memo = '“두려움은 익숙함의 부산물이다” — 100쪽';
+      if (b.status === 'finished') b.memo = '끝까지 읽고 나서야 제목의 뜻이 와닿았다.';
+      return b;
+    });
+    localStorage.setItem('dokseo.books.v1', JSON.stringify(books));
+    localStorage.setItem('dokseo.goals.v1', JSON.stringify({ '2026': 24 }));
+    localStorage.setItem('dokseo.tab', 'list');
+  } catch (e) {
+    document.title = 'seed error: ' + e.message;
+  }
+  var f = document.createElement('iframe');
+  f.src = './index.html?v=' + Date.now();
+  document.getElementById('wrap').appendChild(f);
+})();
+</script>
+</body>
+</html>

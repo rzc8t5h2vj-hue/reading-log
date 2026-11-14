@@ -1387,6 +1387,135 @@ button { cursor: pointer; }
   align-items: center;
   font-family: var(--font-body);
 }
+/* ---------- 2026-11-15 실사용 기능: +10쪽 · 읽은 날 점 · 한줄평 · 연간 목표 ---------- */
+.btn-plus10 {
+  flex: none;
+  height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 90, 50, 0.30);
+  background: rgba(200, 90, 50, 0.10);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, transform .1s ease;
+}
+.btn-plus10:active { transform: scale(0.94); background: rgba(200, 90, 50, 0.20); }
+
+.memo-line {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #7A6656;
+  border-left: 2px solid rgba(200, 90, 50, 0.38);
+  padding: 1px 0 1px 8px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: keep-all;
+}
+
+/* 달력: 읽은 날 점 */
+.cell .rd-dot {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: .9;
+}
+.cell.read { background: rgba(200, 90, 50, 0.05); }
+.cell.read .d { color: var(--accent); font-weight: 700; }
+.monthsum .read-days { color: var(--muted); }
+
+/* 상세 모달 퀵 버튼 */
+.detail-quick { display: inline-flex; gap: 5px; margin-left: 8px; vertical-align: middle; }
+.detail-quick button {
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(200, 90, 50, 0.30);
+  background: rgba(200, 90, 50, 0.10);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.detail-quick button:active { background: rgba(200, 90, 50, 0.20); }
+
+.detail-memo {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  background: #FBF6EF;
+  border: 1px solid var(--card-line);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+}
+.detail-memo .dm-lbl { display: block; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: -0.01em; margin-bottom: 4px; }
+.detail-memo p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--fg); white-space: pre-wrap; word-break: keep-all; }
+
+.field textarea {
+  background: #FBF6EF;
+  border: 1px solid #E2D4C5;
+  border-radius: 12px;
+  min-height: 62px;
+  padding: 11px 14px;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--fg);
+  box-sizing: border-box;
+  resize: vertical;
+  line-height: 1.5;
+}
+.field textarea:focus { outline: none; border-color: var(--accent); background: #fff; }
+.form-quick { display: flex; gap: 6px; margin-top: 6px; }
+
+/* 통계: 연간 독서 목표 */
+.goal-card {
+  background: var(--surface);
+  border: 1px solid var(--card-line);
+  border-radius: 14px;
+  padding: 15px 16px 14px;
+  margin-bottom: 16px;
+}
+.goal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.goal-title { font-size: 13px; font-weight: 700; color: var(--fg); letter-spacing: -0.01em; }
+.goal-edit {
+  flex: none;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--card-line);
+  background: #FBF6EF;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+.goal-edit:active, .goal-edit:hover { border-color: var(--accent); color: var(--accent); }
+.goal-count { margin-top: 8px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.goal-count b { font-size: 21px; color: var(--fg); font-weight: 700; margin-right: 1px; font-family: var(--font-hangul); }
+.goal-count span { color: var(--accent); font-weight: 700; margin-left: 2px; }
+.goal-track { height: 8px; background: #EADCCB; border-radius: 999px; overflow: hidden; margin-top: 9px; }
+.goal-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #C85A32 0%, #D9764B 60%, #E3A92F 100%); transition: width .4s ease; }
+.goal-foot { margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+.goal-presets { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0 16px; }
+.goal-presets button { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--card-line); background: #FBF6EF; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
+.goal-presets button:hover { border-color: var(--accent); color: var(--accent); }
 </style>
 </head>
 <body>
@@ -1583,6 +1712,85 @@ button { cursor: pointer; }
     return ok;
   }
 
+  /* ---------- 읽은 날 · +10쪽 · 연간 목표 (2026-11-15) ---------- */
+  var LS_GOALS = 'dokseo.goals.v1';
+  var DEFAULT_GOAL = 24;
+  function isYmd(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
+  function addReadDate(b, key) {
+    if (!b) return b;
+    key = isYmd(key) ? key : TODAY;
+    var arr = Array.isArray(b.readDates) ? b.readDates.filter(isYmd) : [];
+    if (arr.indexOf(key) < 0) arr.push(key);
+    arr.sort();
+    b.readDates = arr.slice(-400);
+    return b;
+  }
+  function getGoals() {
+    try {
+      var j = JSON.parse(localStorage.getItem(LS_GOALS) || '{}');
+      return (j && typeof j === 'object' && !Array.isArray(j)) ? j : {};
+    } catch (e) { return {}; }
+  }
+  function saveGoals(obj) {
+    try { localStorage.setItem(LS_GOALS, JSON.stringify(obj || {})); } catch (e) {}
+  }
+  function goalFor(y) {
+    var n = parseInt(getGoals()[String(y)], 10);
+    return n > 0 ? Math.min(300, n) : DEFAULT_GOAL;
+  }
+  function setGoal(y, n) {
+    var v = Math.max(1, Math.min(300, parseInt(n, 10) || DEFAULT_GOAL));
+    var g = getGoals();
+    g[String(y)] = v;
+    saveGoals(g);
+    if (typeof triggerGhSync === 'function') triggerGhSync();
+    return v;
+  }
+  /* 읽는 중인 책의 쪽수를 delta만큼 올리고 오늘 날짜를 읽은 날로 남긴다 */
+  function bumpPages(id, delta) {
+    var b = byId(id);
+    if (!b || b.status !== 'reading') return null;
+    var total = +b.pages || 0;
+    var cur = +b.readPages || 0;
+    var next = cur + (parseInt(delta, 10) || 10);
+    if (total > 0) next = Math.min(total, next);
+    next = Math.max(0, Math.min(3000, next));
+    if (next === cur) { toast('더 올릴 쪽수가 없어요.'); return null; }
+    b.readPages = next;
+    addReadDate(b, TODAY);
+    saveLocal();
+    return b;
+  }
+  /* 수정 폼 안에서만 쪽수를 올린다(저장 전 미리보기) */
+  function stepFormPages(delta) {
+    var inp = $('#f-readpages'); if (!inp) return;
+    var tot = parseInt($('#f-pages') ? $('#f-pages').value : '', 10) || 0;
+    var cur = parseInt(inp.value, 10) || 0;
+    var next = cur + delta;
+    if (tot > 0) next = Math.min(tot, next);
+    inp.value = Math.max(0, next);
+  }
+  function openGoalForm() {
+    var y = state.year, cur = goalFor(y);
+    openSheet('<h2>' + y + '년 독서 목표</h2>' +
+      '<p class="sync-lead">올해 몇 권을 읽을지 정해 두면 통계 화면 위쪽에서 진행률로 볼 수 있어요.</p>' +
+      '<div class="field"><label for="f-goal">목표 권수</label><input id="f-goal" type="number" inputmode="numeric" min="1" max="300" value="' + cur + '"></div>' +
+      '<div class="goal-presets">' + [12, 24, 36, 50].map(function (n) { return '<button type="button" data-goal-set="' + n + '">' + n + '권</button>'; }).join('') + '</div>' +
+      '<div class="actions"><button type="button" class="btn" id="g-cancel">취소</button><button type="button" class="btn primary" id="g-save">저장</button></div>');
+    $('#g-cancel').onclick = closeSheet;
+    $('#sheet').querySelectorAll('[data-goal-set]').forEach(function (btn) {
+      btn.onclick = function () { $('#f-goal').value = btn.dataset.goalSet; };
+    });
+    $('#g-save').onclick = function () {
+      var n = parseInt($('#f-goal').value, 10);
+      if (!(n > 0)) { toast('1권 이상 입력해 주세요.'); return; }
+      var saved = setGoal(y, n);
+      closeSheet();
+      render();
+      toast(y + '년 목표를 ' + saved + '권으로 저장했어요.');
+    };
+  }
+
   /* ---------- 예시 책 ----------
      2026-11-14 은주 님 요청: 예시 책을 아예 만들지 않는다. 책이 없으면 빈 책장과 안내만 보인다.
      지난 예시 책(id s0~s11, sample:true)은 읽기·저장·병합·푸시 어디에서도 걸러진다. */
@@ -1770,6 +1978,11 @@ button { cursor: pointer; }
     var days = new Date(y, m, 0).getDate();
     var map = {};
     source().filter(matches).forEach(function (b) { if ((b.status || 'finished') === 'finished') (map[b.date] = map[b.date] || []).push(b); });
+    // 쪽수를 올린 날(읽은 날) 수집 — 완독 표지가 있는 날은 표지가 우선
+    var dayRead = {};
+    source().filter(matches).forEach(function (b) {
+      (Array.isArray(b.readDates) ? b.readDates : []).forEach(function (k) { if (isYmd(k)) dayRead[k] = 1; });
+    });
     var h = '<div class="calhead">' +
       '<button class="iconbtn" data-nav="-1" aria-label="이전 달"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg></button>' +
       '<h2>' + y + '년 ' + m + '월</h2>' +
@@ -1777,9 +1990,12 @@ button { cursor: pointer; }
       '</div>';
     h += '<div class="cal">' + ['일', '월', '화', '수', '목', '금', '토'].map(function (d) { return '<div class="dow">' + d + '</div>'; }).join('');
     for (var i = 0; i < first; i++) h += '<div class="cell empty" aria-hidden="true"></div>';
-    var cnt = 0;
+    var cnt = 0, readDayCnt = 0;
     for (var d = 1; d <= days; d++) {
-      var key = ymd(y, m, d), list = map[key] || [], cls = 'cell' + (key === TODAY ? ' today' : '') + (list.length ? ' has' : '');
+      var key = ymd(y, m, d), list = map[key] || [];
+      var isRead = !list.length && !!dayRead[key];
+      if (dayRead[key]) readDayCnt++;
+      var cls = 'cell' + (key === TODAY ? ' today' : '') + (list.length ? ' has' : '') + (isRead ? ' read' : '');
       if (list.length) {
         cnt += list.length;
         var b = list[0], cv = okCover(b.cover);
@@ -1789,13 +2005,13 @@ button { cursor: pointer; }
           starBadge +
           (list.length > 1 ? '<span class="more">+' + (list.length - 1) + '</span>' : '') + '</button>';
       } else {
-        h += '<div class="' + cls + '"><span class="d">' + d + '</span></div>';
+        h += '<div class="' + cls + '"' + (isRead ? ' aria-label="' + m + '월 ' + d + '일 읽음"' : '') + '><span class="d">' + d + '</span>' + (isRead ? '<span class="rd-dot"></span>' : '') + '</div>';
       }
     }
     // 마지막 주의 남은 요일 칸도 같은 모양의 빈 칸으로 채워 달력이 항상 직사각형이 되게 한다
     var tail = (7 - ((first + days) % 7)) % 7;
     for (var t = 0; t < tail; t++) h += '<div class="cell empty" aria-hidden="true"></div>';
-    h += '</div><p class="monthsum">' + (cnt ? m + '월에 <b>' + cnt + '권</b> 읽었어요.' : m + '월에 읽은 책이 없어요.') + '</p>';
+    h += '</div><p class="monthsum">' + (cnt ? m + '월에 <b>' + cnt + '권</b> 읽었어요.' : m + '월에 읽은 책이 없어요.') + (readDayCnt ? ' <span class="read-days">· ' + readDayCnt + '일 읽음</span>' : '') + '</p>';
     $('#view').innerHTML = h;
   }
 
@@ -1848,8 +2064,9 @@ button { cursor: pointer; }
         '<span class="meta" style="flex:1;min-width:0;">' +
           '<div class="ti"><span class="ti-t">' + esc(b.title) + '</span>' + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + '</div>' +
           '<div class="sub">' + esc(b.author || '저자 미입력') + (b.translator ? ' (번역 ' + esc(b.translator) + ')' : '') + (b.publisher ? ' · ' + esc(b.publisher) : '') + ' · ' + subState + '</div>' +
-          (isR && totP > 0 ? '<div class="prog-row"><div class="reading-prog-track"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div><span class="reading-pages">' + curP + '/' + totP + '쪽 · ' + pct + '%</span></div>' : '') +
-          (isR && !(totP > 0) ? stTag : '') +
+          (isR && totP > 0 ? '<div class="prog-row"><div class="reading-prog-track"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div><span class="reading-pages">' + curP + '/' + totP + '쪽 · ' + pct + '%</span><button type="button" class="btn-plus10" data-plus10="' + esc(b.id) + '" aria-label="10쪽 더 읽기">+10쪽</button></div>' : '') +
+          (isR && !(totP > 0) ? '<div class="prog-row" style="margin-top:6px;"><span class="tag-reading">📖 ' + curP + '쪽 읽는 중</span><button type="button" class="btn-plus10" data-plus10="' + esc(b.id) + '" aria-label="10쪽 더 읽기">+10쪽</button></div>' : '') +
+          (b.memo ? '<div class="memo-line">“' + esc(b.memo) + '”</div>' : '') +
         '</span>' +
         (isR ? finishBtn : (isW ? '' : '<span class="stars">' + stars(b.rating) + '</span>')) +
       '</div>';
@@ -1900,6 +2117,17 @@ button { cursor: pointer; }
     }).sort(function (a, b) { return b.count - a.count; });
 
     var h = '<div class="stats-view">';
+
+    // 연간 독서 목표 카드 (4대 요약 카드 맨 위)
+    var goal = goalFor(state.year);
+    var goalPct = Math.min(100, Math.round((totalBooks / (goal || 1)) * 100));
+    var goalLeft = goal - totalBooks;
+    h += '<div class="goal-card">' +
+      '<div class="goal-head"><div class="goal-title">' + state.year + '년 독서 목표</div><button type="button" class="goal-edit" id="goalEdit">목표 설정</button></div>' +
+      '<div class="goal-count"><b>' + totalBooks + '</b> / ' + goal + '권 <span>(' + goalPct + '%)</span></div>' +
+      '<div class="goal-track"><div class="goal-fill" style="width:' + goalPct + '%"></div></div>' +
+      '<div class="goal-foot">' + (goalLeft > 0 ? '목표까지 ' + goalLeft + '권 남았어요' : '올해 목표를 채웠어요') + '</div>' +
+    '</div>';
 
     // 4개 요약 그리드
     h += '<div class="stats-grid">';
@@ -1954,6 +2182,8 @@ button { cursor: pointer; }
 
     h += '</div>';
     $('#view').innerHTML = h;
+    var goalBtn = $('#goalEdit');
+    if (goalBtn) goalBtn.onclick = openGoalForm;
   }
 
   function render() {
@@ -1984,7 +2214,7 @@ button { cursor: pointer; }
     var cv = okCover(b.cover);
     var isR = (b.status === 'reading');
     var isW = (b.status === 'wishlist');
-    var stInfo = isR ? '<dt>상태</dt><dd style="color:var(--accent);font-weight:700;">📖 읽는 중</dd><dt>진행</dt><dd>' + (b.readPages || 0) + ' / ' + (b.pages || 0) + '쪽</dd>' : (isW ? '<dt>상태</dt><dd style="color:var(--accent);font-weight:700;">📚 읽을 예정</dd><dt>등록일</dt><dd>' + fmtDate(b.date) + '</dd>' : '<dt>완독일</dt><dd>' + fmtDate(b.date) + '</dd>');
+    var stInfo = isR ? '<dt>상태</dt><dd style="color:var(--accent);font-weight:700;">📖 읽는 중</dd><dt>진행</dt><dd>' + (b.readPages || 0) + ' / ' + (b.pages || 0) + '쪽<span class="detail-quick"><button type="button" data-bump="' + esc(b.id) + '" data-delta="10">+10쪽</button><button type="button" data-bump="' + esc(b.id) + '" data-delta="20">+20쪽</button></span></dd>' : (isW ? '<dt>상태</dt><dd style="color:var(--accent);font-weight:700;">📚 읽을 예정</dd><dt>등록일</dt><dd>' + fmtDate(b.date) + '</dd>' : '<dt>완독일</dt><dd>' + fmtDate(b.date) + '</dd>');
     var finishBtn = isR ? '<button class="btn primary" id="btn-finish" style="background:var(--accent);">완독하기</button>' : '';
 
     var metaSub = esc(b.author || '저자 미입력') + (b.translator ? ' (번역 ' + esc(b.translator) + ')' : '') + (b.publisher ? ' · ' + esc(b.publisher) : '');
@@ -1992,8 +2222,10 @@ button { cursor: pointer; }
       (b.publisher ? '<dt>출판사</dt><dd>' + esc(b.publisher) + '</dd>' : '') +
       (b.pubDate ? '<dt>출판일</dt><dd>' + fmtDate(b.pubDate) + '</dd>' : '') +
       (b.link ? '<dt>상세 정보</dt><dd><a href="' + esc(b.link) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline;font-weight:600;display:inline-flex;align-items:center;gap:4px;">카카오 도서 상세 ↗</a></dd>' : '');
+    var memoHtml = b.memo ? '<div class="detail-memo"><span class="dm-lbl">한줄평 · 기억에 남는 문장</span><p>' + esc(b.memo) + '</p></div>' : '';
     openSheet('<div class="detail"><div class="bigcover" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '<div class="tile">' + esc(b.title) + '</div>') + '</div><div style="min-width:0"><h2>' + esc(b.title) + '</h2>' +
       '<div style="color:var(--muted)">' + metaSub + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '문학') + '</dd>' + extraDl + stInfo + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
+      memoHtml +
       '<div class="actions"><button class="btn danger" id="del">삭제</button><button class="btn" id="close">닫기</button>' + finishBtn + '<button class="btn' + (isR ? '' : ' primary') + '" id="edit">수정</button></div>');
     $('#close').onclick = closeSheet;
     $('#edit').onclick = function () { openForm(b); };
@@ -2063,9 +2295,10 @@ button { cursor: pointer; }
         GENRES.map(function (g) { return '<option value="' + g + '"' + (g === v.genre ? ' selected' : '') + '>' + g + '</option>'; }).join('') +
       '</select></div></div>' +
       '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
-      '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"></div>' +
+      '<div class="field" id="f-rp-box"' + (form.status === 'reading' ? '' : ' style="display:none"') + '><label for="f-readpages">읽은 쪽수</label><input id="f-readpages" type="number" inputmode="numeric" min="0" max="3000" value="' + esc(v.readPages || '') + '" placeholder="예: 120"><div class="form-quick"><button type="button" class="btn-plus10" id="f-q10">+10쪽</button><button type="button" class="btn-plus10" id="f-q20">+20쪽</button></div></div>' +
       '<div class="field" id="f-date-box"><label for="f-date">' + (form.status === 'reading' ? '시작일' : (form.status === 'wishlist' ? '등록일' : '완독일')) + '</label><input id="f-date" type="date" value="' + esc(v.date) + '"></div></div>' +
       '<div class="field" id="f-star-box"' + ((form.status === 'reading' || form.status === 'wishlist') ? ' style="display:none"' : '') + '><span class="lab">별점 (5점 만점, 0.5 단위)</span><div class="star-picker-wrap" id="f-stars"></div></div>' +
+      '<div class="field"><label for="f-memo">한줄평 · 기억에 남는 문장</label><textarea id="f-memo" rows="2" maxlength="500" placeholder="선택 — 읽고 남은 한 줄이나 기억에 남는 문장">' + esc(v.memo || '') + '</textarea></div>' +
       '<div class="field"><span class="lab">표지 사진</span><div class="coverrow"><div class="coverprev" id="f-prev"></div><div><input id="f-cover" type="file" accept="image/*" style="display:none"><button type="button" class="btn sm" id="f-pick">사진 고르기</button> <button type="button" class="btn sm" id="f-clear">지우기</button></div></div></div>' +
       
       '<div class="actions"><button type="button" class="btn" id="f-cancel">취소</button><button type="submit" class="btn primary" id="f-save">' + (editing ? '저장' : (form.status === 'reading' ? '읽는 중으로 저장' : (form.status === 'wishlist' ? '읽을 예정으로 저장' : '책장에 꽂기'))) + '</button></div></form>');
@@ -2087,6 +2320,8 @@ button { cursor: pointer; }
     $('#f-pick').onclick = function () { $('#f-cover').click(); };
     $('#f-clear').onclick = function () { form.cover = null; form.coverColor = null; paintForm(); };
     $('#f-cover').onchange = function (e) { var f = e.target.files && e.target.files[0]; if (f) readCover(f); };
+    if ($('#f-q10')) $('#f-q10').onclick = function () { stepFormPages(10); };
+    if ($('#f-q20')) $('#f-q20').onclick = function () { stepFormPages(20); };
     $('#f-stars').onclick = function (e) {
       if (e.target.classList.contains('hit-left') || e.target.classList.contains('hit-right')) {
         var v = parseFloat(e.target.dataset.val);
@@ -2421,6 +2656,11 @@ button { cursor: pointer; }
       date: date, rating: form.status === 'finished' ? form.rating : 0, color: autoSpineColor, cover: form.cover,
       spineCover: form.spineCover || (form.id && byId(form.id) ? byId(form.id).spineCover : null)
     };
+    // 기존 동기화 스키마에 없던 필드도 저장·동기화에서 유실되지 않게 항상 싣는다
+    var prevBook = form.id ? byId(form.id) : null;
+    book.readDates = (prevBook && Array.isArray(prevBook.readDates)) ? prevBook.readDates.slice() : [];
+    book.memo = $('#f-memo') ? $('#f-memo').value.trim().slice(0, 500) : '';
+    if (book.status === 'reading' && book.readPages > ((prevBook && +prevBook.readPages) || 0)) addReadDate(book, TODAY);
     if (!book.spineCover) {
       fetchYes24Spine(book.title).then(function (sUrl) {
         if (sUrl) {
@@ -2493,6 +2733,13 @@ button { cursor: pointer; }
       render();
       return;
     }
+    var plusBtn = e.target.closest('[data-plus10]');
+    if (plusBtn) {
+      e.stopPropagation();
+      var pb = bumpPages(plusBtn.dataset.plus10, 10);
+      if (pb) { render(); toast('+10쪽 · ' + pb.readPages + '/' + (pb.pages || 0) + '쪽 기록했어요.'); }
+      return;
+    }
     var finishBtn = e.target.closest('[data-finish-id]');
     if (finishBtn) {
       e.stopPropagation();
@@ -2522,7 +2769,17 @@ button { cursor: pointer; }
     var d = e.target.closest('[data-day]'); if (d) { openDay(d.dataset.day); return; }
     var i = e.target.closest('[data-id]'); if (i) openDetail(i.dataset.id);
   });
-  $('#sheet').addEventListener('click', function (e) { var i = e.target.closest('.item[data-id]'); if (i) openDetail(i.dataset.id); });
+  $('#sheet').addEventListener('click', function (e) {
+    var bump = e.target.closest('[data-bump]');
+    if (bump) {
+      e.stopPropagation();
+      var delta = parseInt(bump.dataset.delta, 10) || 10;
+      var nb = bumpPages(bump.dataset.bump, delta);
+      if (nb) { openDetail(nb.id); toast('+' + delta + '쪽 · ' + nb.readPages + '/' + (nb.pages || 0) + '쪽'); }
+      return;
+    }
+    var i = e.target.closest('.item[data-id]'); if (i) openDetail(i.dataset.id);
+  });
   $('#addTop').addEventListener('click', function () { openForm(null); });
 
   /* 상단 돋보기 버튼: 검색창 접기/펼치기 (펼칠 때 자동 포커스, 접을 때 검색어 초기화) */
@@ -2586,7 +2843,9 @@ button { cursor: pointer; }
       rating: st === 'finished' ? Math.max(0, Math.min(5, Math.round(r * 2) / 2)) : 0,
       color: conf.color,
       cover: okCover(b.cover),
-      spineCover: b.spineCover ? String(b.spineCover) : null
+      spineCover: b.spineCover ? String(b.spineCover) : null,
+      readDates: (Array.isArray(b.readDates) ? b.readDates : []).filter(function (d) { return typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d); }).slice(0, 400),
+      memo: String(b.memo || '').slice(0, 500)
     };
   }
   $('#export').addEventListener('click', function () {
@@ -2686,6 +2945,7 @@ button { cursor: pointer; }
         app: 'dokseo',
         version: 1,
         updated: new Date().toISOString(),
+        goals: getGoals(),
         books: pushBooks
       };
       var jsonStr = JSON.stringify(payload, null, 2);
@@ -2755,15 +3015,36 @@ button { cursor: pointer; }
       var jsonText = base64ToUtf8(data.content);
       var j = JSON.parse(jsonText);
       var arr = Array.isArray(j) ? j : (j.books || []);
+      // 연간 목표도 함께 동기화한다 (기존 파일에는 없어도 그대로 동작)
+      var goalsChanged = false;
+      if (j && !Array.isArray(j) && j.goals && typeof j.goals === 'object' && !Array.isArray(j.goals)) {
+        var lg = getGoals();
+        Object.keys(j.goals).forEach(function (yk) {
+          var gv = parseInt(j.goals[yk], 10);
+          if (/^\d{4}$/.test(yk) && gv > 0 && parseInt(lg[yk], 10) !== gv) { lg[yk] = gv; goalsChanged = true; }
+        });
+        if (goalsChanged) saveGoals(lg);
+      }
       var remote = stripSamples(arr.filter(function (b) { return b && b.title; })).map(normalize);
       if (remote.length > 0) {
         var map = {};
         stripSamples(books).forEach(function (b) { map[b.id] = b; });
-        remote.forEach(function (b) { map[b.id] = b; });
+        remote.forEach(function (b) {
+          // 읽은 날은 한 번 적히면 지워지지 않는 기록이라 로컬·원격을 합칩니다
+          var prevB = map[b.id];
+          if (prevB && Array.isArray(prevB.readDates) && prevB.readDates.length) {
+            var merged = {};
+            b.readDates.concat(prevB.readDates).forEach(function (dk) { if (isYmd(dk)) merged[dk] = 1; });
+            b.readDates = Object.keys(merged).sort();
+          }
+          map[b.id] = b;
+        });
         books = stripSamples(Object.keys(map).map(function (k) { return map[k]; }));
         try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch (x) {}
         render();
         if (!silent) toast('깃허브에서 ' + remote.length + '권의 독서기록을 동기화했어요.');
+      } else if (goalsChanged) {
+        render();
       }
       var timeStr = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
       try { localStorage.setItem(LS_LAST_SYNC, timeStr); } catch (x) {}
