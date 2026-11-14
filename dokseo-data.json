@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:44.424Z",
+  "updated": "2026-11-14T07:54:48.335Z",
   "books": [
     {
       "id": "s9",
@@ -56,42 +56,6 @@
       "color": "#BFAAD4",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/197068165/SIDE/XL"
-    },
-    {
-      "id": "s7",
-      "title": "달러구트 꿈 백화점",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "SF/판타지",
-      "status": "finished",
-      "readPages": 300,
-      "pages": 300,
-      "date": "2026-10-23",
-      "rating": 4,
-      "color": "#6B5A8E",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/192468942/SIDE/XL"
-    },
-    {
-      "id": "s3",
-      "title": "데미안",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "인문/사회",
-      "status": "finished",
-      "readPages": 240,
-      "pages": 240,
-      "date": "2026-11-05",
-      "rating": 5,
-      "color": "#6F8A6B",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/176787/SIDE/XL"
     },
     {
       "id": "bmwboh44y99ue",
