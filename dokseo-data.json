@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:27.528Z",
+  "updated": "2026-11-14T07:54:34.890Z",
   "books": [
     {
       "id": "s9",
@@ -164,24 +164,6 @@
       "color": "#BFAAD4",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/108422348/SIDE/XL"
-    },
-    {
-      "id": "s6",
-      "title": "소년이 온다",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "문학",
-      "status": "finished",
-      "readPages": 216,
-      "pages": 216,
-      "date": "2026-10-26",
-      "rating": 5,
-      "color": "#BFAAD4",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/13137546/SIDE/XL"
     },
     {
       "id": "bmwboh44y99ue",
