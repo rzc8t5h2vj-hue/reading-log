@@ -16,7 +16,10 @@
 <div id="report">report</div>
 <script>
 (function () {
-  var TAB = (new URLSearchParams(location.search).get('tab') || 'shelf');
+  var P = new URLSearchParams(location.search);
+  var TAB = P.get('tab') || 'shelf';
+  var FIT = P.get('fit') === '1';
+  var CHECK = P.get('check') === '1';
   var LS_BOOKS = 'dokseo.books.v1';
   var out = document.getElementById('report');
   function log(s) { out.textContent += '\n' + s; }
@@ -25,7 +28,7 @@
   fetch('./dokseo-data.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
     var books = Array.isArray(j) ? j : (j.books || []);
     try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); localStorage.setItem('dokseo.tab', TAB); } catch (e) {}
-    log('TAB=' + TAB);
+    log('TAB=' + TAB + ' FIT=' + FIT);
     log('SEED=' + books.length);
     var f = document.createElement('iframe');
     f.title = 'reading log 390px';
@@ -40,50 +43,73 @@
         function J(o) { return JSON.stringify(o); }
 
         log('APP_TAB=' + (app ? app.getAttribute('data-tab') : '(none)'));
-        log('BOOKS=' + d.querySelectorAll('.spine').length + ' spines / ' + d.querySelectorAll('.cell.has').length + ' cal days');
-        log('PILL_TOPROW=' + (d.querySelector('.top-row #syncStatusText') ? 'STILL_THERE' : 'REMOVED'));
+        log('BOOKS=' + d.querySelectorAll('.spine').length + ' spines');
+        log('PILL_IN_TOPROW=' + (d.querySelector('.top-row #syncStatusText') ? 'STILL_THERE' : 'REMOVED'));
         log('SYNC_BTN_OLD=' + (d.querySelector('#syncStatusBtn') ? 'STILL_THERE' : 'REMOVED'));
-        log('FOOT_DISPLAY=' + cs(d.querySelector('.foot'), 'display'));
-        log('FOOT_SYNC_TEXT=' + (d.querySelector('#syncStatusText') ? d.querySelector('#syncStatusText').textContent : '(none)'));
-        log('FOOT_SYNC_CLASS=' + (d.querySelector('#syncFooterBtn') ? d.querySelector('#syncFooterBtn').className : '(none)'));
-        log('FOOT_SYNC_IN_FOOTER=' + (!!d.querySelector('.foot #syncFooterBtn')));
-        log('CREDIT=' + (d.querySelector('.credit') ? 'STILL_THERE: ' + d.querySelector('.credit').textContent : 'REMOVED'));
-        log('FOOT_TEXT=' + (d.querySelector('.foot') ? d.querySelector('.foot').textContent.replace(/\s+/g, ' ').trim() : '(none)'));
+        log('CREDIT=' + (d.querySelector('.credit') ? 'STILL_THERE' : 'REMOVED'));
 
+        // 1) 탭별로 푸터·상단 줄·검색·연도 표시 여부 확인
+        function tabState(name) {
+          var foot = d.querySelector('.foot'), tr = d.querySelector('.top-row'), se = d.querySelector('.search'), yb = d.querySelector('.yearbar'), cal = d.querySelector('.calhead');
+          return name + ': foot=' + cs(foot, 'display') + ' toprow=' + cs(tr, 'display') + ' search=' + cs(se, 'display') + ' yearbar=' + cs(yb, 'display') + ' calhead=' + (cal ? 'yes' : 'no');
+        }
+        if (CHECK) {
+          ['shelf', 'cal', 'list', 'stats'].forEach(function (name) {
+            var b = d.querySelector('.tabs button[data-tab="' + name + '"]');
+            if (b) b.click();
+            log(tabState(name));
+          });
+          var back = d.querySelector('.tabs button[data-tab="' + TAB + '"]');
+          if (back) back.click();
+          log('RESTORED_TAB=' + (app ? app.getAttribute('data-tab') : '?'));
+        }
+
+        // 2) 하단 줄 상태 텍스트가 한 줄로 유지되는지 (연결된 상태 '동기화됨' 포함)
+        var foot = d.querySelector('.foot'), syncBtn = d.querySelector('#syncStatusBtn') || d.querySelector('#syncFooterBtn'), txt = d.querySelector('#syncStatusText');
+        if (foot && syncBtn && txt) {
+          var before = { h: Math.round(foot.getBoundingClientRect().height), t: txt.textContent };
+          txt.textContent = '동기화됨';
+          var after = { h: Math.round(foot.getBoundingClientRect().height), wrap: foot.getBoundingClientRect().height > 30 };
+          log('FOOT_SYNCED_TEST=before ' + J(before) + ' after ' + J(after));
+          txt.textContent = before.t;
+        }
+
+        // 3) 달력 헤더 3분할 정렬
         var head = d.querySelector('.calhead');
+        if (!head && CHECK) { d.querySelector('.tabs button[data-tab="cal"]').click(); head = d.querySelector('.calhead'); }
         if (head) {
           var cn = rect(head), lb = rect(head.querySelector('[data-nav="-1"]')), h2 = rect(head.querySelector('h2')), rb = rect(head.querySelector('[data-nav="1"]'));
-          log('CALHEAD_BOX=' + J(cn));
-          log('LEFT_BTN=' + J(lb));
-          log('TITLE_BOX=' + J(h2));
-          log('RIGHT_BTN=' + J(rb));
-          log('LEFT_GAP=' + (lb.l - cn.l) + ' / RIGHT_GAP=' + (cn.r - rb.r));
           var centerPage = (cn.l + cn.r) / 2, centerTitle = (h2.l + h2.r) / 2;
-          log('TITLE_CENTER_OFFSET=' + (centerTitle - centerPage).toFixed(1));
-          log('TITLE_TEXT=' + head.querySelector('h2').textContent);
-        } else { log('CALHEAD=none'); }
-
-        var foot = d.querySelector('.foot'), nav = d.querySelector('.bottom-nav'), fab = d.querySelector('.fab');
-        if (foot && cs(foot, 'display') !== 'none') {
-          w.scrollTo(0, 999999);
+          log('CALHEAD=' + J(cn));
+          log('CAL_LEFT_GAP=' + (lb.l - cn.l) + ' RIGHT_GAP=' + (cn.r - rb.r) + ' TITLE_CENTER_OFFSET=' + (centerTitle - centerPage).toFixed(1));
+          log('CAL_TITLE=' + head.querySelector('h2').textContent);
         }
+
+        // 4) 요청한 탭으로 되돌리고 화면 맞추기
+        var finalBtn = d.querySelector('.tabs button[data-tab="' + TAB + '"]');
+        if (finalBtn && app.getAttribute('data-tab') !== TAB) finalBtn.click();
         setTimeout(function () {
-          if (foot && cs(foot, 'display') !== 'none') {
-            var fr = rect(foot), nr = rect(nav), br = rect(fab);
-            log('SCROLLED_TO=' + Math.round(w.scrollY) + ' / ' + Math.round(w.scrollY + w.innerHeight) + ' of ' + d.body.scrollHeight);
+          if (FIT) {
+            var h = Math.max(d.documentElement.scrollHeight, d.body.scrollHeight);
+            f.style.height = h + 'px';
+            log('FIT_HEIGHT=' + h);
+          }
+          if (TAB === 'shelf') w.scrollTo(0, FIT ? 0 : 999999);
+          setTimeout(function () {
+            var fr = rect(d.querySelector('.foot')), nr = rect(d.querySelector('.bottom-nav')), br = rect(d.querySelector('.fab'));
             log('FOOT_BOX=' + J(fr));
             log('NAV_BOX=' + J(nr));
             log('FAB_BOX=' + J(br));
-            log('OVERLAP_NAV=' + (fr.b > nr.t ? 'OVERLAP' : 'clear ' + (nr.t - fr.b) + 'px'));
-            var ovx = !(fr.r < br.l || fr.l > br.r), ovy = !(fr.b < br.t || fr.t > br.b);
-            log('OVERLAP_FAB=' + (ovx && ovy ? 'OVERLAP' : 'clear'));
+            if (fr && nr) {
+              log('OVERLAP_NAV=' + (fr.b > nr.t ? 'OVERLAP' : 'clear ' + (nr.t - fr.b) + 'px'));
+              var ovx = !(fr.r < br.l || fr.l > br.r), ovy = !(fr.b < br.t || fr.t > br.b);
+              log('OVERLAP_FAB=' + (ovx && ovy ? 'OVERLAP' : 'clear'));
+            }
             log('APP_PAD_BOTTOM=' + cs(app, 'paddingBottom'));
-            log('BODY_PAD_BOTTOM=' + cs(app, 'paddingBottom'));
-            log('FOOT_TOP_AFTER_SCROLL=' + fr.t);
-          }
-          log('DONE');
-        }, 700);
-      }, 2200);
+            log('DONE');
+          }, 500);
+        }, 300);
+      }, 2000);
     };
     document.getElementById('host').appendChild(f);
   }).catch(function (e) { log('SEEDFAIL=' + e); });
