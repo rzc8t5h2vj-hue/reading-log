@@ -65,7 +65,7 @@
     log('SEED=none');
     show();
   } else if (seed === '18') {
-    fetch('./_fixture18.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+    fetch('./fixture18.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
       var books = Array.isArray(j) ? j : (j.books || []);
       try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch (e) {}
       log('SEED=' + books.length + ' (' + books.filter(function (b) { return b.sample; }).length + ' sample)');
