@@ -142,8 +142,21 @@ button { cursor: pointer; }
   transition: max-height .28s cubic-bezier(.4, 0, .2, 1), opacity .2s ease, margin-bottom .28s ease, border-color .2s ease, visibility 0s;
 }
 .search svg { flex: none; color: #4B382F; }
-.search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; height: 100%; color: #4B382F; font-size: 14px; }
+.search input { flex: 1; min-width: 0; background: none; border: 0; outline: none; height: 100%; color: #4B382F; font-size: 14px; -webkit-appearance: none; appearance: none; }
+.search input::-webkit-search-cancel-button, .search input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
 .search input::placeholder { color: #A08B7D; }
+.search-clear {
+  flex: none;
+  width: 20px; height: 20px;
+  border: 0; border-radius: 50%;
+  background: #E5D8C8; color: #6F594D;
+  font-size: 12px; line-height: 1;
+  display: none;
+  align-items: center; justify-content: center;
+  padding: 0; cursor: pointer;
+}
+.search.has-q .search-clear { display: inline-flex; }
+.search-clear:active { background: #D9C7B3; }
 
 /* 연도 */
 .yearbar { position: relative; display: flex; align-items: baseline; gap: 10px; margin: 20px 0 14px; width: fit-content; }
@@ -1395,6 +1408,7 @@ button { cursor: pointer; }
 
   <div class="search" id="searchBar">
     <input id="q" type="search" placeholder="책 제목이나 저자로 검색" aria-label="책 검색하기" autocomplete="off">
+    <button type="button" class="search-clear" id="searchClear" aria-label="검색어 지우기">✕</button>
   </div>
 
 
@@ -2446,7 +2460,18 @@ button { cursor: pointer; }
   }
 
   /* ---------- 이벤트 ---------- */
-  $('#q').addEventListener('input', function (e) { state.q = e.target.value; render(); });
+  $('#q').addEventListener('input', function (e) {
+    state.q = e.target.value;
+    $('#searchBar').classList.toggle('has-q', !!e.target.value);
+    render();
+  });
+  $('#searchClear').addEventListener('click', function () {
+    $('#q').value = '';
+    state.q = '';
+    $('#searchBar').classList.remove('has-q');
+    render();
+    try { $('#q').focus(); } catch (e) {}
+  });
   $('#year').addEventListener('change', function (e) { state.year = +e.target.value; state.cal.y = state.year; render(); });
   document.querySelector('.tabs').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
@@ -2503,6 +2528,7 @@ button { cursor: pointer; }
     } else if ($('#q').value) {
       $('#q').value = '';
       state.q = '';
+      $('#searchBar').classList.remove('has-q');
       render();
     }
   }
