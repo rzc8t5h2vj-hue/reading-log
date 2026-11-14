@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>390px verify</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #d9d9d9; font-family: -apple-system, sans-serif; }
+  .wrap { display: flex; justify-content: center; padding: 8px 0; }
+  iframe { width: 390px; height: 844px; border: 0; background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.25); display: block; }
+  #report { max-width: 390px; margin: 8px auto 24px; background: #fff; padding: 10px 12px; font-size: 12px; white-space: pre-wrap; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="wrap"><div id="host"></div></div>
+<div id="report">report</div>
+<script>
+(function () {
+  var TAB = (new URLSearchParams(location.search).get('tab') || 'shelf');
+  var LS_BOOKS = 'dokseo.books.v1';
+  var out = document.getElementById('report');
+  function log(s) { out.textContent += '\n' + s; }
+  try { localStorage.removeItem('dokseo_gh_token'); localStorage.removeItem('dokseo_last_sync'); } catch (e) {}
+
+  fetch('./dokseo-data.json?v=' + Date.now()).then(function (r) { return r.json(); }).then(function (j) {
+    var books = Array.isArray(j) ? j : (j.books || []);
+    try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); localStorage.setItem('dokseo.tab', TAB); } catch (e) {}
+    log('TAB=' + TAB);
+    log('SEED=' + books.length);
+    var f = document.createElement('iframe');
+    f.title = 'reading log 390px';
+    f.src = './index.html?v=' + Date.now();
+    f.onload = function () {
+      setTimeout(function () {
+        var d = f.contentDocument, w = f.contentWindow;
+        if (!d) { log('NODOC'); return; }
+        var app = d.querySelector('.app');
+        function rect(el) { if (!el) return null; var r = el.getBoundingClientRect(); return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), b: Math.round(r.bottom), w: Math.round(r.width), h: Math.round(r.height) }; }
+        function cs(el, p) { return el ? w.getComputedStyle(el)[p] : '(none)'; }
+        function J(o) { return JSON.stringify(o); }
+
+        log('APP_TAB=' + (app ? app.getAttribute('data-tab') : '(none)'));
+        log('BOOKS=' + d.querySelectorAll('.spine').length + ' spines / ' + d.querySelectorAll('.cell.has').length + ' cal days');
+        log('PILL_TOPROW=' + (d.querySelector('.top-row #syncStatusText') ? 'STILL_THERE' : 'REMOVED'));
+        log('SYNC_BTN_OLD=' + (d.querySelector('#syncStatusBtn') ? 'STILL_THERE' : 'REMOVED'));
+        log('FOOT_DISPLAY=' + cs(d.querySelector('.foot'), 'display'));
+        log('FOOT_SYNC_TEXT=' + (d.querySelector('#syncStatusText') ? d.querySelector('#syncStatusText').textContent : '(none)'));
+        log('FOOT_SYNC_CLASS=' + (d.querySelector('#syncFooterBtn') ? d.querySelector('#syncFooterBtn').className : '(none)'));
+        log('FOOT_SYNC_IN_FOOTER=' + (!!d.querySelector('.foot #syncFooterBtn')));
+        log('CREDIT=' + (d.querySelector('.credit') ? 'STILL_THERE: ' + d.querySelector('.credit').textContent : 'REMOVED'));
+        log('FOOT_TEXT=' + (d.querySelector('.foot') ? d.querySelector('.foot').textContent.replace(/\s+/g, ' ').trim() : '(none)'));
+
+        var head = d.querySelector('.calhead');
+        if (head) {
+          var cn = rect(head), lb = rect(head.querySelector('[data-nav="-1"]')), h2 = rect(head.querySelector('h2')), rb = rect(head.querySelector('[data-nav="1"]'));
+          log('CALHEAD_BOX=' + J(cn));
+          log('LEFT_BTN=' + J(lb));
+          log('TITLE_BOX=' + J(h2));
+          log('RIGHT_BTN=' + J(rb));
+          log('LEFT_GAP=' + (lb.l - cn.l) + ' / RIGHT_GAP=' + (cn.r - rb.r));
+          var centerPage = (cn.l + cn.r) / 2, centerTitle = (h2.l + h2.r) / 2;
+          log('TITLE_CENTER_OFFSET=' + (centerTitle - centerPage).toFixed(1));
+          log('TITLE_TEXT=' + head.querySelector('h2').textContent);
+        } else { log('CALHEAD=none'); }
+
+        var foot = d.querySelector('.foot'), nav = d.querySelector('.bottom-nav'), fab = d.querySelector('.fab');
+        if (foot && cs(foot, 'display') !== 'none') {
+          w.scrollTo(0, 999999);
+        }
+        setTimeout(function () {
+          if (foot && cs(foot, 'display') !== 'none') {
+            var fr = rect(foot), nr = rect(nav), br = rect(fab);
+            log('SCROLLED_TO=' + Math.round(w.scrollY) + ' / ' + Math.round(w.scrollY + w.innerHeight) + ' of ' + d.body.scrollHeight);
+            log('FOOT_BOX=' + J(fr));
+            log('NAV_BOX=' + J(nr));
+            log('FAB_BOX=' + J(br));
+            log('OVERLAP_NAV=' + (fr.b > nr.t ? 'OVERLAP' : 'clear ' + (nr.t - fr.b) + 'px'));
+            var ovx = !(fr.r < br.l || fr.l > br.r), ovy = !(fr.b < br.t || fr.t > br.b);
+            log('OVERLAP_FAB=' + (ovx && ovy ? 'OVERLAP' : 'clear'));
+            log('APP_PAD_BOTTOM=' + cs(app, 'paddingBottom'));
+            log('BODY_PAD_BOTTOM=' + cs(app, 'paddingBottom'));
+            log('FOOT_TOP_AFTER_SCROLL=' + fr.t);
+          }
+          log('DONE');
+        }, 700);
+      }, 2200);
+    };
+    document.getElementById('host').appendChild(f);
+  }).catch(function (e) { log('SEEDFAIL=' + e); });
+})();
+</script>
+</body>
+</html>
