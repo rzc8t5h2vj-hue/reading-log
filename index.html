@@ -1291,7 +1291,7 @@ button { cursor: pointer; }
 
 
 
-  <div class="notice" id="notice" hidden><b>예시 책이에요.</b> 첫 책을 추가하면 사라지고 내 책장으로 바뀌어요.</div>
+  <div class="notice" id="notice" hidden><b>아직 꽂힌 책이 없어요.</b> 오른쪽 아래 + 버튼으로 첫 책을 추가해 보세요.</div>
   <main id="view"></main>
   <footer class="foot">
     <button type="button" id="syncFooterBtn">☁️ 깃허브 실시간 동기화</button>
@@ -1443,53 +1443,31 @@ button { cursor: pointer; }
 
   try { var t = localStorage.getItem(LS_TAB); if (t === 'shelf' || t === 'cal' || t === 'list' || t === 'stats') state.tab = t; } catch (e) {}
   try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = (JSON.parse(raw) || []).map(function (b) { if (b && typeof b === 'object') b.genre = normGenre(b.genre); return b; }); } catch (e) { books = []; }
+  // 예시 책은 어떤 경우에도 남지 않는다. 예전에 예시 책이 섞여 저장돼 있으면 여는 즉시 걸러 다시 저장한다.
+  var hadSampleAtLoad = Array.isArray(books) && books.some(isSampleBook);
+  books = stripSamples(books);
+  if (hadSampleAtLoad) { try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch (e) {} }
   var quotaWarned = false;
   function saveLocal() {
     var ok = true;
+    books = stripSamples(books);
     try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); }
     catch (e) { if (!quotaWarned) { quotaWarned = true; toast('저장 공간이 가득 찼어요. 백업을 내려받고 표지가 큰 책을 정리해 주세요.'); } ok = false; }
     if (typeof triggerGhSync === 'function') triggerGhSync();
     return ok;
   }
 
-  /* ---------- 예시 책 ---------- */
-  function makeSamples() {
-    var src = [
-      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324', '문학', 'finished', 180],
-      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525', '문학', 'finished', 264],
-      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921', '문학', 'finished', 268],
-      ['데미안', 240, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1252874', '인문/사회', 'finished', 240],
-      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086', '문학', 'finished', 120],
-      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518', '문학', 'finished', 520],
-      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244', '문학', 'finished', 216],
-      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128', 'SF/판타지', 'finished', 300],
-      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128', '문학', 'finished', 200],
-      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018', '문학', 'finished', 180],
-      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329', 'SF/판타지', 'reading', 210],
-      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208', '인문/사회', 'reading', 160]
-    ];
-    var offs = [1, 3, 6, 9, 12, 15, 19, 22, 27, 31, 36, 41];
-    return src.map(function (s, i) {
-      var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - offs[i]);
-      var isReading = (s[4] === 'reading');
-      return {
-        id: 's' + i,
-        sample: true,
-        title: s[0],
-        author: '',
-        pages: s[1],
-        readPages: isReading ? s[5] : s[1],
-        status: s[4] || 'finished',
-        date: ymd(d.getFullYear(), d.getMonth() + 1, d.getDate()),
-        rating: isReading ? 0 : (i % 3 === 0 ? 5 : (i % 3 === 1 ? 4 : 3)),
-        color: PALETTE[i % PALETTE.length],
-        cover: s[2],
-        genre: s[3] || '문학'
-      };
-    });
+  /* ---------- 예시 책 ----------
+     2026-11-14 은주 님 요청: 예시 책을 아예 만들지 않는다. 책이 없으면 빈 책장과 안내만 보인다.
+     지난 예시 책(id s0~s11, sample:true)은 읽기·저장·병합·푸시 어디에서도 걸러진다. */
+  function isSampleBook(b) {
+    return !!b && typeof b === 'object' && (b.sample === true || /^s\d+$/.test(String(b.id || '')));
   }
-  var SAMPLES = makeSamples();
-  var source = function () { return books.length ? books : SAMPLES; };
+  function stripSamples(list) {
+    return (Array.isArray(list) ? list : []).filter(function (b) { return b && typeof b === 'object' && !isSampleBook(b); });
+  }
+  var SAMPLES = [];
+  var source = function () { return books; };
 
   /* ---------- 데이터 선택 ---------- */
   function matches(b) {
@@ -2460,7 +2438,7 @@ button { cursor: pointer; }
     fr.onload = function () {
       try {
         var j = JSON.parse(fr.result), arr = Array.isArray(j) ? j : j.books;
-        var ok = (arr || []).filter(function (b) { return b && b.title && /^\d{4}-\d{2}-\d{2}$/.test(b.date || ''); }).map(normalize);
+        var ok = stripSamples(arr).filter(function (b) { return b && b.title && /^\d{4}-\d{2}-\d{2}$/.test(b.date || ''); }).map(normalize);
         if (!ok.length) throw new Error('empty');
         var map = {}; books.forEach(function (b) { map[b.id] = b; }); ok.forEach(function (b) { map[b.id] = b; });
         books = Object.keys(map).map(function (k) { return map[k]; });
@@ -2537,15 +2515,16 @@ button { cursor: pointer; }
       if (res.status === 200) return res.json().then(function (j) { return j.sha; });
       return null;
     }).catch(function () { return null; }).then(function (sha) {
+      var pushBooks = stripSamples(books);
       var payload = {
         app: 'dokseo',
         version: 1,
         updated: new Date().toISOString(),
-        books: books
+        books: pushBooks
       };
       var jsonStr = JSON.stringify(payload, null, 2);
       var body = {
-        message: 'sync: update reading log (' + books.length + ' books)',
+        message: 'sync: update reading log (' + pushBooks.length + ' books)',
         content: utf8ToBase64(jsonStr)
       };
       if (sha) body.sha = sha;
@@ -2610,12 +2589,12 @@ button { cursor: pointer; }
       var jsonText = base64ToUtf8(data.content);
       var j = JSON.parse(jsonText);
       var arr = Array.isArray(j) ? j : (j.books || []);
-      var remote = arr.filter(function (b) { return b && b.title; }).map(normalize);
+      var remote = stripSamples(arr.filter(function (b) { return b && b.title; })).map(normalize);
       if (remote.length > 0) {
         var map = {};
-        books.forEach(function (b) { map[b.id] = b; });
+        stripSamples(books).forEach(function (b) { map[b.id] = b; });
         remote.forEach(function (b) { map[b.id] = b; });
-        books = Object.keys(map).map(function (k) { return map[k]; });
+        books = stripSamples(Object.keys(map).map(function (k) { return map[k]; }));
         try { localStorage.setItem(LS_BOOKS, JSON.stringify(books)); } catch (x) {}
         render();
         if (!silent) toast('깃허브에서 ' + remote.length + '권의 독서기록을 동기화했어요.');
