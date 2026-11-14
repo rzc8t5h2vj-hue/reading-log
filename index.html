@@ -1549,8 +1549,8 @@ button { cursor: pointer; }
       }
     }
   };
-  // 일러스트 폴백 책등 두께: 실물 책등(14~31px)과 나란히 꽂혀도 어울리는 18~32px, 360쪽이면 약 21px
-  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(18, Math.min(32, 15 + p / 60))); };
+  // 일러스트 폴백 책등 두께: 쪽수에 비례해 18~52px. 360쪽≈25px, 500쪽≈30px, 1,000쪽 이상은 48px대 벽돌책
+  var spineW = function (b) { var p = +b.pages || 250; return Math.round(Math.max(18, Math.min(52, 12 + p / 28))); };
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
     var photoBook = !!b.spineCover && !b._badSpine;
