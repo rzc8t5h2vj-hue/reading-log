@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:34.890Z",
+  "updated": "2026-11-14T07:54:37.307Z",
   "books": [
     {
       "id": "s9",
@@ -146,24 +146,6 @@
       "color": "#BFAAD4",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/118755085/SIDE/XL"
-    },
-    {
-      "id": "s0",
-      "title": "채식주의자",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "문학",
-      "status": "finished",
-      "readPages": 180,
-      "pages": 180,
-      "date": "2026-11-13",
-      "rating": 5,
-      "color": "#BFAAD4",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/108422348/SIDE/XL"
     },
     {
       "id": "bmwboh44y99ue",
