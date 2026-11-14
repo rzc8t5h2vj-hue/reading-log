@@ -809,13 +809,14 @@ button { cursor: pointer; }
   background: var(--accent);
   color: var(--accent-ink);
   border: 0;
-  border-radius: 8px;
-  padding: 7px 14px;
-  font-size: 13px;
+  border-radius: 999px;
+  padding: 0 13px;
+  height: 30px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   transition: background .15s, transform .1s;
-  box-shadow: 0 2px 4px rgba(200, 90, 50, 0.25);
+  box-shadow: 0 2px 6px rgba(200, 90, 50, 0.22);
   margin-left: 8px;
 }
 .btn-quick-finish:hover { background: var(--accent-hover); }
@@ -926,8 +927,13 @@ button { cursor: pointer; }
 }
 .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .item .meta { min-width: 0; flex: 1; }
-.item .ti { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg); font-family: var(--font-hangul); font-size: 15px; letter-spacing: -0.01em; }
+.item .ti { display: flex; align-items: center; min-width: 0; font-weight: 700; color: var(--fg); font-family: var(--font-hangul); font-size: 15px; letter-spacing: -0.01em; }
+.item .ti-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .ti .tag-genre { flex: none; }
 .item .sub { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 4px; line-height: 1.35; }
+.prog-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.prog-row .reading-prog-track { flex: 1; min-width: 0; }
+.prog-row .reading-pages { flex: none; margin-top: 0; font-size: 10.5px; font-weight: 600; color: var(--accent); letter-spacing: -0.01em; }
 .stars { color: #C89B3C; letter-spacing: 0.5px; font-size: 13px; white-space: nowrap; }
 .empty-state { text-align: center; padding: 56px 12px; color: var(--muted); }
 
@@ -1239,6 +1245,8 @@ button { cursor: pointer; }
   letter-spacing: 0;
   font-family: var(--font-body);
 }
+
+.stat-card .unit.star { color: #C89B3C; font-size: 13px; }
 
 .stats-sec {
   background: var(--surface);
@@ -1838,9 +1846,10 @@ button { cursor: pointer; }
       return '<div class="item" data-id="' + esc(b.id) + '" style="cursor:pointer;">' +
         '<span class="thumb" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '') + '</span>' +
         '<span class="meta" style="flex:1;min-width:0;">' +
-          '<div class="ti">' + esc(b.title) + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + stTag + '</div>' +
+          '<div class="ti"><span class="ti-t">' + esc(b.title) + '</span>' + (b.genre ? '<span class="tag-genre">' + esc(b.genre) + '</span>' : '') + '</div>' +
           '<div class="sub">' + esc(b.author || '저자 미입력') + (b.translator ? ' (번역 ' + esc(b.translator) + ')' : '') + (b.publisher ? ' · ' + esc(b.publisher) : '') + ' · ' + subState + '</div>' +
-          (isR && totP > 0 ? '<div class="reading-prog-track" style="margin-top:5px;height:4px;"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div>' : '') +
+          (isR && totP > 0 ? '<div class="prog-row"><div class="reading-prog-track"><div class="reading-prog-bar" style="width:' + pct + '%"></div></div><span class="reading-pages">' + curP + '/' + totP + '쪽 · ' + pct + '%</span></div>' : '') +
+          (isR && !(totP > 0) ? stTag : '') +
         '</span>' +
         (isR ? finishBtn : (isW ? '' : '<span class="stars">' + stars(b.rating) + '</span>')) +
       '</div>';
@@ -1896,7 +1905,7 @@ button { cursor: pointer; }
     h += '<div class="stats-grid">';
     h += '<div class="stat-card"><div class="lbl">올해 완독</div><div class="val">' + totalBooks + '<span class="unit">권</span></div></div>';
     h += '<div class="stat-card"><div class="lbl">총 독서량</div><div class="val">' + totalPages.toLocaleString('ko-KR') + '<span class="unit">쪽</span></div></div>';
-    h += '<div class="stat-card"><div class="lbl">평균 별점</div><div class="val">' + avgRating + '<span class="unit">' + (avgRating !== '-' ? '★' : '') + '</span></div></div>';
+    h += '<div class="stat-card"><div class="lbl">평균 별점</div><div class="val">' + avgRating + '<span class="unit star">' + (avgRating !== '-' ? '★' : '') + '</span></div></div>';
     h += '<div class="stat-card"><div class="lbl">권당 평균</div><div class="val">' + avgPages + '<span class="unit">쪽</span></div></div>';
     h += '</div>';
 
