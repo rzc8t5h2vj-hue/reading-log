@@ -1371,52 +1371,70 @@ button { cursor: pointer; }
   }
 
   /* 
-    시안 B (Option B) 기반 8개 장르 색상 및 패턴:
-    - 소설: #BFAAD4 (파스텔풍 라벤더)
-    - 시/에세이: #D98F7D (소프트 로즈 더스티 핑크)
+    시안 B (Option B) 기반 8개 장르 색상 및 패턴 (2026-11-14 장르 개편):
+    - 문학: #BFAAD4 (파스텔풍 라벤더)
+    - SF/판타지: #6B5A8E (뮤트 딥 바이올렛)
+    - 추리/스릴러: #5C3540 (딥 와인 버건디)
     - 인문/사회: #6F8A6B (세이지 올리브 그린)
-    - 자기계발: #E5A93C (웜 머스터드 옐로우)
-    - 경제/경영: #1E324A (딥 클래식 네이비)
-    - 과학/IT: #2B4C6F (딥 슬레이트 블루)
-    - 예술/문화: #F3ECE1 (웜 크림 아이보리)
-    - 기타: #859E80 (소프트 페일 모스 그린)
+    - 경제/투자: #1E324A (딥 클래식 네이비)
+    - 과학: #3F6E7D (스틸 틸 블루)
+    - 역사: #6E4F39 (클래식 레더 브라운)
+    - 영어원서: #D98F7D (소프트 로즈 더스티 핑크)
   */
   var GENRE_CONFIG = {
-    '소설': { color: '#BFAAD4', fg: '#1C201A', dark: false, pattern: 'dots', icon: '★' },
-    '시/에세이': { color: '#D98F7D', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: '☕' },
+    '문학': { color: '#BFAAD4', fg: '#1C201A', dark: false, pattern: 'dots', icon: '★' },
+    'SF/판타지': { color: '#6B5A8E', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '✦' },
+    '추리/스릴러': { color: '#5C3540', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '◈' },
     '인문/사회': { color: '#6F8A6B', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '🌿' },
-    '자기계발': { color: '#E5A93C', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '✦' },
-    '경제/경영': { color: '#1E324A', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '◆' },
-    '과학/IT': { color: '#2B4C6F', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: '❖' },
-    '예술/문화': { color: '#F3ECE1', fg: '#1C201A', dark: false, pattern: 'bands', icon: '🎨' },
-    '기타': { color: '#859E80', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '🌱' }
+    '경제/투자': { color: '#1E324A', fg: '#FAF8F2', dark: true, pattern: 'dots', icon: '◆' },
+    '과학': { color: '#3F6E7D', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: '❖' },
+    '역사': { color: '#6E4F39', fg: '#FAF8F2', dark: true, pattern: 'bands', icon: '❦' },
+    '영어원서': { color: '#D98F7D', fg: '#FAF8F2', dark: true, pattern: 'stripes', icon: 'Aa' }
   };
 
-  var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
+  var GENRES = ['문학', 'SF/판타지', '추리/스릴러', '인문/사회', '경제/투자', '과학', '역사', '영어원서'];
 
   var GENRE_COLORS = {};
   GENRES.forEach(function (gk) { GENRE_COLORS[gk] = GENRE_CONFIG[gk].color; });
+
+  /* 예전 장르명 → 새 장르명 (기존 데이터·백업 복원 호환) */
+  var LEGACY_GENRE = {
+    '소설': '문학', '시/에세이': '문학', '시': '문학', '에세이': '문학', '문학': '문학',
+    'SF/판타지': 'SF/판타지', '판타지': 'SF/판타지',
+    '추리/스릴러': '추리/스릴러', '추리': '추리/스릴러', '스릴러': '추리/스릴러',
+    '인문/사회': '인문/사회', '자기계발': '인문/사회', '예술/문화': '인문/사회',
+    '경제/투자': '경제/투자', '경제/경영': '경제/투자', '경제': '경제/투자',
+    '과학': '과학', '과학/IT': '과학',
+    '역사': '역사', '영어원서': '영어원서',
+    '기타': '문학'
+  };
+  function normGenre(g) {
+    if (!g) return '문학';
+    var s = String(g).trim();
+    if (GENRE_CONFIG[s]) return s;
+    return LEGACY_GENRE[s] || '문학';
+  }
   var MASCOT_SVG = '<svg class="lib-mascot" viewBox="0 0 100 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><rect x="20" y="65" width="60" height="9" rx="2"/><rect x="25" y="53" width="50" height="9" rx="2"/><rect x="30" y="41" width="40" height="9" rx="2"/><path d="M42 38 C 42 28, 52 30, 52 20 C 52 14, 46 12, 48 8 C 50 4, 56 4, 58 8 C 60 12, 54 14, 54 20 C 54 30, 44 28, 44 38 Z" fill="currentColor"/><circle cx="51" cy="9" r="2.2" fill="var(--surface)"/><circle cx="55" cy="9" r="2.2" fill="var(--surface)"/><circle cx="51" cy="9" r="1.1" fill="currentColor"/><circle cx="55" cy="9" r="1.1" fill="currentColor"/><path d="M48 3 L47 0 M53 2 L53 -1 M58 3 L59 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
 
-  var GENRES = ['소설', '시/에세이', '인문/사회', '자기계발', '경제/경영', '과학/IT', '예술/문화', '기타'];
+  var GENRES = ['문학', 'SF/판타지', '추리/스릴러', '인문/사회', '경제/투자', '과학', '역사', '영어원서'];
 
   function guessGenre(title, author, publisher) {
     var t = ((title || '') + ' ' + (author || '') + ' ' + (publisher || '')).toLowerCase();
-    if (/에세이|산문|수필|일기|시집|시인|여행의 이유|가만히/.test(t)) return '시/에세이';
-    if (/경제|경영|투자|주식|부동산|재테크|비즈니스|마케팅|자본|머니|기업/.test(t)) return '경제/경영';
-    if (/자기계발|습관|성공|동기부여|멘탈|시간관리|루틴|집중력|처세|도둑맞은/.test(t)) return '자기계발';
-    if (/철학|역사|심리|인문|고전|사회|문명|사상|데미안|이방인/.test(t)) return '인문/사회';
-    if (/과학|우주|물리|생물|수학|뇌|ai|컴퓨터|인공지능|온실|지구 끝/.test(t)) return '과학/IT';
-    if (/미술|음악|예술|디자인|영화|건축|사진|공연/.test(t)) return '예술/문화';
-    if (/소설|장편|단편|스릴러|미스터리|문학|채식주의자|소년이 온다|아몬드|불편한 편의점|파친코|달러구트|어린 왕자/.test(t)) return '소설';
-    return '소설';
+    if (/영어원서|원서|english|oxford|cambridge|penguin|harpercollins|vintage books/.test(t)) return '영어원서';
+    if (/sf|판타지|fantasy|science fiction|디스토피아|마법|드래곤|우주선|로맨스/.test(t)) return 'SF/판타지';
+    if (/추리|미스터리|스릴러|범죄|살인|형사|탐정|crime|thriller|mystery|호러|공포/.test(t)) return '추리/스릴러';
+    if (/역사|고대|조선|고려|근대|세계사|한국사|history|문명사/.test(t)) return '역사';
+    if (/경제|경영|투자|주식|부동산|재테크|비즈니스|마케팅|자본|머니|기업|금융|펀드/.test(t)) return '경제/투자';
+    if (/과학|우주|물리|생물|수학|뇌|ai|컴퓨터|인공지능|화학|천문|의학/.test(t)) return '과학';
+    if (/철학|심리|인문|고전|사회|사상|자기계발|습관|성공|동기부여|멘탈|시간관리|루틴|집중력|처세|데미안|이방인|에세이|산문|수필/.test(t)) return '인문/사회';
+    return '문학';
   }
 
   var books = [];
   var state = { tab: 'shelf', year: now.getFullYear(), q: '', selectedMonth: now.getMonth() + 1, listFilter: 'finished', cal: { y: now.getFullYear(), m: now.getMonth() + 1 } };
 
   try { var t = localStorage.getItem(LS_TAB); if (t === 'shelf' || t === 'cal' || t === 'list' || t === 'stats') state.tab = t; } catch (e) {}
-  try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = JSON.parse(raw) || []; } catch (e) { books = []; }
+  try { var raw = localStorage.getItem(LS_BOOKS); if (raw) books = (JSON.parse(raw) || []).map(function (b) { if (b && typeof b === 'object') b.genre = normGenre(b.genre); return b; }); } catch (e) { books = []; }
   var quotaWarned = false;
   function saveLocal() {
     var ok = true;
@@ -1429,18 +1447,18 @@ button { cursor: pointer; }
   /* ---------- 예시 책 ---------- */
   function makeSamples() {
     var src = [
-      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324', '소설', 'finished', 180],
-      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525', '소설', 'finished', 264],
-      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921', '소설', 'finished', 268],
+      ['채식주의자', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6042324', '문학', 'finished', 180],
+      ['아몬드', 264, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1710525', '문학', 'finished', 264],
+      ['불편한 편의점', 268, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5620921', '문학', 'finished', 268],
       ['데미안', 240, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1252874', '인문/사회', 'finished', 240],
-      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086', '소설', 'finished', 120],
-      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518', '소설', 'finished', 520],
-      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244', '소설', 'finished', 216],
-      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128', '소설', 'finished', 300],
-      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128', '시/에세이', 'finished', 200],
-      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018', '인문/사회', 'finished', 180],
-      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329', '과학/IT', 'reading', 210],
-      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208', '자기계발', 'reading', 160]
+      ['어린 왕자', 120, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253086', '문학', 'finished', 120],
+      ['파친코', 520, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6080518', '문학', 'finished', 520],
+      ['소년이 온다', 216, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1626244', '문학', 'finished', 216],
+      ['달러구트 꿈 백화점', 300, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5418128', 'SF/판타지', 'finished', 300],
+      ['여행의 이유', 200, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5004128', '문학', 'finished', 200],
+      ['이방인', 180, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F1253018', '문학', 'finished', 180],
+      ['지구 끝의 온실', 360, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F5781329', 'SF/판타지', 'reading', 210],
+      ['도둑맞은 집중력', 420, 'https://search1.kakaocdn.net/thumb/R120x174.q85/?fname=http%3A%2F%2Ft1.daumcdn.net%2Flbook%2Fimage%2F6317208', '인문/사회', 'reading', 160]
     ];
     var offs = [1, 3, 6, 9, 12, 15, 19, 22, 27, 31, 36, 41];
     return src.map(function (s, i) {
@@ -1458,7 +1476,7 @@ button { cursor: pointer; }
         rating: isReading ? 0 : (i % 3 === 0 ? 5 : (i % 3 === 1 ? 4 : 3)),
         color: PALETTE[i % PALETTE.length],
         cover: s[2],
-        genre: s[3] || '소설'
+        genre: s[3] || '문학'
       };
     });
   }
@@ -1515,8 +1533,8 @@ button { cursor: pointer; }
   var spineH = function (b) { return 148 + (hash(b.title + b.id) % 5) * 8; };
   function spineHTML(b, idx) {
     var w = spineW(b), h = spineH(b);
-    var genre = b.genre || '소설';
-    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
+    var genre = b.genre || '문학';
+    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['문학'];
     var patClass = 'pat-' + (conf.pattern || 'bands');
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
@@ -1737,11 +1755,11 @@ button { cursor: pointer; }
     // 장르별 카운트
     var gMap = {};
     yrFinished.forEach(function (b) {
-      var g = b.genre || '기타';
+      var g = normGenre(b.genre);
       gMap[g] = (gMap[g] || 0) + 1;
     });
     var gSorted = Object.keys(gMap).map(function (g) {
-      var conf = GENRE_CONFIG[g] || GENRE_CONFIG['소설'];
+      var conf = GENRE_CONFIG[g] || GENRE_CONFIG['문학'];
       return {
         genre: g,
         color: conf.color,
@@ -1771,9 +1789,9 @@ button { cursor: pointer; }
       for (var r = 0; r < dotRows; r++) {
         if (r < colBooks.length) {
           var bk = colBooks[r];
-          var conf = GENRE_CONFIG[bk.genre] || GENRE_CONFIG['소설'];
+          var conf = GENRE_CONFIG[bk.genre] || GENRE_CONFIG['문학'];
           var gc = conf.color;
-          h += '<span class="dot" style="background:' + gc + '" title="' + esc(bk.title) + ' (' + esc(bk.genre || '소설') + ')"></span>';
+          h += '<span class="dot" style="background:' + gc + '" title="' + esc(bk.title) + ' (' + esc(bk.genre || '문학') + ')"></span>';
         } else {
           h += '<span class="dot empty"></span>';
         }
@@ -1844,7 +1862,7 @@ button { cursor: pointer; }
       (b.pubDate ? '<dt>출판일</dt><dd>' + fmtDate(b.pubDate) + '</dd>' : '') +
       (b.link ? '<dt>상세 정보</dt><dd><a href="' + esc(b.link) + '" target="_blank" rel="noopener noreferrer" style="color:var(--accent);text-decoration:underline;font-weight:600;display:inline-flex;align-items:center;gap:4px;">카카오 도서 상세 ↗</a></dd>' : '');
     openSheet('<div class="detail"><div class="bigcover" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : '<div class="tile">' + esc(b.title) + '</div>') + '</div><div style="min-width:0"><h2>' + esc(b.title) + '</h2>' +
-      '<div style="color:var(--muted)">' + metaSub + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '소설') + '</dd>' + extraDl + stInfo + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
+      '<div style="color:var(--muted)">' + metaSub + '</div><dl><dt>장르</dt><dd>' + esc(b.genre || '문학') + '</dd>' + extraDl + stInfo + (b.pages ? '<dt>쪽수</dt><dd>' + b.pages + '쪽</dd>' : '') + (b.rating ? '<dt>별점</dt><dd class="stars">' + stars(b.rating) + '</dd>' : '') + '</dl></div></div>' +
       '<div class="actions"><button class="btn danger" id="del">삭제</button><button class="btn" id="close">닫기</button>' + finishBtn + '<button class="btn' + (isR ? '' : ' primary') + '" id="edit">수정</button></div>');
     $('#close').onclick = closeSheet;
     $('#edit').onclick = function () { openForm(b); };
@@ -1886,8 +1904,8 @@ button { cursor: pointer; }
       coverColor: null,
       spineCover: editing ? (b.spineCover || null) : null
     };
-    var v = editing ? b : { title: '', author: '', translator: '', publisher: '', pubDate: '', link: '', genre: '소설', status: 'finished', readPages: '', pages: '', date: TODAY };
-    if (!v.genre) v.genre = '소설';
+    var v = editing ? b : { title: '', author: '', translator: '', publisher: '', pubDate: '', link: '', genre: '문학', status: 'finished', readPages: '', pages: '', date: TODAY };
+    if (!v.genre) v.genre = '문학';
     if (['finished', 'reading', 'wishlist'].indexOf(v.status) < 0) v.status = 'finished';
     form.status = v.status;
     form.readPages = v.readPages || '';
@@ -1910,7 +1928,7 @@ button { cursor: pointer; }
         '<div class="field"><label for="f-pubdate">출판일</label><input id="f-pubdate" type="text" value="' + esc(v.pubDate || '') + '" autocomplete="off" placeholder="예: 2009-01-20"></div>' +
         '<div class="field"><label for="f-link">도서 상세 링크</label><input id="f-link" type="url" value="' + esc(v.link || '') + '" autocomplete="off" placeholder="https://search.daum.net/..."></div>' +
       '</div>' +
-      '<div class="field"><label for="f-genre">장르 (선택 시 책등 색 자동 적용)</label><div style="display:flex;align-items:center;gap:10px;"><span id="f-genre-dot" style="width:24px;height:24px;border-radius:6px;background:' + (GENRE_CONFIG[v.genre || '소설'] ? GENRE_CONFIG[v.genre || '소설'].color : '#D4652A') + ';flex:none;box-shadow:0 1px 3px rgba(0,0,0,0.25);border:1px solid rgba(0,0,0,0.15);"></span><select id="f-genre" style="flex:1;height:48px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;color:var(--fg);font:inherit;">' +
+      '<div class="field"><label for="f-genre">장르 (선택 시 책등 색 자동 적용)</label><div style="display:flex;align-items:center;gap:10px;"><span id="f-genre-dot" style="width:24px;height:24px;border-radius:6px;background:' + (GENRE_CONFIG[v.genre || '문학'] ? GENRE_CONFIG[v.genre || '문학'].color : '#D4652A') + ';flex:none;box-shadow:0 1px 3px rgba(0,0,0,0.25);border:1px solid rgba(0,0,0,0.15);"></span><select id="f-genre" style="flex:1;height:48px;background:var(--surface-2);border:1.5px solid var(--line);border-radius:12px;padding:0 14px;color:var(--fg);font:inherit;">' +
         GENRES.map(function (g) { return '<option value="' + g + '"' + (g === v.genre ? ' selected' : '') + '>' + g + '</option>'; }).join('') +
       '</select></div></div>' +
       '<div class="two"><div class="field"><label for="f-pages">전체 쪽수</label><input id="f-pages" type="number" inputmode="numeric" min="1" max="3000" value="' + esc(v.pages || '') + '" placeholder="예: 320"></div>' +
@@ -1963,7 +1981,7 @@ button { cursor: pointer; }
     if ($('#f-genre')) {
       $('#f-genre').onchange = function () {
         var g = $('#f-genre').value;
-        var conf = GENRE_CONFIG[g] || GENRE_CONFIG['소설'];
+        var conf = GENRE_CONFIG[g] || GENRE_CONFIG['문학'];
         form.color = conf.color;
         if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color;
       };
@@ -2150,7 +2168,7 @@ button { cursor: pointer; }
       if ($('#f-pubdate')) $('#f-pubdate').value = x.pubDate || '';
       if ($('#f-link')) $('#f-link').value = x.link || '';
       var autoG = guessGenre(x.title, x.author, x.publisher);
-      if ($('#f-genre')) { $('#f-genre').value = autoG; var conf = GENRE_CONFIG[autoG] || GENRE_CONFIG['소설']; form.color = conf.color; if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color; }
+      if ($('#f-genre')) { $('#f-genre').value = autoG; var conf = GENRE_CONFIG[autoG] || GENRE_CONFIG['문학']; form.color = conf.color; if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color; }
       msg('표지, 쪽수, 책등 이미지를 가져오는 중…');
       var jobs = [];
       var covers = [x.coverHd, x.cover].filter(Boolean);
@@ -2198,8 +2216,8 @@ button { cursor: pointer; }
     if ($('#f-prev')) {
       $('#f-prev').innerHTML = form.cover ? '<img src="' + form.cover + '" alt="">' : '없음';
     }
-    var g = $('#f-genre') ? $('#f-genre').value : '소설';
-    var conf = GENRE_CONFIG[g] || GENRE_CONFIG['소설'];
+    var g = $('#f-genre') ? $('#f-genre').value : '문학';
+    var conf = GENRE_CONFIG[g] || GENRE_CONFIG['문학'];
     if ($('#f-genre-dot')) $('#f-genre-dot').style.background = conf.color;
   }
   function readCover(file) {
@@ -2234,8 +2252,8 @@ button { cursor: pointer; }
     var date = $('#f-date').value || TODAY;
     var pages = parseInt($('#f-pages').value, 10);
     var rPages = parseInt($('#f-readpages') ? $('#f-readpages').value : 0, 10);
-    var genre = ($('#f-genre') ? $('#f-genre').value : '소설');
-    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
+    var genre = ($('#f-genre') ? $('#f-genre').value : '문학');
+    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['문학'];
     var autoSpineColor = conf.color;
 
     var book = {
@@ -2362,8 +2380,8 @@ button { cursor: pointer; }
     var p = parseInt(b.pages, 10) || 0;
     var rp = parseInt(b.readPages, 10) || 0;
     var st = (b.status === 'reading') ? 'reading' : (b.status === 'wishlist' ? 'wishlist' : 'finished');
-    var genre = (typeof b.genre === 'string' && b.genre) ? b.genre : '소설';
-    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['소설'];
+    var genre = normGenre(b.genre);
+    var conf = GENRE_CONFIG[genre] || GENRE_CONFIG['문학'];
     return {
       id: typeof b.id === 'string' && b.id ? b.id.slice(0, 40) : 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       title: String(b.title).slice(0, 200),
