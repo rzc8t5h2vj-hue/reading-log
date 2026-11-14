@@ -1560,7 +1560,7 @@ button { cursor: pointer; }
     var patClass = 'pat-' + (conf.pattern || 'bands');
     var isR = (b.status === 'reading');
     var ribbon = isR ? '<span class="spine-ribbon" title="읽는 중"></span>' : '';
-    var fontSize = (w < 21) ? 10.5 : (w < 24 ? 11.5 : (w < 30 ? 12 : 12.5));
+    var fontSize = (w < 21) ? 10.5 : (w < 24 ? 11.5 : (w < 30 ? 12 : (w < 36 ? 12.5 : (w < 46 ? 13.5 : 15))));
     var lineCol = conf.dark ? 'rgba(255,255,255,0.65)' : 'rgba(28,32,26,0.35)';
 
     var topIcon = conf.icon ? '<span class="spine-top-icon" style="color:' + lineCol + '">' + conf.icon + '</span>' : '';
