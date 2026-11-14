@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-14T07:54:40.975Z",
+  "updated": "2026-11-14T07:54:44.424Z",
   "books": [
     {
       "id": "s9",
@@ -92,24 +92,6 @@
       "color": "#6F8A6B",
       "cover": null,
       "spineCover": "https://image.yes24.com/goods/176787/SIDE/XL"
-    },
-    {
-      "id": "s2",
-      "title": "불편한 편의점",
-      "author": "",
-      "translator": "",
-      "publisher": "",
-      "pubDate": "",
-      "link": "",
-      "genre": "문학",
-      "status": "finished",
-      "readPages": 268,
-      "pages": 268,
-      "date": "2026-11-08",
-      "rating": 3,
-      "color": "#BFAAD4",
-      "cover": null,
-      "spineCover": "https://image.yes24.com/goods/99308021/SIDE/XL"
     },
     {
       "id": "bmwboh44y99ue",
