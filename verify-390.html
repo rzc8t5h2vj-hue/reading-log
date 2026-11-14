@@ -1,20 +1,29 @@
 <!doctype html>
 <html lang="ko">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>verify 390</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  #frame { width: 390px; height: 900px; border: 0; display: block; margin: 0; }
+</style>
+</head>
 <body>
+<iframe id="frame" title="reading log 390px"></iframe>
 <script>
 (async function () {
+  var p = new URLSearchParams(location.search);
+  var tab = p.get('tab') || 'shelf';
   try {
     var r = await fetch('dokseo-data.json?t=' + Date.now());
     var j = await r.json();
     localStorage.setItem('dokseo.books.v1', JSON.stringify(j.books || []));
-    var p = new URLSearchParams(location.search);
-    var tab = p.get('tab') || 'shelf';
     localStorage.setItem('dokseo.tab', tab);
-    location.replace('index.html?v=verify2');
   } catch (e) {
-    document.body.textContent = 'ERR ' + e;
+    document.title = 'ERR ' + e;
   }
+  document.getElementById('frame').src = 'index.html?v=verify2&tab=' + tab;
 })();
 </script>
 </body>
