@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-18T15:21:22.057Z",
+  "updated": "2026-11-18T15:21:25.236Z",
   "goals": {
     "2026": 12
   },
@@ -164,7 +164,7 @@
       "link": "https://search.daum.net/search?w=bookpage&bookId=692921&q=%EB%A1%9C%EC%9E%AC%EB%82%98",
       "genre": "문학",
       "status": "reading",
-      "readPages": 10,
+      "readPages": 70,
       "pages": 452,
       "date": "2026-11-18",
       "rating": 0,
