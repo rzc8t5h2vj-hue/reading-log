@@ -1,7 +1,7 @@
 {
   "app": "dokseo",
   "version": 1,
-  "updated": "2026-11-21T13:40:36.697Z",
+  "updated": "2026-11-21T13:40:40.019Z",
   "goals": {
     "2026": 12
   },
@@ -185,7 +185,7 @@
       "link": "https://search.daum.net/search?w=bookpage&bookId=693919&q=%EC%97%B0%EA%B8%B0%EC%B2%98%EB%9F%BC+%EC%82%AC%EB%9D%BC%EC%A7%84+%EB%82%A8%EC%9E%90",
       "genre": "추리/스릴러",
       "status": "reading",
-      "readPages": 50,
+      "readPages": 70,
       "pages": 356,
       "date": "2026-11-21",
       "rating": 0,
