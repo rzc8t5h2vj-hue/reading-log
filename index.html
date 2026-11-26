@@ -1516,6 +1516,35 @@ button { cursor: pointer; }
 .goal-presets { display: flex; gap: 6px; flex-wrap: wrap; margin: 2px 0 16px; }
 .goal-presets button { height: 30px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--card-line); background: #FBF6EF; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
 .goal-presets button:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- 인스픽 인화지 (5×7.6cm 4컷) ---------- */
+.inspic-lead { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin: -8px 0 16px; }
+.inspic-block { margin-bottom: 14px; }
+.inspic-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+.inspic-head .lbl { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1; font-size: 12.5px; font-weight: 700; color: var(--fg); }
+.inspic-head .lbl .n { flex: none; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 11px; font-weight: 700; }
+.inspic-head .cur { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+.inspic-badge { flex: none; font-style: normal; font-size: 10px; font-weight: 700; color: var(--accent); background: rgba(200, 90, 50, 0.1); border: 1px solid rgba(200, 90, 50, 0.28); border-radius: 999px; padding: 1px 7px; }
+.inspic-file { display: flex; align-items: center; gap: 5px; flex: none; }
+.inspic-file .btn.sm { height: 28px; padding: 0 10px; font-size: 11.5px; background: #FBF6EF; }
+.inspic-file .btn.sm.inspic-ghost { color: var(--muted); padding: 0 8px; }
+.inspic-strip { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 6px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.inspic-strip::-webkit-scrollbar { display: none; }
+.inspic-th { flex: none; width: 56px; padding: 0; border: 0; background: none; cursor: pointer; text-align: center; }
+.inspic-th .im { display: grid; place-items: center; width: 56px; height: 80px; padding: 3px; border: 2px solid transparent; border-radius: 6px; background: var(--surface-2); box-shadow: 0 0 0 1px var(--line); overflow: hidden; font-size: 9px; line-height: 1.2; color: var(--muted); word-break: keep-all; }
+.inspic-th .im img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 3px; }
+.inspic-th[aria-pressed="true"] .im { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), 0 3px 10px rgba(200, 90, 50, 0.24); }
+.inspic-th .nm { display: block; margin-top: 4px; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.inspic-th[aria-pressed="true"] .nm { color: var(--accent); font-weight: 700; }
+.inspic-opt { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding: 12px 14px; border: 1.5px solid var(--card-line); border-radius: 12px; background: #FBF6EF; font-size: 13px; font-weight: 700; color: var(--fg); cursor: pointer; }
+.inspic-opt input { flex: none; width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
+.inspic-opt .sub { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--muted); text-align: right; }
+.inspic-frame { display: grid; place-items: center; min-height: 180px; margin-bottom: 8px; padding: 14px; border: 1.5px solid var(--card-line); border-radius: 14px; background: var(--surface-2); }
+.inspic-frame img { display: block; width: auto; max-width: 100%; max-height: 42vh; height: auto; margin: 0 auto; border-radius: 4px; background: #fff; box-shadow: 0 10px 24px -12px rgba(45, 25, 18, 0.55); }
+.inspic-frame img:not([src]), .inspic-frame img[src=""] { display: none; }
+.inspic-status { min-height: 16px; margin-bottom: 2px; font-size: 11.5px; color: var(--muted); text-align: center; }
+.inspic-hint { margin: 0 0 4px; font-size: 11px; color: var(--muted); opacity: 0.9; text-align: center; }
+.inspic-lead b { color: var(--accent); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -1535,6 +1564,9 @@ button { cursor: pointer; }
     <div class="top-actions">
       <button type="button" class="iconbtn-round" id="searchToggle" aria-label="책 검색" aria-expanded="false" aria-controls="q">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </button>
+      <button type="button" class="iconbtn-round" id="inspicBtn" aria-label="인스픽 인화지 만들기" title="인스픽 인화지">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4.5h10V9"/><rect x="3" y="9" width="18" height="7.5" rx="2"/><path d="M7 14.5h10V20H7z"/></svg>
       </button>
       <button type="button" class="btn-add" id="addTop" aria-label="책 추가">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
@@ -3166,7 +3198,279 @@ button { cursor: pointer; }
     }
   }
 
-  $('#syncFooterBtn').addEventListener('click', openSyncModal);
+  /* ---------- 인스픽 인화지 (캐논 인스픽 ZINK 포토페이퍼 5×7.6cm · 4컷) ----------
+     큰 표지 두 컷을 왼쪽 열에, 작은 표지 두 컷을 오른쪽 열에 담는다.
+     표지는 예스24 고화질(XL)을 먼저 쓰고, 실패하면 저장된 표지(base64)로 넘어간다. */
+  var INSPIC_W = 1181, INSPIC_H = 1795;  // 600 DPI 기준 5.0 × 7.6cm
+  var inspicCmToPx = function (cm) { return Math.round(cm * 600 / 2.54); };
+  var INSPIC_SLOTS = [
+    { book: 0, x: 0.25, y: 0.03, w: 2.55, h: 3.75 },  // 책 1 큰 표지 · 왼쪽 위
+    { book: 1, x: 0.25, y: 3.82, w: 2.55, h: 3.75 },  // 책 2 큰 표지 · 왼쪽 아래
+    { book: 0, x: 3.03, y: 0.90, w: 1.72, h: 2.53 },  // 책 1 작은 표지 · 오른쪽 위
+    { book: 1, x: 3.03, y: 4.17, w: 1.72, h: 2.53 }   // 책 2 작은 표지 · 오른쪽 아래
+  ];
+  var inspic = { ready: false, pick: [null, null], custom: [null, null], border: true, seq: 0, dataUrl: null, blob: null };
+  var inspicHdCache = {};
+
+  function inspicBookList() {
+    return source().filter(function (b) { return b && !b.sample; }).slice().sort(function (a, b) {
+      var da = a.date || '', db = b.date || '';
+      return da === db ? String(a.title).localeCompare(String(b.title)) : (da < db ? 1 : -1);
+    });
+  }
+
+  /* 예스24 검색으로 GOODS_NO를 찾아 표지 고화질 주소를 만든다 (제목 우선, ISBN이 있으면 ISBN)' */
+  function inspicGoodsUrl(title, isbn) {
+    var key = String(isbn || '') + '|' + String(title || '');
+    if (Object.prototype.hasOwnProperty.call(inspicHdCache, key)) return Promise.resolve(inspicHdCache[key]);
+    var q = isbn ? String(isbn).trim() : String(title || '').trim();
+    if (!q) return Promise.resolve(null);
+    var u = 'https://proxy.cors.dev/https://www.yes24.com/Product/searchapi/bulletsearch/goods?query=' + encodeURIComponent(q);
+    return fetch(u).then(function (r) { return r.json(); }).then(function (j) {
+      var raw = (j && j.lstSearchKeywordResult) || [];
+      var plain = function (s) { return String(s == null ? '' : s).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().toLowerCase(); };
+      var want = String(title || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      var best = null, bestScore = 9;
+      raw.forEach(function (it) {
+        // 예스24 응답 키는 오타가 섞인 GOODDS_INDEXES다(과거 GOODS_INDEXES 응답도 함께 대응)
+        var idx = it && (it.GOODDS_INDEXES || it.GOODS_INDEXES);
+        var no = idx && idx.GOODS_NO;
+        if (!no) return;
+        var nm = plain(idx.GOODS_NM || '');
+        var score = !want ? 0 : (nm === want ? 0 : (nm.indexOf(want) === 0 ? 1 : (nm.indexOf(want) >= 0 ? 2 : 3)));
+        if (score < bestScore) { bestScore = score; best = String(no); }
+      });
+      // 제목이 맞는 후보가 있을 때만 고화질을 쓴다. 아니면 저장된 표지로 되돌린다.
+      var url = (best && bestScore <= 2) ? ('https://image.yes24.com/goods/' + best + '/XL') : null;
+      inspicHdCache[key] = url;
+      return url;
+    }).catch(function () { return null; });
+  }
+
+  function inspicLoad(url, cors) {
+    return new Promise(function (resolve) {
+      if (!url) { resolve(null); return; }
+      var img = new Image(), done = false;
+      var t = setTimeout(function () { if (!done) { done = true; resolve(null); } }, 12000);
+      if (cors) img.crossOrigin = 'anonymous';
+      img.onload = function () { if (done) return; done = true; clearTimeout(t); resolve((img.naturalWidth && img.naturalHeight) ? img : null); };
+      img.onerror = function () { if (done) return; done = true; clearTimeout(t); resolve(null); };
+      img.src = url;
+    });
+  }
+
+  /* 고화질 표지 → 저장된 표지(base64) 순서로 시도 */
+  function inspicBookImage(book) {
+    if (!book) return Promise.resolve(null);
+    return inspicGoodsUrl(book.title, book.isbn).then(function (url) {
+      if (!url) return null;
+      return inspicLoad(url, true).then(function (img) {
+        if (img) return img;
+        return inspicLoad('https://proxy.cors.dev/' + url, true);
+      });
+    }).then(function (img) {
+      if (img) return img;
+      var cv = okCover(book.cover);
+      return cv ? inspicLoad(cv, false) : null;
+    });
+  }
+
+  function inspicSlotImage(i) {
+    if (inspic.custom[i]) return inspicLoad(inspic.custom[i], false);
+    var id = inspic.pick[i];
+    return inspicBookImage(id ? byId(id) : null);
+  }
+
+  function inspicDrawCover(ctx, img, x, y, w, h) {
+    var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    if (!iw || !ih) return;
+    var target = w / h, src = iw / ih, sw, sh, sx, sy;
+    if (src > target) { sh = ih; sw = Math.round(ih * target); sx = Math.round((iw - sw) / 2); sy = 0; }
+    else { sw = iw; sh = Math.round(iw / target); sx = 0; sy = Math.round((ih - sh) / 2); }
+    ctx.drawImage(img, sx, sy, sw, sh, x, y, w, h);
+  }
+
+  function inspicDraw(images) {
+    var cv = document.createElement('canvas');
+    cv.width = INSPIC_W; cv.height = INSPIC_H;
+    var ctx = cv.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, INSPIC_W, INSPIC_H);
+    ctx.imageSmoothingEnabled = true;
+    if ('imageSmoothingQuality' in ctx) ctx.imageSmoothingQuality = 'high';
+    INSPIC_SLOTS.forEach(function (s) {
+      var img = images[s.book];
+      if (!img) return;
+      var x = inspicCmToPx(s.x), y = inspicCmToPx(s.y), w = inspicCmToPx(s.w), h = inspicCmToPx(s.h);
+      inspicDrawCover(ctx, img, x, y, w, h);
+      if (inspic.border) {
+        ctx.strokeStyle = '#646464';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x - 2, y - 2, w + 4, h + 4);
+      }
+    });
+    return cv;
+  }
+
+  function inspicRender() {
+    var seq = ++inspic.seq;
+    var prev = $('#inspicPrev'), st = $('#inspicStatus'), saveBtn = $('#inspicSave');
+    if (!prev) return;
+    if (st) st.textContent = '고화질 표지를 불러오는 중...';
+    if (saveBtn) saveBtn.disabled = true;
+    Promise.all([inspicSlotImage(0), inspicSlotImage(1)]).then(function (imgs) {
+      if (seq !== inspic.seq) return;
+      var url = null;
+      try {
+        var cv = inspicDraw(imgs);
+        url = cv.toDataURL('image/jpeg', 0.92);
+        inspic.blob = null;
+        if (cv.toBlob) cv.toBlob(function (b) { if (seq === inspic.seq) inspic.blob = b; }, 'image/jpeg', 0.92);
+      } catch (e) {
+        url = null;
+      }
+      if (!url) {
+        if (st) st.textContent = '표지 그림을 읽지 못했어요. 사진 변경으로 다른 사진을 골라 주세요.';
+        return;
+      }
+      inspic.dataUrl = url;
+      prev.src = url;
+      if (saveBtn) saveBtn.disabled = false;
+      var got = (imgs[0] ? 1 : 0) + (imgs[1] ? 1 : 0);
+      if (st) st.textContent = got === 2
+        ? '완성했어요 · ' + INSPIC_W + ' × ' + INSPIC_H + 'px (600 DPI · 5 × 7.6cm)'
+        : '표지를 찾지 못한 컷이 있어요. 사진 변경으로 직접 올려 주세요.';
+    });
+  }
+
+  function inspicHeadHtml(i) {
+    var id = inspic.pick[i], b = id ? byId(id) : null;
+    return '<span class="lbl"><span class="n">' + (i + 1) + '</span><span class="cur">' + (b ? esc(b.title) : '책을 골라 주세요') + '</span>' +
+      (inspic.custom[i] ? '<em class="inspic-badge">내 사진</em>' : '') + '</span>' +
+      '<span class="inspic-file"><input type="file" id="inspicFile' + i + '" accept="image/*" hidden>' +
+      '<button type="button" class="btn sm" id="inspicPick' + i + '">사진 변경</button>' +
+      (inspic.custom[i] ? '<button type="button" class="btn sm inspic-ghost" id="inspicReset' + i + '">표지로</button>' : '') +
+      '</span>';
+  }
+
+  function inspicBindHead(i) {
+    var pickBtn = $('#inspicPick' + i), fileInp = $('#inspicFile' + i);
+    if (pickBtn && fileInp) {
+      pickBtn.onclick = function () { fileInp.click(); };
+      fileInp.onchange = function (e) {
+        var f = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!f) return;
+        var fr = new FileReader();
+        fr.onload = function () {
+          inspic.custom[i] = String(fr.result || '');
+          inspicRefreshHead(i);
+          inspicRender();
+        };
+        fr.readAsDataURL(f);
+      };
+    }
+    var resetBtn = $('#inspicReset' + i);
+    if (resetBtn) resetBtn.onclick = function () { inspic.custom[i] = null; inspicRefreshHead(i); inspicRender(); };
+  }
+
+  function inspicRefreshHead(i) {
+    var head = $('#inspicHead' + i);
+    if (!head) return;
+    head.innerHTML = inspicHeadHtml(i);
+    inspicBindHead(i);
+  }
+
+  function openInspic() {
+    var list = inspicBookList();
+    if (!list.length) {
+      openSheet('<h2>인스픽 인화지 만들기</h2>' +
+        '<p class="inspic-lead">책장에 책을 먼저 추가하면 표지 네 컷을 담은 인화지를 만들 수 있어요.</p>' +
+        '<div class="actions"><button type="button" class="btn primary" id="inspicClose">닫기</button></div>');
+      $('#inspicClose').onclick = closeSheet;
+      return;
+    }
+    if (!inspic.ready) {
+      inspic.pick = [list[0] ? list[0].id : null, list[1] ? list[1].id : null];
+      inspic.ready = true;
+    }
+    // 고른 책이 지워졌으면 최근 책으로 되돌린다
+    [0, 1].forEach(function (i) {
+      if (!inspic.pick[i] || !byId(inspic.pick[i])) inspic.pick[i] = (list[i] || list[0]).id;
+    });
+
+    var thumbs = function (i) {
+      return list.map(function (b) {
+        var cv = okCover(b.cover);
+        return '<button type="button" class="inspic-th" data-slot="' + i + '" data-book="' + esc(b.id) + '" aria-pressed="' + (b.id === inspic.pick[i] ? 'true' : 'false') + '" title="' + esc(b.title) + '">' +
+          '<span class="im" style="--c:' + okColor(b.color) + '">' + (cv ? '<img src="' + cv + '" alt="">' : esc(b.title)) + '</span>' +
+          '<span class="nm">' + esc(b.title) + '</span></button>';
+      }).join('');
+    };
+
+    openSheet('<h2>인스픽 인화지 만들기</h2>' +
+      '<p class="inspic-lead">5 × 7.6cm 인화지 한 장에 <b>큰 표지 두 컷</b>(왼쪽)과 <b>작은 표지 두 컷</b>(오른쪽)을 담아요.</p>' +
+      [0, 1].map(function (i) {
+        return '<div class="inspic-block"><div class="inspic-head" id="inspicHead' + i + '">' + inspicHeadHtml(i) + '</div>' +
+          '<div class="inspic-strip" id="inspicStrip' + i + '">' + thumbs(i) + '</div></div>';
+      }).join('') +
+      '<label class="inspic-opt" for="inspicBorder"><input type="checkbox" id="inspicBorder"' + (inspic.border ? ' checked' : '') + '><span>자르기 선(테두리)</span><span class="sub">진한 회색 선으로 컷 경계 표시</span></label>' +
+      '<div class="inspic-frame"><img id="inspicPrev" alt="인스픽 인화지 미리보기"></div>' +
+      '<div class="inspic-status" id="inspicStatus"></div>' +
+      '<p class="inspic-hint">미리보기를 길게 눌러 사진 앱에 저장할 수도 있어요.</p>' +
+      '<div class="actions inspic-actions"><button type="button" class="btn" id="inspicClose">닫기</button><button type="button" class="btn primary" id="inspicSave" disabled>이미지 저장</button></div>');
+
+    $('#sheet').querySelectorAll('.inspic-th').forEach(function (btn) {
+      btn.onclick = function () {
+        var i = +btn.dataset.slot;
+        inspic.pick[i] = btn.dataset.book;
+        inspic.custom[i] = null;
+        $('#sheet').querySelectorAll('.inspic-th[data-slot="' + i + '"]').forEach(function (b) {
+          b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+        });
+        inspicRefreshHead(i);
+        inspicRender();
+      };
+    });
+    [0, 1].forEach(function (i) { inspicBindHead(i); });
+    $('#inspicBorder').onchange = function () { inspic.border = !!this.checked; inspicRender(); };
+    $('#inspicClose').onclick = closeSheet;
+    $('#inspicSave').onclick = inspicSave;
+    inspicRender();
+  }
+
+  function inspicDownload() {
+    var a = document.createElement('a');
+    a.href = inspic.dataUrl;
+    a.download = 'inspic-5x7.6.jpg';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { a.remove(); }, 1000);
+    toast('인화지 이미지를 내려받았어요.');
+  }
+
+  function inspicSave() {
+    if (!inspic.dataUrl) { toast('인화지를 먼저 만들어 주세요.'); return; }
+    var name = 'inspic-5x7.6.jpg';
+    var file = null;
+    if (inspic.blob && window.File) {
+      try { file = new File([inspic.blob], name, { type: 'image/jpeg' }); } catch (e) { file = null; }
+    }
+    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try {
+        navigator.share({ files: [file], title: '인스픽 5×7.6cm 인화지' }).then(function () {
+          toast('공유 시트에서 ‘이미지 저장’을 누르면 사진 앱에 저장돼요.');
+        }).catch(function (err) {
+          if (err && err.name === 'AbortError') return;  // 사용자가 공유 시트를 닫음
+          inspicDownload();
+        });
+        return;
+      } catch (e) { /* 공유를 못 쓰면 내려받기로 넘어간다 */ }
+    }
+    inspicDownload();
+  }
+
+  if ($('#inspicBtn')) $('#inspicBtn').addEventListener('click', openInspic);
 
   if (getGhToken()) {
     updateSyncBadge('synced');
